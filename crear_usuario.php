@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Crear Usuario</title>
+    <title>JurassiDraft - Crear Usuario</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="bg-light">
@@ -57,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
 
                     <div class="d-grid">
-                        <button type="submit" class="btn btn-success">Crear Usuario</button>
+                        <button type="submit" class="btn btn-primary">Crear Usuario</button>
                     </div>
                 </form>
 
