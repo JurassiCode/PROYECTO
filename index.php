@@ -26,7 +26,7 @@ $nombre  = $logeado
       <div class="container-fluid">
         <a class="navbar-brand" href="index.php">
           <img
-            src="assets/logojuego.png"
+            src="assets/images/logojuego.png"
             alt="Logo"
             class="img-fluid"
             style="max-height: 50px"
@@ -92,7 +92,7 @@ $nombre  = $logeado
       style="height: 60vh"
     >
       <img
-        src="assets/logojuego.png"
+        src="assets/images/images/logojuego.png"
         alt="Logo JurassiDraft"
         class="img-fluid mb-4"
         style="max-height: 200px"
@@ -123,7 +123,7 @@ $nombre  = $logeado
         <div class="col-12 col-md-8">
           <div class="card h-100 d-flex flex-row align-items-start p-3">
             <img
-              src="assets/logojuego.png"
+              src="assets/images/logojuego.png"
               alt="Draft"
               class="me-3"
               style="width: 80px; height: 80px; object-fit: cover"
@@ -142,7 +142,7 @@ $nombre  = $logeado
         <div class="col-12 col-md-4">
           <div class="card h-100 d-flex flex-row align-items-start p-3">
             <img
-              src="assets/logojuego.png"
+              src="assets/images/logojuego.png"
               alt="Dado"
               class="me-3"
               style="width: 80px; height: 80px; object-fit: cover"
@@ -161,7 +161,7 @@ $nombre  = $logeado
         <div class="col-12 col-md-4">
           <div class="card h-100 d-flex flex-row align-items-start p-3">
             <img
-              src="assets/logojuego.png"
+              src="assets/images/logojuego.png"
               alt="Parque"
               class="me-3"
               style="width: 80px; height: 80px; object-fit: cover"
@@ -180,7 +180,7 @@ $nombre  = $logeado
         <div class="col-12 col-md-8">
           <div class="card h-100 d-flex flex-row align-items-start p-3">
             <img
-              src="assets/logojuego.png"
+              src="assets/images/logojuego.png"
               alt="Puntaje"
               class="me-3"
               style="width: 80px; height: 80px; object-fit: cover"
