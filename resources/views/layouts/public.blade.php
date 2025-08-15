@@ -1,153 +1,177 @@
 <!doctype html>
 <html lang="es">
-
 <head>
   <meta charset="utf-8">
   <title>@yield('title','JurassiDraft')</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Bootstrap 5 -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Bootstrap Icons -->
+
+  {{-- Tailwind via Vite --}}
+  @vite(['resources/css/app.css','resources/js/app.js'])
+
+  {{-- Bootstrap Icons (solo íconos) --}}
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 
-<body class="bg-light">
+<body class="bg-gray-50 text-gray-800">
 
-  <!-- Navbar  -->
-  <nav class="navbar navbar-expand-lg bg-white border-bottom shadow-sm">
-    <div class="container">
-      <!-- Logo -->
-      <a class="navbar-brand d-flex align-items-center fw-bold" href="/">
-        <img src="/images/logojuego_nobg.png" alt="JurassiDraft Logo" height="50" class="me-2">
-        JurassiDraft
-      </a>
+  <!-- Navbar -->
+  <nav x-data="{ open:false, userMenu:false }" class="bg-white border-b border-gray-200 shadow-sm">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="flex h-16 items-center justify-between">
+        <!-- Brand -->
+        <a href="/" class="flex items-center font-bold text-gray-900">
+          <img src="/images/logojuego_nobg.png" alt="JurassiDraft Logo" class="h-10 w-10 object-contain mr-2">
+          JurassiDraft
+        </a>
 
-      <!-- Mobile Toggle -->
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain"
-        aria-controls="navMain" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-
-      <!-- Menu -->
-      <div id="navMain" class="collapse navbar-collapse justify-content-end justify-content-md-around">
-        <ul class="navbar-nav ms-auto align-items-center gap-2">
+        <!-- Desktop menu (right) -->
+        <div class="hidden lg:flex items-center gap-3">
           @auth
+            @php
+              $isAdmin = auth()->user()->rol === 'admin';
+              $mainActionUrl = $isAdmin ? route('admin.usuarios.index') : route('play');
+              $mainActionLabel = $isAdmin ? 'Panel Admin' : 'Jugar';
+              $avatarUrl = 'https://www.gravatar.com/avatar/?s=160&d=mp';
+              $displayName = auth()->user()->nombre ?? auth()->user()->usuario;
+            @endphp
+
+            <!-- Botón principal -->
+            <a href="{{ $mainActionUrl }}"
+               class="inline-flex items-center justify-center rounded-md bg-emerald-600 px-4 py-2 text-white hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-600">
+              <i class="bi {{ $isAdmin ? 'bi-speedometer2' : 'bi-play-fill' }} mr-2"></i>{{ $mainActionLabel }}
+            </a>
+
+            <!-- Avatar + dropdown -->
+            <div class="relative" @click.outside="userMenu=false">
+              <button @click="userMenu=!userMenu" class="flex items-center rounded-full focus:outline-none focus:ring-2 focus:ring-emerald-600" aria-label="Menú de usuario">
+                <img src="{{ $avatarUrl }}" alt="Avatar" class="h-10 w-10 rounded-full object-cover">
+              </button>
+
+              <ul x-cloak x-show="userMenu" x-transition
+                  class="absolute right-0 mt-2 w-56 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-lg">
+                <li class="px-4 py-3 text-sm text-gray-500">
+                  <span class="block font-semibold text-gray-800">{{ $displayName }}</span>
+                </li>
+                <li><hr class="border-gray-200"></li>
+                <li>
+                  <a href="{{ $mainActionUrl }}" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                    <i class="bi {{ $isAdmin ? 'bi-speedometer2' : 'bi-play-fill' }} mr-2"></i>{{ $mainActionLabel }}
+                  </a>
+                </li>
+                <li>
+                  <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                    <i class="bi bi-person-gear mr-2 text-blue-600"></i>Editar perfil
+                  </a>
+                </li>
+                <li>
+                  <form action="{{ route('logout') }}" method="POST" class="m-0">
+                    @csrf
+                    <button type="submit" class="flex w-full items-center px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50">
+                      <i class="bi bi-box-arrow-right mr-2 text-red-600"></i>Salir
+                    </button>
+                  </form>
+                </li>
+              </ul>
+            </div>
+          @else
+            <button class="inline-flex items-center justify-center rounded-md border border-gray-300 px-4 py-2 text-gray-600 hover:bg-gray-50 cursor-not-allowed" disabled>
+              Registrarse (🔜🔜)
+            </button>
+            <a href="{{ route('login') }}"
+               class="inline-flex items-center justify-center rounded-md bg-emerald-600 px-4 py-2 text-white hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-600">
+              Iniciar sesión
+            </a>
+          @endauth
+        </div>
+
+        <!-- Mobile toggle -->
+        <button @click="open = !open"
+                class="inline-flex items-center justify-center rounded-md p-2 text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-600 lg:hidden"
+                aria-controls="navMain" :aria-expanded="open.toString()" aria-label="Toggle navigation">
+          <span class="sr-only">Abrir menú</span>
+          <i class="bi" :class="open ? 'bi-x-lg' : 'bi-list'"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile menu -->
+    <div id="navMain" x-cloak x-show="open" x-transition class="lg:hidden border-t border-gray-200 bg-white">
+      <div class="mx-auto max-w-7xl px-4 py-3">
+        @auth
           @php
-          $isAdmin = auth()->user()->rol === 'admin';
-          $mainActionUrl = $isAdmin ? route('admin.usuarios.index') : route('play');
-          $mainActionLabel = $isAdmin ? 'Panel Admin' : 'Jugar';
-          $avatarUrl = 'https://www.gravatar.com/avatar/?s=160&d=mp';
-          $displayName = auth()->user()->nombre ?? auth()->user()->usuario;
+            $isAdmin = auth()->user()->rol === 'admin';
+            $mainActionUrl = $isAdmin ? route('admin.usuarios.index') : route('play');
+            $mainActionLabel = $isAdmin ? 'Panel Admin' : 'Jugar';
+            $displayName = auth()->user()->nombre ?? auth()->user()->usuario;
           @endphp
 
-          <!-- HAMBURGUESA MOBILE -->
-          <li class="nav-item d-lg-none">
-            <span class="nav-link fw-semibold">{{ $displayName }}</span>
-          </li>
-          <li class="nav-item d-lg-none">
-            <a class="nav-link" href="{{ $mainActionUrl }}">
-              <i class="bi {{ $isAdmin ? 'bi-speedometer2' : 'bi-play-fill' }} me-2"></i>{{ $mainActionLabel }}
-            </a>
-          </li>
-          <li class="nav-item d-lg-none">
-            <a class="nav-link" href="#"><i class="bi bi-person-gear me-2"></i>Editar perfil</a>
-          </li>
-          <li class="nav-item d-lg-none">
-            <form action="{{ route('logout') }}" method="POST" class="d-grid my-2">
-              @csrf
-              <button class="btn btn-outline-danger" type="submit">
-                <i class="bi bi-box-arrow-right me-2 text-danger"></i>Salir
-              </button>
-            </form>
-          </li>
+          <div class="mb-2 text-sm font-semibold text-gray-700">{{ $displayName }}</div>
 
-          <!-- DESKTOP AVATAR + DROPDOWN -->
-          <li class="nav-item dropdown d-none d-lg-block">
-            <button class="btn p-0 border-0 bg-transparent dropdown-toggle d-flex align-items-center"
-              data-bs-toggle="dropdown" aria-expanded="false" aria-label="Menú de usuario">
-              <img src="{{ $avatarUrl }}" alt="Avatar" width="40" height="40"
-                class="rounded-circle" style="object-fit:cover;">
+          <a href="{{ $mainActionUrl }}"
+             class="block w-full rounded-md px-4 py-2 text-gray-700 hover:bg-gray-50">
+            <i class="bi {{ $isAdmin ? 'bi-speedometer2' : 'bi-play-fill' }} mr-2"></i>{{ $mainActionLabel }}
+          </a>
+          <a href="#"
+             class="mt-1 block w-full rounded-md px-4 py-2 text-gray-700 hover:bg-gray-50">
+            <i class="bi bi-person-gear mr-2"></i>Editar perfil
+          </a>
+          <form action="{{ route('logout') }}" method="POST" class="mt-2">
+            @csrf
+            <button class="w-full rounded-md border border-red-300 px-4 py-2 text-red-700 hover:bg-red-50" type="submit">
+              <i class="bi bi-box-arrow-right mr-2 text-red-700"></i>Salir
             </button>
-            <ul class="dropdown-menu dropdown-menu-end shadow-sm">
-              <li class="px-3 py-2 small text-muted">
-                <span class="fw-semibold">{{ $displayName }}</span>
-              </li>
-              <li>
-                <hr class="dropdown-divider">
-              </li>
-              <li>
-                <a class="dropdown-item" href="{{ $mainActionUrl }}">
-                  <i class="bi {{ $isAdmin ? 'bi-speedometer2' : 'bi-play-fill' }} me-2"></i>{{ $mainActionLabel }}
-                </a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="#"><i class="bi bi-person-gear me-2 text-primary"></i>Editar perfil</a>
-              </li>
-              <li>
-                <form action="{{ route('logout') }}" method="POST" class="m-0">
-                  @csrf
-                  <button class="dropdown-item" type="submit">
-                    <i class="bi bi-box-arrow-right me-2 text-danger"></i>Salir
-                  </button>
-                </form>
-              </li>
-            </ul>
-          </li>
-          @else
-          <div class="nav-item d-flex flex-row gap-2">
-            <li class="nav-item">
-              <button class="btn btn-outline-secondary px-3" disabled>
-                Registrarse (🔜🔜)
-              </button>
-            </li>
-            <li class="nav-item">
-              <a href="{{ route('login') }}" class="btn btn-success px-3">Iniciar sesión</a>
-            </li>
+          </form>
+        @else
+          <div class="flex flex-col gap-2">
+            <button class="w-full rounded-md border border-gray-300 px-4 py-2 text-gray-600 hover:bg-gray-50 cursor-not-allowed" disabled>
+              Registrarse (🔜🔜)
+            </button>
+            <a href="{{ route('login') }}"
+               class="w-full rounded-md bg-emerald-600 px-4 py-2 text-center text-white hover:bg-emerald-700">
+              Iniciar sesión
+            </a>
           </div>
-          @endauth
-        </ul>
+        @endauth
       </div>
     </div>
   </nav>
 
-  <!-- MAIN y contenido -->
+  <!-- MAIN -->
   <main>
     @yield('content')
   </main>
 
   <!-- Footer -->
-  <footer class="border-top bg-white shadow-sm mt-5">
-    <div class="container py-4">
-      <div class="row align-items-center">
+  <footer class="mt-12 border-t border-gray-200 bg-white shadow-sm">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 items-center gap-4">
         <!-- Copyright -->
-        <div class="col-md-6 text-center text-md-start mb-3 mb-md-0 text-muted">
+        <div class="text-center md:text-left text-gray-500">
           © {{ date('Y') }}
-          <strong class="text-dark">JurassiDraft</strong>
-          <span class="text-secondary">— Derechos reservados.</span>
+          <strong class="text-gray-900">JurassiDraft</strong>
+          <span class="text-gray-500">— Derechos reservados.</span>
         </div>
 
         <!-- Links -->
-        <div class="col-md-6 text-center text-md-end">
+        <div class="text-center md:text-right">
           @auth
-          <a href="{{ route('play') }}" class="text-decoration-none text-success me-3">Jugar</a>
+          <a href="{{ route('play') }}" class="text-emerald-600 hover:text-emerald-700 mr-3">Jugar</a>
           @endauth
-          <a href="{{ url('documentacion') }}" class="text-decoration-none text-info-muted me-3">Documentación</a>
-          <a href="mailto:jurassicodeisbo@gmail.com" class="text-decoration-none text-muted">Contacto</a>
+          <a href="{{ url('documentacion') }}" class="text-blue-600 hover:text-blue-800 mr-3">Documentación</a>
+          <a href="mailto:jurassicodeisbo@gmail.com" class="text-gray-600 hover:text-gray-800">Contacto</a>
         </div>
       </div>
 
-      <!-- FOOTER final -->
-      <div class="text-center mt-3 small text-muted">
+      <div class="mt-3 text-center text-sm text-gray-500">
         Hecho con ❤️ por Seba, Nacho, Joaco y Tomi —
-        <a href="https://jurassicode.vercel.app" target="_blank" class="link link-underline">
+        <a href="https://jurassicode.vercel.app" target="_blank" class="underline underline-offset-4 hover:text-gray-700">
           JurassiCode
         </a>
       </div>
     </div>
   </footer>
 
-  <!-- Bootstrap  JS-->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  {{-- Alpine para toggles --}}
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </body>
-
 </html>

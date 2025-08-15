@@ -3,142 +3,135 @@
 @section('title','Usuarios')
 
 @section('content')
-<div class="row align-items-center mb-4 g-2">
-  <div class="col-12 col-md">
-    <h1 class="h4 mb-0">
-      <i class="bi bi-people-fill me-2"></i> Gestión de usuarios
+<div x-data="{ open:false, del:{username:'', id:'', role:'', created:'', action:''} }" class="space-y-4">
+
+  <!-- Header -->
+  <div class="grid grid-cols-1 md:grid-cols-3 items-center gap-2">
+    <h1 class="text-xl font-semibold flex items-center gap-2 text-gray-800 md:col-span-2">
+      <i class="bi bi-people-fill"></i> <span>Gestión de usuarios</span>
     </h1>
-  </div>
-  <div class="col-12 col-md-auto text-md-end">
-    <a href="{{ route('admin.usuarios.create') }}" class="btn btn-success shadow-sm w-100 w-md-auto">
-      <i class="bi bi-person-plus-fill me-1"></i> Nuevo usuario
+    <a href="{{ route('admin.usuarios.create') }}"
+      class="inline-flex items-center justify-center gap-2 rounded-md bg-emerald-600 px-4 py-2 text-white shadow-sm hover:bg-emerald-700 focus:ring-2 focus:ring-emerald-500">
+      <i class="bi bi-person-plus-fill"></i> <span>Nuevo usuario</span>
     </a>
   </div>
-</div>
 
-<div class="card shadow-sm border-0">
-  <div class="table-responsive">
-    <table class="table table-hover align-middle mb-0">
-      <thead class="table-light">
-        <tr>
-          <th>ID</th>
-          <th>Nombre</th>
-          <th>Usuario</th>
-          <th>Rol</th>
-          <th>Creado</th>
-          <th class="text-end">Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        @forelse($usuarios as $u)
-        <tr>
-          <td class="fw-semibold">{{ $u->id_usuario }}</td>
-          <td>{{ $u->nombre }}</td>
-          <td>{{ $u->usuario }}</td>
-          <td>
-            @php
-            $color = match($u->rol) {
-            'admin' => 'primary',
-            'jugador' => 'success',
-            default => 'secondary'
-            };
-            @endphp
-            <span class="badge bg-{{ $color }} text-uppercase">{{ $u->rol }}</span>
-          </td>
-          <td>{{ \Carbon\Carbon::parse($u->creado_en)->format('Y-m-d H:i') }}</td>
-          <td class="text-end">
-            <a href="{{ route('admin.usuarios.edit', $u) }}"
-              class="btn btn-outline-primary p-1 d-inline-flex align-items-center justify-content-center"
-              style="width: 36px; height: 36px;">
-              <i class="bi bi-pencil-square"></i>
-            </a>
-            <button type="button"
-              class="btn btn-outline-danger p-1 d-inline-flex align-items-center justify-content-center btn-delete"
-              style="width: 36px; height: 36px;"
-              data-action="{{ route('admin.usuarios.destroy', $u) }}"
-              data-username="{{ $u->usuario }}"
-              data-id="{{ $u->id_usuario }}"
-              data-role="{{ $u->rol }}"
-              data-created="{{ \Carbon\Carbon::parse($u->creado_en)->format('Y-m-d H:i') }}">
-              <i class="bi bi-trash3-fill"></i>
-            </button>
-          </td>
-        </tr>
-        @empty
-        <tr>
-          <td colspan="6" class="text-center text-muted py-4">
-            <i class="bi bi-emoji-frown fs-4 d-block mb-2"></i>
-            No hay usuarios registrados
-          </td>
-        </tr>
-        @endforelse
-      </tbody>
-    </table>
+  <!-- Card -->
+  <div class="rounded-lg border border-gray-200 bg-white shadow-sm overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50 text-xs font-semibold uppercase tracking-wider text-gray-600">
+          <tr>
+            <th class="px-4 py-3 text-left">ID</th>
+            <th class="px-4 py-3 text-left">Nombre</th>
+            <th class="px-4 py-3 text-left">Usuario</th>
+            <th class="px-4 py-3 text-left">Rol</th>
+            <th class="px-4 py-3 text-left">Creado</th>
+            <th class="px-4 py-3 text-right">Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+          @forelse($usuarios as $u)
+          @php
+          $badge = match($u->rol) {
+          'admin' => 'bg-blue-100 text-blue-800 ring-blue-200',
+          'jugador' => 'bg-emerald-100 text-emerald-800 ring-emerald-200',
+          default => 'bg-gray-100 text-gray-800 ring-gray-200'
+          };
+          @endphp
+          <tr class="hover:bg-gray-50">
+            <td class="px-4 py-3 font-semibold text-gray-900">{{ $u->id_usuario }}</td>
+            <td class="px-4 py-3">{{ $u->nombre }}</td>
+            <td class="px-4 py-3">{{ $u->usuario }}</td>
+            <td class="px-4 py-3">
+              <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ring-1 ring-inset {{ $badge }}">
+                {{ Str::upper($u->rol) }}
+              </span>
+            </td>
+            <td class="px-4 py-3 text-gray-700">{{ \Carbon\Carbon::parse($u->creado_en)->format('Y-m-d H:i') }}</td>
+            <td class="px-4 py-3">
+              <div class="flex justify-end gap-2">
+                <a href="{{ route('admin.usuarios.edit', $u) }}"
+                  class="inline-flex h-9 w-9 items-center justify-center rounded-md border border-blue-200 text-blue-700 hover:bg-blue-50 focus:ring-2 focus:ring-blue-500"
+                  title="Editar">
+                  <i class="bi bi-pencil-square"></i>
+                </a>
+                <button type="button"
+                  @click="
+                            del = {
+                              username: '{{ $u->usuario }}',
+                              id: '{{ $u->id_usuario }}',
+                              role: '{{ Str::upper($u->rol) }}',
+                              created: '{{ \Carbon\Carbon::parse($u->creado_en)->format('Y-m-d H:i') }}',
+                              action: '{{ route('admin.usuarios.destroy', $u) }}'
+                            };
+                            open = true;
+                          "
+                  class="inline-flex h-9 w-9 items-center justify-center rounded-md border border-red-200 text-red-700 hover:bg-red-50 focus:ring-2 focus:ring-red-500"
+                  title="Eliminar">
+                  <i class="bi bi-trash3-fill"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+          @empty
+          <tr>
+            <td colspan="6" class="px-4 py-8 text-center text-gray-500">
+              <div class="flex flex-col items-center">
+                <i class="bi bi-emoji-frown text-3xl mb-2"></i>
+                <span>No hay usuarios registrados</span>
+              </div>
+            </td>
+          </tr>
+          @endforelse
+        </tbody>
+      </table>
+    </div>
+    <div class="p-4">
+      {{ $usuarios->links() }}
+    </div>
   </div>
-  <div class="card-body">
-    {{ $usuarios->links() }}
-  </div>
-</div>
 
-{{-- Modal --}}
-<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content border-0 shadow-lg">
-      <div class="modal-header border-0 text-white" style="background: linear-gradient(135deg,#dc3545,#6f1d1b);">
-        <h5 class="modal-title">
-          <i class="bi bi-exclamation-octagon-fill me-2"></i> Eliminar usuario
-        </h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+  <!-- Modal -->
+  <div x-cloak x-show="open" x-transition.opacity class="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="fixed inset-0 bg-black/40" @click="open = false"></div>
+    <div x-transition.scale class="relative z-10 w-full max-w-md rounded-lg bg-white shadow-2xl overflow-hidden">
+      <div class="px-5 py-4 text-white" style="background:linear-gradient(135deg,#dc3545,#6f1d1b)">
+        <div class="flex items-center justify-between">
+          <h5 class="text-base font-semibold flex items-center gap-2">
+            <i class="bi bi-exclamation-octagon-fill"></i> Eliminar usuario
+          </h5>
+          <button @click="open = false" class="rounded p-1 hover:bg-white/10 focus:ring-2 focus:ring-white">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
       </div>
-      <div class="modal-body">
-        <p>Estás por borrar al usuario <strong id="del-username">—</strong> (ID <span id="del-id">—</span>)</p>
-        <ul class="list-unstyled small text-muted mb-0">
-          <li>Rol: <span id="del-role">—</span></li>
-          <li>Creado: <span id="del-created">—</span></li>
+      <div class="px-5 py-4 text-gray-800">
+        <p>Estás por borrar al usuario <strong x-text="del.username"></strong> (ID <span x-text="del.id"></span>)</p>
+        <ul class="mt-1 text-sm text-gray-600">
+          <li>Rol: <span class="font-medium" x-text="del.role"></span></li>
+          <li>Creado: <span class="font-medium" x-text="del.created"></span></li>
         </ul>
-        <div class="alert alert-danger mt-3 mb-0">
+        <div class="mt-4 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-red-800">
           Esta acción es irreversible.
         </div>
       </div>
-      <div class="modal-footer border-0">
-        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
-        <form id="deleteForm" method="POST" class="ms-2">
+      <div class="flex justify-end gap-2 px-5 pb-5">
+        <button @click="open = false"
+          class="rounded-md border border-gray-300 bg-white px-4 py-2 text-gray-700 hover:bg-gray-50 focus:ring-2 focus:ring-gray-400">
+          Cancelar
+        </button>
+        <form :action="del.action" method="POST">
           @csrf @method('DELETE')
-          <button type="submit" class="btn btn-danger">Sí, eliminar</button>
+          <button type="submit"
+            class="rounded-md bg-red-600 px-4 py-2 text-white hover:bg-red-700 focus:ring-2 focus:ring-red-500">
+            Sí, eliminar
+          </button>
         </form>
       </div>
     </div>
   </div>
 </div>
 
-{{-- Bootstrap Icons --}}
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-
-{{-- Bootstrap JS (si no está en el layout) --}}
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-{{-- Script modal --}}
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const modalEl = document.getElementById('confirmDeleteModal');
-    const modal = new bootstrap.Modal(modalEl);
-    const deleteForm = document.getElementById('deleteForm');
-
-    const delUsername = document.getElementById('del-username');
-    const delId = document.getElementById('del-id');
-    const delRole = document.getElementById('del-role');
-    const delCreated = document.getElementById('del-created');
-
-    document.querySelectorAll('.btn-delete').forEach(btn => {
-      btn.addEventListener('click', () => {
-        deleteForm.action = btn.dataset.action;
-        delUsername.textContent = btn.dataset.username;
-        delId.textContent = btn.dataset.id;
-        delRole.textContent = btn.dataset.role.toUpperCase();
-        delCreated.textContent = btn.dataset.created;
-        modal.show();
-      });
-    });
-  });
-</script>
 @endsection
