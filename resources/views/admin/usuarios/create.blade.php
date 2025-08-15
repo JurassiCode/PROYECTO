@@ -3,103 +3,106 @@
 @section('title','Nuevo usuario')
 
 @section('content')
-<div class="card shadow-sm border-0">
-  <div class="card-body">
-    <h1 class="h5 mb-4">
-      <i class="bi bi-person-plus-fill me-2 text-success"></i>
-      Nuevo usuario
+<div class="rounded-lg border border-gray-200 bg-white shadow-sm">
+  <div class="p-6">
+    <h1 class="mb-4 flex items-center gap-2 text-lg font-semibold">
+      <i class="bi bi-person-plus-fill text-blue-600"></i>
+      <span>Nuevo usuario</span>
     </h1>
 
-    <form method="POST" action="{{ route('admin.usuarios.store') }}">
+    <form method="POST" action="{{ route('admin.usuarios.store') }}" class="space-y-4">
       @csrf
 
-      <div class="mb-3">
-        <label class="form-label fw-semibold">Nombre</label>
-        <input type="text" name="nombre" class="form-control" 
-               value="{{ old('nombre') }}" required>
+      {{-- Nombre --}}
+      <div>
+        <label class="mb-1 block text-sm font-semibold text-gray-700">Nombre y apellido</label>
+        <input
+          type="text" name="nombre" required
+          value="{{ old('nombre') }}"
+          class="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm placeholder:text-gray-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600" />
         @error('nombre')
-          <div class="text-danger small mt-1">{{ $message }}</div>
+        <div class="mt-1 text-sm text-red-600">{{ $message }}</div>
         @enderror
       </div>
 
-      <div class="mb-3">
-        <label class="form-label fw-semibold">Usuario (login)</label>
-        <input type="text" name="usuario" class="form-control" 
-               value="{{ old('usuario') }}" required>
+      {{-- Usuario --}}
+      <div>
+        <label class="mb-1 block text-sm font-semibold text-gray-700">Usuario (nombreusuario)</label>
+        <input
+          type="text" name="usuario" required
+          value="{{ old('usuario') }}"
+          class="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm placeholder:text-gray-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600" />
         @error('usuario')
-          <div class="text-danger small mt-1">{{ $message }}</div>
+        <div class="mt-1 text-sm text-red-600">{{ $message }}</div>
         @enderror
       </div>
 
-      <div class="mb-3">
-        <label class="form-label fw-semibold">Rol</label>
-        <select name="rol" class="form-select" required>
-          <option value="jugador" @selected(old('rol')==='jugador')>Jugador</option>
-          <option value="admin" @selected(old('rol')==='admin')>Admin</option>
+      {{-- Rol --}}
+      <div>
+        <label class="mb-1 block text-sm font-semibold text-gray-700">Rol</label>
+        <select
+          name="rol" required
+          class="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600">
+          <option value="jugador" @selected(old('rol')==='jugador' )>Jugador</option>
+          <option value="admin" @selected(old('rol')==='admin' )>Admin</option>
         </select>
         @error('rol')
-          <div class="text-danger small mt-1">{{ $message }}</div>
+        <div class="mt-1 text-sm text-red-600">{{ $message }}</div>
         @enderror
       </div>
 
       {{-- Contraseña --}}
-      <div class="mb-3 position-relative">
-        <label class="form-label fw-semibold">Contraseña</label>
-        <div class="input-group">
-          <input type="password" name="contrasena" id="contrasena" class="form-control" required>
-          <button type="button" class="btn btn-outline-secondary toggle-password" data-target="contrasena">
-            <i class="bi bi-eye"></i>
+      <div x-data="{ show:false }">
+        <label class="mb-1 block text-sm font-semibold text-gray-700">Contraseña</label>
+        <div class="relative">
+          <input
+            :type="show ? 'text' : 'password'"
+            name="contrasena" id="contrasena" required
+            class="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 pr-10 text-gray-900 shadow-sm placeholder:text-gray-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600" />
+          <button type="button"
+            @click="show = !show"
+            class="absolute inset-y-0 right-0 my-auto mr-1 inline-flex h-8 w-8 items-center justify-center rounded-md text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-600">
+            <i class="bi" :class="show ? 'bi-eye-slash' : 'bi-eye'"></i>
           </button>
         </div>
         @error('contrasena')
-          <div class="text-danger small mt-1">{{ $message }}</div>
+        <div class="mt-1 text-sm text-red-600">{{ $message }}</div>
         @enderror
       </div>
 
       {{-- Repetir contraseña --}}
-      <div class="mb-4 position-relative">
-        <label class="form-label fw-semibold">Repetir contraseña</label>
-        <div class="input-group">
-          <input type="password" name="contrasena_confirmation" id="contrasena_confirmation" class="form-control" required>
-          <button type="button" class="btn btn-outline-secondary toggle-password" data-target="contrasena_confirmation">
-            <i class="bi bi-eye"></i>
+      <div x-data="{ show:false }" class="mb-2">
+        <label class="mb-1 block text-sm font-semibold text-gray-700">Repetir contraseña</label>
+        <div class="relative">
+          <input
+            :type="show ? 'text' : 'password'"
+            name="contrasena_confirmation" id="contrasena_confirmation" required
+            class="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 pr-10 text-gray-900 shadow-sm placeholder:text-gray-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600" />
+          <button type="button"
+            @click="show = !show"
+            class="absolute inset-y-0 right-0 my-auto mr-1 inline-flex h-8 w-8 items-center justify-center rounded-md text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-600">
+            <i class="bi" :class="show ? 'bi-eye-slash' : 'bi-eye'"></i>
           </button>
         </div>
         @error('contrasena_confirmation')
-          <div class="text-danger small mt-1">{{ $message }}</div>
+        <div class="mt-1 text-sm text-red-600">{{ $message }}</div>
         @enderror
       </div>
 
-      <div class="d-flex gap-2">
-        <a href="{{ route('admin.usuarios.index') }}" 
-           class="btn btn-outline-secondary">
-          <i class="bi bi-x-circle me-1"></i> Cancelar
+      {{-- Botones --}}
+      <div class="flex gap-2 pt-2">
+        <a href="{{ route('admin.usuarios.index') }}"
+          class="inline-flex items-center justify-center gap-1.5 rounded-md border border-gray-300 bg-white px-4 py-2 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-400">
+          <i class="bi bi-x-circle"></i>
+          <span>Cancelar</span>
         </a>
-        <button class="btn btn-success">
-          <i class="bi bi-check-lg me-1"></i> Guardar
+        <button
+          class="inline-flex items-center justify-center gap-1.5 rounded-md bg-blue-600 px-4 py-2 text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600">
+          <i class="bi bi-check-lg"></i>
+          <span>Guardar</span>
         </button>
       </div>
     </form>
   </div>
 </div>
-
-{{-- Bootstrap Icons --}}
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-
-{{-- Script para mostrar/ocultar contraseña --}}
-<script>
-  document.querySelectorAll('.toggle-password').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const target = document.getElementById(btn.dataset.target);
-      const icon = btn.querySelector('i');
-      if (target.type === 'password') {
-        target.type = 'text';
-        icon.classList.replace('bi-eye', 'bi-eye-slash');
-      } else {
-        target.type = 'password';
-        icon.classList.replace('bi-eye-slash', 'bi-eye');
-      }
-    });
-  });
-</script>
 @endsection

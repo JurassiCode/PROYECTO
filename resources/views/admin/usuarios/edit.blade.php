@@ -3,113 +3,115 @@
 @section('title','Editar usuario')
 
 @section('content')
-<div class="card shadow-sm border-0">
-  <div class="card-body">
-    <h1 class="h5 mb-4">
-      <i class="bi bi-pencil-square me-2 text-primary"></i>
-      Editar usuario <span class="text-muted">#{{ $usuario->id_usuario }}</span>
+<div class="rounded-lg border border-gray-200 bg-white shadow-sm">
+  <div class="p-6">
+    <h1 class="mb-4 flex items-center gap-2 text-lg font-semibold">
+      <i class="bi bi-pencil-square text-blue-600"></i>
+      <span>Editar usuario <span class="font-normal text-gray-500">#{{ $usuario->id_usuario }}</span></span>
     </h1>
 
-    <form method="POST" action="{{ route('admin.usuarios.update', $usuario) }}">
+    <form method="POST" action="{{ route('admin.usuarios.update', $usuario) }}" class="space-y-4">
       @csrf @method('PUT')
 
       {{-- Nombre --}}
-      <div class="mb-3">
-        <label class="form-label fw-semibold">Nombre</label>
-        <input type="text" name="nombre" class="form-control" 
-               value="{{ old('nombre', $usuario->nombre) }}" required>
+      <div>
+        <label class="mb-1 block text-sm font-semibold text-gray-700">Nombre</label>
+        <input
+          type="text" name="nombre" required
+          value="{{ old('nombre', $usuario->nombre) }}"
+          class="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
         @error('nombre')
-          <div class="text-danger small mt-1">{{ $message }}</div>
+          <div class="mt-1 text-sm text-red-600">{{ $message }}</div>
         @enderror
       </div>
 
       {{-- Usuario --}}
-      <div class="mb-3">
-        <label class="form-label fw-semibold">Usuario (login)</label>
-        <input type="text" name="usuario" class="form-control" 
-               value="{{ old('usuario', $usuario->usuario) }}" required>
+      <div>
+        <label class="mb-1 block text-sm font-semibold text-gray-700">Usuario (login)</label>
+        <input
+          type="text" name="usuario" required
+          value="{{ old('usuario', $usuario->usuario) }}"
+          class="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
         @error('usuario')
-          <div class="text-danger small mt-1">{{ $message }}</div>
+          <div class="mt-1 text-sm text-red-600">{{ $message }}</div>
         @enderror
       </div>
 
       {{-- Rol --}}
-      <div class="mb-3">
-        <label class="form-label fw-semibold">Rol</label>
-        <select name="rol" class="form-select" required>
+      <div>
+        <label class="mb-1 block text-sm font-semibold text-gray-700">Rol</label>
+        <select
+          name="rol" required
+          class="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
           <option value="jugador" @selected(old('rol', $usuario->rol)==='jugador')>Jugador</option>
-          <option value="admin" @selected(old('rol', $usuario->rol)==='admin')>Admin</option>
+          <option value="admin"   @selected(old('rol', $usuario->rol)==='admin')>Admin</option>
         </select>
         @error('rol')
-          <div class="text-danger small mt-1">{{ $message }}</div>
+          <div class="mt-1 text-sm text-red-600">{{ $message }}</div>
         @enderror
       </div>
 
       {{-- Contraseña --}}
-      <div class="mb-3 position-relative">
-        <label class="form-label fw-semibold">
-          Contraseña 
-          <small class="text-muted">(dejar vacío para no cambiar)</small>
+      <div x-data="{ show:false }">
+        <label class="mb-1 block text-sm font-semibold text-gray-700">
+          Contraseña <small class="font-normal text-gray-500">(dejar vacío para no cambiar)</small>
         </label>
-        <div class="input-group">
-          <input type="password" name="contrasena" id="contrasena" class="form-control">
-          <button type="button" class="btn btn-outline-secondary toggle-pass" data-target="contrasena">
-            <i class="bi bi-eye"></i>
+        <div class="relative">
+          <input
+            :type="show ? 'text' : 'password'"
+            name="contrasena" id="contrasena"
+            class="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 pr-10 text-gray-900 shadow-sm placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <button type="button"
+                  @click="show = !show"
+                  class="absolute inset-y-0 right-0 my-auto mr-1 inline-flex h-8 w-8 items-center justify-center rounded-md text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <i class="bi" :class="show ? 'bi-eye-slash' : 'bi-eye'"></i>
           </button>
         </div>
         @error('contrasena')
-          <div class="text-danger small mt-1">{{ $message }}</div>
+          <div class="mt-1 text-sm text-red-600">{{ $message }}</div>
         @enderror
       </div>
 
       {{-- Repetir Contraseña --}}
-      <div class="mb-4 position-relative">
-        <label class="form-label fw-semibold">
-          Repetir contraseña
-          <small class="text-muted">(si ingresaste una nueva)</small>
+      <div x-data="{ show:false }" class="mb-2">
+        <label class="mb-1 block text-sm font-semibold text-gray-700">
+          Repetir contraseña <small class="font-normal text-gray-500">(si ingresaste una nueva)</small>
         </label>
-        <div class="input-group">
-          <input type="password" name="contrasena_confirmation" id="contrasena_confirmation" class="form-control">
-          <button type="button" class="btn btn-outline-secondary toggle-pass" data-target="contrasena_confirmation">
-            <i class="bi bi-eye"></i>
+        <div class="relative">
+          <input
+            :type="show ? 'text' : 'password'"
+            name="contrasena_confirmation" id="contrasena_confirmation"
+            class="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 pr-10 text-gray-900 shadow-sm placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <button type="button"
+                  @click="show = !show"
+                  class="absolute inset-y-0 right-0 my-auto mr-1 inline-flex h-8 w-8 items-center justify-center rounded-md text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <i class="bi" :class="show ? 'bi-eye-slash' : 'bi-eye'"></i>
           </button>
         </div>
         @error('contrasena_confirmation')
-          <div class="text-danger small mt-1">{{ $message }}</div>
+          <div class="mt-1 text-sm text-red-600">{{ $message }}</div>
         @enderror
       </div>
 
       {{-- Botones --}}
-      <div class="d-flex gap-2">
-        <a href="{{ route('admin.usuarios.index') }}" 
-           class="btn btn-outline-secondary">
-          <i class="bi bi-arrow-left-circle me-1"></i> Volver
+      <div class="flex gap-2 pt-2">
+        <a href="{{ route('admin.usuarios.index') }}"
+           class="inline-flex items-center justify-center gap-1.5 rounded-md border border-gray-300 bg-white px-4 py-2 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-400">
+          <i class="bi bi-arrow-left-circle"></i>
+          <span>Volver</span>
         </a>
-        <button class="btn btn-primary">
-          <i class="bi bi-save me-1"></i> Actualizar
+        <button
+          class="inline-flex items-center justify-center gap-1.5 rounded-md bg-blue-600 px-4 py-2 text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <i class="bi bi-save"></i>
+          <span>Actualizar</span>
         </button>
       </div>
     </form>
   </div>
 </div>
-
-{{-- Bootstrap Icons --}}
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-
-{{-- Script para mostrar/ocultar contraseñas --}}
-<script>
-  document.querySelectorAll('.toggle-pass').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const input = document.getElementById(btn.dataset.target);
-      const icon = btn.querySelector('i');
-      if (input.type === 'password') {
-        input.type = 'text';
-        icon.classList.replace('bi-eye', 'bi-eye-slash');
-      } else {
-        input.type = 'password';
-        icon.classList.replace('bi-eye-slash', 'bi-eye');
-      }
-    });
-  });
-</script>
 @endsection
