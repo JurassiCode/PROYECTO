@@ -5,40 +5,99 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\DocumentacionController;
 use App\Http\Middleware\EsAdmin;
+use App\Http\Controllers\TrackeoPartidaController;
+use App\Http\Controllers\PlayController;
+use App\Http\Controllers\PartidasController;
+use App\Http\Controllers\ColocacionesController;
 
-// Home público (siempre la landing)
+/*
+|--------------------------------------------------------------------------
+| Home público (siempre la landing)
+|--------------------------------------------------------------------------
+*/
 Route::get('/', function () {
     return view('home');
 })->name('home');
 
-// =====================
-// Autenticación
-// =====================
-Route::get('/login', [AuthController::class, 'show'])->name('login');
-Route::post('/login', [AuthController::class, 'login'])->name('login.post');
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+/*
+|--------------------------------------------------------------------------
+| Autenticación (guest)
+|--------------------------------------------------------------------------
+*/
+Route::middleware('guest')->group(function () {
+    // Login
+    Route::get('/login',  [AuthController::class, 'show'])->name('login');
+    Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 
-// =====================
-// Admin
-// =====================
+    // Register
+    Route::get('/register',  [AuthController::class, 'showRegister'])->name('register');
+    Route::post('/register', [AuthController::class, 'register'])->name('register.post');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Logout (auth)
+|--------------------------------------------------------------------------
+*/
+Route::post('/logout', [AuthController::class, 'logout'])
+    ->middleware('auth')
+    ->name('logout');
+
+/*
+|--------------------------------------------------------------------------
+| Admin
+|--------------------------------------------------------------------------
+*/
 Route::middleware(['auth', EsAdmin::class])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
-        Route::get('/', fn() => redirect()->route('admin.usuarios.index'))->name('home');
+        Route::get('/', fn () => redirect()->route('admin.usuarios.index'))->name('home');
         Route::resource('usuarios', UsuarioController::class)->except(['show']);
     });
 
-// =====================
-// Jugador
-// =====================
-Route::middleware('auth')->get('/play', function () {
-    return view('player.play'); // TODO: reemplazar por controlador cuando se arme el módulo
-})->name('play');
+/*
+|--------------------------------------------------------------------------
+| Jugador
+|--------------------------------------------------------------------------
+*/
+/*
+|--------------------------------------------------------------------------
+| Jugador + Trackeo (auth)
+|--------------------------------------------------------------------------
+*/
+Route::middleware('auth')->group(function () {
+    // Módulo PLAY (gestiona jugadores de la partida en sesión)
+    Route::get('/play', [PlayController::class, 'index'])->name('play');
+    Route::post('/play/add', [PlayController::class, 'add'])->name('play.add');
+    Route::post('/play/remove/{id}', [PlayController::class, 'remove'])->name('play.remove');
+    Route::post('/play/clear', [PlayController::class, 'clear'])->name('play.clear');
 
-// =====================
-// Documentación
-// =====================
+    // Trackeo visual que usa los jugadores de la sesión
+    Route::get('/trackeo-partida', [TrackeoPartidaController::class, 'index'])
+        ->name('trackeo.partida');
+});
+
+// Crear partida desde /play (usa jugadores guardados en sesión)
+Route::post('/partidas', [PartidasController::class, 'store'])->name('partidas.store');
+
+// Ver trackeo de partida persistida
+Route::get('/trackeo-partida/{partida}', [PartidasController::class, 'show'])
+    ->whereNumber('partida')
+    ->name('trackeo.partida');
+
+// Registrar jugada (para cuando cableen la lógica)
+Route::post('/partidas/{partida}/colocaciones', [ColocacionesController::class, 'store'])
+    ->whereNumber('partida')
+    ->name('colocaciones.store');
+/*
+|--------------------------------------------------------------------------
+| Documentación
+|--------------------------------------------------------------------------
+*/
 Route::get('/documentacion/{path?}', [DocumentacionController::class, 'index'])
     ->where('path', '.*')
     ->name('documentacion');
+
+
+

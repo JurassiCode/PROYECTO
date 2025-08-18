@@ -2,14 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
+    /** -------------------- LOGIN -------------------- */
+
+    /**
+     * Muestra el login si no está autenticado; si lo está, redirige según rol.
+     */
     public function show(Request $request)
     {
-        // Si ya está autenticado, redirigir según rol
         if (Auth::check()) {
             return Auth::user()->rol === 'admin'
                 ? redirect()->route('admin.home')
@@ -19,6 +27,9 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
+    /**
+     * Procesa el login con usuario + password (mapeado a "contrasena" por el modelo).
+     */
     public function login(Request $request)
     {
         $cred = $request->validate(
@@ -37,26 +48,29 @@ class AuthController extends Controller
         if (Auth::attempt(['usuario' => $cred['usuario'], 'password' => $cred['password']], false)) {
             $request->session()->regenerate();
 
-            // 1️⃣ Si hay un parámetro "next", priorizarlo
-            if ($request->has('next') && filter_var($request->next, FILTER_VALIDATE_URL) === false) {
+            // 1) Soportar "next" solo si es ruta interna (evitar open redirect)
+            if ($request->filled('next') && Str::startsWith($request->next, '/')) {
                 return redirect($request->next);
             }
 
-            // 2️⃣ Detectar si el login fue desde /admin
+            // 2) Si venía de /admin y es admin → admin.home
             $prevUrl = url()->previous();
             if (str_contains($prevUrl, '/admin') && Auth::user()->rol === 'admin') {
                 return redirect()->route('admin.home');
             }
 
-            // 3️⃣ Default → siempre al home
+            // 3) Por defecto → home
             return redirect()->route('home');
         }
 
-        return back()->withErrors([
-            'usuario' => 'Usuario o contraseña incorrectos.'
-        ])->onlyInput('usuario');
+        return back()
+            ->withErrors(['usuario' => 'Usuario o contraseña incorrectos.'])
+            ->onlyInput('usuario');
     }
 
+    /**
+     * Cierra sesión.
+     */
     public function logout(Request $request)
     {
         Auth::logout();
@@ -64,5 +78,49 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
 
         return redirect()->route('login');
+    }
+
+    /** ------------------ REGISTER ------------------- */
+
+    /**
+     * Muestra el formulario de registro si no está autenticado.
+     */
+    public function showRegister(Request $request)
+    {
+        if (Auth::check()) {
+            return Auth::user()->rol === 'admin'
+                ? redirect()->route('admin.home')
+                : redirect()->route('home');
+        }
+
+        return view('auth.register');
+    }
+
+    public function register(Request $request)
+    {
+        $data = $request->validate(
+            [
+                'nombre'      => ['required', 'string', 'max:100'],
+                'usuario'     => ['required', 'string', 'max:50', 'alpha_dash', Rule::unique('usuarios', 'usuario')],
+                // usamos "contrasena" + "contrasena_confirmation" por la regla confirmed
+                'contrasena'  => ['required', 'string', 'min:8', 'confirmed'],
+            ],
+            [
+                'contrasena.confirmed' => 'La confirmación de contraseña no coincide.',
+                'contrasena.min'       => 'La contraseña debe tener al menos :min caracteres.',
+            ]
+        );
+
+        $user = Usuario::create([
+            'nombre'     => $data['nombre'],
+            'usuario'    => $data['usuario'],
+            'contrasena' => Hash::make($data['contrasena']),
+            // 'rol' => 'jugador', // opcional: tu DB ya define DEFAULT 'jugador'
+            // 'creado_en' => now(), // no hace falta, DEFAULT CURRENT_TIMESTAMP
+        ]);
+
+        Auth::login($user);
+
+        return redirect()->route('home')->with('ok', '¡Cuenta creada con éxito!');
     }
 }
