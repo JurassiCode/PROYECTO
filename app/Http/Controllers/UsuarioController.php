@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth; // ✅ Importar Auth
 
 class UsuarioController extends Controller
 {
@@ -65,7 +66,7 @@ class UsuarioController extends Controller
 
     public function destroy(Usuario $usuario)
     {
-        if (auth()->id() === $usuario->id_usuario) {
+        if (Auth::id() === $usuario->id_usuario) {
             return back()->with('error','No podés eliminar tu propio usuario.');
         }
 

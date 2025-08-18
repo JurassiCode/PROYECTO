@@ -9,26 +9,40 @@ class Usuario extends Authenticatable
 {
     use Notifiable;
 
+    /** Tabla y PK personalizadas */
     protected $table = 'usuarios';
     protected $primaryKey = 'id_usuario';
+    public $incrementing = true;
+    protected $keyType = 'int';
+
     public $timestamps = false;
 
-    protected $fillable = ['nombre', 'usuario', 'contrasena', 'rol', 'creado_en'];
-    protected $hidden = ['contrasena'];
+    protected $rememberTokenName = null;
 
-    // Laravel valida el login leyendo este valor
+    /** Campos asignables */
+    protected $fillable = [
+        'nombre',
+        'usuario',
+        'contrasena',
+        'rol',
+        'creado_en', // lo completa la DB por DEFAULT CURRENT_TIMESTAMP
+    ];
+
+    /** Ocultamos la contraseña al serializar */
+    protected $hidden = [
+        'contrasena',
+    ];
+
+    /**
+     * Hace que Auth::attempt([... 'password' => ...]) compare contra "contrasena".
+     */
     public function getAuthPassword()
     {
         return $this->contrasena;
     }
 
-    /**
-     * Si algún código del framework intenta setear/leer "password",
-     * lo mapeamos a la columna real "contrasena".
-     */
     public function setPasswordAttribute($value): void
     {
-        // NO hash acá para evitar doble hash; ya hasheamos en el controlador.
         $this->attributes['contrasena'] = $value;
     }
 
@@ -37,6 +51,8 @@ class Usuario extends Authenticatable
         return $this->contrasena;
     }
 
-    // IMPORTANTE: Si copiaste algo como "casts() => ['password' => 'hashed']", borrarlo.
-    // Usamos el hash explícito en el controlador (bcrypt) para tener control.
+    public function getAuthIdentifierName()
+{
+    return 'id_usuario';
+}
 }

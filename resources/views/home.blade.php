@@ -22,15 +22,14 @@
         <div class="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2">
           @if(auth()->user()->rol === 'admin')
           <a href="{{ route('admin.usuarios.index') }}"
-             class="inline-flex items-center justify-center rounded-md bg-amber-500 px-6 py-3 text-white text-lg shadow-sm hover:bg-amber-600 w-full md:w-auto">
+            class="inline-flex items-center justify-center rounded-md bg-amber-500 px-6 py-3 text-white text-lg shadow-sm hover:bg-amber-600 w-full md:w-auto">
             Panel admin
           </a>
           @endif
-
-          <a href="{{ route('play') }}"
-             class="inline-flex items-center justify-center rounded-md bg-emerald-600 px-6 py-3 text-white text-lg shadow-sm hover:bg-emerald-700 w-full md:w-auto">
-            Jugar
-          </a>
+          <a href="{{ route('trackeo.partida') }}"
+   class="inline-flex items-center justify-center rounded-md bg-emerald-600 px-6 py-3 text-white text-lg shadow-sm hover:bg-emerald-700 w-full md:w-auto">
+   Iniciar partida
+</a>
 
           <form action="{{ route('logout') }}" method="POST" class="w-full md:w-auto">
             @csrf
@@ -46,20 +45,23 @@
           <span class="font-semibold">
             ¡Hola, {{ auth()->user()->nombre ?? auth()->user()->usuario }}!
           </span>
+          <span class="inline-flex items-center justify-center rounded-md bg-gray-200 text-gray-700 text-xs px-2 py-0.5">
+            ID: {{ auth()->user()->id_usuario }}
+          </span>
         </div>
         @endauth
 
         @guest
         <div class="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2">
           <a href="{{ route('login') }}"
-             class="inline-flex items-center justify-center rounded-md bg-emerald-600 px-6 py-3 text-white text-lg shadow-sm hover:bg-emerald-700 w-full md:w-auto">
+            class="inline-flex items-center justify-center rounded-md bg-emerald-600 px-6 py-3 text-white text-lg shadow-sm hover:bg-emerald-700 w-full md:w-auto">
             Iniciar sesión
           </a>
-          <button
-            class="inline-flex items-center justify-center rounded-md border border-gray-300 px-6 py-3 text-gray-600 text-lg shadow-sm w-full md:w-auto cursor-not-allowed"
-            disabled title="Función disponible próximamente">
+          <a href="{{ route('register') }}"
+            class="inline-flex items-center justify-center rounded-md bg-white px-6 py-3 text-emerald-600 text-lg shadow-sm border border-emerald-600 hover:bg-emerald-50 w-full md:w-auto">
             Registrarse
-          </button>
+          </a>
+
         </div>
         @endguest
       </div>
@@ -140,7 +142,7 @@
     @guest
     <div class="text-center mt-6">
       <button class="inline-flex items-center justify-center rounded-md bg-emerald-600 px-6 py-3 text-white text-lg shadow-sm opacity-70 cursor-not-allowed"
-              disabled title="Función disponible próximamente">
+        disabled title="Función disponible próximamente">
         Crear cuenta y empezar
       </button>
     </div>
@@ -185,7 +187,7 @@
     @auth
     <div class="text-center mt-6">
       <a href="{{ route('play') }}"
-         class="inline-flex items-center justify-center rounded-md bg-emerald-600 px-6 py-3 text-white text-lg shadow-sm hover:bg-emerald-700">
+        class="inline-flex items-center justify-center rounded-md bg-emerald-600 px-6 py-3 text-white text-lg shadow-sm hover:bg-emerald-700">
         Crear nueva partida
       </a>
     </div>
