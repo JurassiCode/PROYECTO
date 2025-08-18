@@ -15,6 +15,7 @@ use App\Http\Controllers\ColocacionesController;
 | Home público (siempre la landing)
 |--------------------------------------------------------------------------
 */
+
 Route::get('/', function () {
     return view('home');
 })->name('home');
@@ -52,7 +53,7 @@ Route::middleware(['auth', EsAdmin::class])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
-        Route::get('/', fn () => redirect()->route('admin.usuarios.index'))->name('home');
+        Route::get('/', fn() => redirect()->route('admin.usuarios.index'))->name('home');
         Route::resource('usuarios', UsuarioController::class)->except(['show']);
     });
 
@@ -75,7 +76,7 @@ Route::middleware('auth')->group(function () {
 
     // Trackeo visual que usa los jugadores de la sesión
     Route::get('/trackeo-partida', [TrackeoPartidaController::class, 'index'])
-        ->name('trackeo.partida');
+        ->name('trackeo.partida.index');
 });
 
 // Crear partida desde /play (usa jugadores guardados en sesión)
@@ -84,7 +85,7 @@ Route::post('/partidas', [PartidasController::class, 'store'])->name('partidas.s
 // Ver trackeo de partida persistida
 Route::get('/trackeo-partida/{partida}', [PartidasController::class, 'show'])
     ->whereNumber('partida')
-    ->name('trackeo.partida');
+    ->name('trackeo.partida.show');
 
 // Registrar jugada (para cuando cableen la lógica)
 Route::post('/partidas/{partida}/colocaciones', [ColocacionesController::class, 'store'])
@@ -98,6 +99,3 @@ Route::post('/partidas/{partida}/colocaciones', [ColocacionesController::class, 
 Route::get('/documentacion/{path?}', [DocumentacionController::class, 'index'])
     ->where('path', '.*')
     ->name('documentacion');
-
-
-

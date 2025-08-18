@@ -26,10 +26,11 @@
             Panel admin
           </a>
           @endif
-          <a href="{{ route('trackeo.partida') }}"
-   class="inline-flex items-center justify-center rounded-md bg-emerald-600 px-6 py-3 text-white text-lg shadow-sm hover:bg-emerald-700 w-full md:w-auto">
-   Iniciar partida
-</a>
+          <a href="{{ route('play') }}"
+            class="inline-flex items-center justify-center rounded-md bg-emerald-600 px-6 py-3 text-white text-lg shadow-sm hover:bg-emerald-700 w-full md:w-auto">
+            Iniciar partida
+          </a>
+
 
           <form action="{{ route('logout') }}" method="POST" class="w-full md:w-auto">
             @csrf
