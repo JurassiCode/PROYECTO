@@ -1,6 +1,6 @@
-@extends('layouts.public')
+@extends('layouts.publicLayout')
 
-@section('title','JurassiDraft – Inicio')
+@section('title','Inicio')
 
 @section('content')
 <!-- Hero -->
@@ -142,10 +142,10 @@
 
     @guest
     <div class="text-center mt-6">
-      <button class="inline-flex items-center justify-center rounded-md bg-emerald-600 px-6 py-3 text-white text-lg shadow-sm opacity-70 cursor-not-allowed"
-        disabled title="Función disponible próximamente">
+      <a href="{{ route('register') }}"
+        class="inline-flex items-center justify-center rounded-md bg-emerald-600 px-6 py-3 text-white text-lg shadow-sm hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-600 transition">
         Crear cuenta y empezar
-      </button>
+      </a>
     </div>
     @endguest
   </div>

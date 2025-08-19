@@ -24,7 +24,7 @@ class PartidasController extends Controller
         }
 
         $request->validate([
-            'nombre' => ['required','string','max:120'],
+            'nombre' => ['required', 'string', 'max:120'],
         ], [
             'nombre.required' => 'Poné un nombre para la partida.',
         ]);
@@ -54,7 +54,8 @@ class PartidasController extends Controller
             return $p;
         });
 
-        return redirect()->route('trackeo.partida', $partida->id_partida)
+        return redirect()
+            ->route('trackeo.partida.show', $partida)
             ->with('ok', 'Partida creada.');
     }
 
@@ -63,7 +64,7 @@ class PartidasController extends Controller
     {
         $pj = $partida->jugadores()->with('usuario')->get();
 
-        $palette = ['emerald','sky','purple','rose','amber','teal'];
+        $palette = ['emerald', 'sky', 'purple', 'rose', 'amber', 'teal'];
         $jugadores = [];
         foreach ($pj as $i => $row) {
             $jugadores[] = [
@@ -99,6 +100,4 @@ class PartidasController extends Controller
 
         return view('trackeo.partida', compact('datos'));
     }
-
-    
 }

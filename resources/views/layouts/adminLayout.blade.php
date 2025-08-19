@@ -1,8 +1,9 @@
 <!doctype html>
 <html lang="es" x-data="{ open:false }" class="h-full">
+
 <head>
   <meta charset="utf-8" />
-  <title>JurassiDraft Admin - @yield('title')</title>
+  <title>JurassiDraft Admin – @yield('title')</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   @vite(['resources/css/app.css','resources/js/app.js'])
   <!-- Bootstrap Icons (solo íconos) -->
@@ -24,7 +25,7 @@
         <!-- Desktop actions -->
         <div class="hidden lg:flex items-center gap-3">
           <a href="{{ route('home') }}"
-             class="inline-flex items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+            class="inline-flex items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
             Volver al inicio
           </a>
 
@@ -52,7 +53,7 @@
     <div id="navMain" x-cloak x-show="open" x-transition class="border-t border-gray-200 bg-white lg:hidden">
       <div class="mx-auto max-w-7xl space-y-3 px-4 py-3">
         <a href="{{ route('home') }}"
-           class="block w-full rounded-md bg-blue-600 px-4 py-2 text-center text-white hover:bg-blue-700">
+          class="block w-full rounded-md bg-blue-600 px-4 py-2 text-center text-white hover:bg-blue-700">
           Volver al inicio
         </a>
 
@@ -70,15 +71,15 @@
   <!-- MAIN -->
   <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
     @if (session('ok'))
-      <div class="mb-4 rounded-md border border-green-200 bg-green-50 p-3 text-green-800 shadow-sm">
-        {{ session('ok') }}
-      </div>
+    <div class="mb-4 rounded-md border border-green-200 bg-green-50 p-3 text-green-800 shadow-sm">
+      {{ session('ok') }}
+    </div>
     @endif
 
     @if (session('error'))
-      <div class="mb-4 rounded-md border border-red-200 bg-red-50 p-3 text-red-800 shadow-sm">
-        {{ session('error') }}
-      </div>
+    <div class="mb-4 rounded-md border border-red-200 bg-red-50 p-3 text-red-800 shadow-sm">
+      {{ session('error') }}
+    </div>
     @endif
 
     {{-- CONTENIDO DE CADA PÁGINA --}}
@@ -95,4 +96,5 @@
   <!-- Alpine (toggle menú) -->
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </body>
+
 </html>

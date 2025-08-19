@@ -1,4 +1,4 @@
-@extends('admin.layout')
+@extends('layouts.adminLayout')
 
 @section('title','Editar usuario')
 
