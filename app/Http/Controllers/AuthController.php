@@ -28,7 +28,7 @@ class AuthController extends Controller
     }
 
     /**
-     * Procesa el login con usuario + password (mapeado a "contrasena" por el modelo).
+     * Procesa el login con usuario + password.
      */
     public function login(Request $request)
     {
@@ -45,21 +45,38 @@ class AuthController extends Controller
             ]
         );
 
+        // 1) Buscar usuario por nombre
+        $usuario = Usuario::where('usuario', $cred['usuario'])->first();
+
+        if (!$usuario) {
+            return back()
+                ->withErrors(['usuario' => 'Usuario o contraseña incorrectos.'])
+                ->onlyInput('usuario');
+        }
+
+        // 2) Verificar si está desactivado
+        if ($usuario->deleted_at !== null) {
+            return back()
+                ->withErrors(['usuario' => 'Este usuario ha sido desactivado.'])
+                ->onlyInput('usuario');
+        }
+
+        // 3) Intentar login con Auth::attempt
         if (Auth::attempt(['usuario' => $cred['usuario'], 'password' => $cred['password']], false)) {
             $request->session()->regenerate();
 
-            // 1) Soportar "next" solo si es ruta interna (evitar open redirect)
+            // Soportar "next" solo si es ruta interna (evitar open redirect)
             if ($request->filled('next') && Str::startsWith($request->next, '/')) {
                 return redirect($request->next);
             }
 
-            // 2) Si venía de /admin y es admin → admin.home
+            // Si venía de /admin y es admin → admin.home
             $prevUrl = url()->previous();
             if (str_contains($prevUrl, '/admin') && Auth::user()->rol === 'admin') {
                 return redirect()->route('admin.home');
             }
 
-            // 3) Por defecto → home
+            // Por defecto → home
             return redirect()->route('home');
         }
 
@@ -96,13 +113,23 @@ class AuthController extends Controller
         return view('auth.register');
     }
 
+    /**
+     * Procesa registro de nuevo usuario.
+     */
     public function register(Request $request)
     {
         $data = $request->validate(
             [
                 'nombre'      => ['required', 'string', 'max:100'],
-                'usuario'     => ['required', 'string', 'max:50', 'alpha_dash', Rule::unique('usuarios', 'usuario')],
-                // usamos "contrasena" + "contrasena_confirmation" por la regla confirmed
+                'usuario' => [
+                    'required',
+                    'string',
+                    'max:50',
+                    'alpha_dash',
+                    Rule::unique('usuarios', 'usuario')->where(function ($query) {
+                        $query->whereNull('deleted_at');
+                    }),
+                ],
                 'contrasena'  => ['required', 'string', 'min:8', 'confirmed'],
             ],
             [
@@ -115,8 +142,7 @@ class AuthController extends Controller
             'nombre'     => $data['nombre'],
             'usuario'    => $data['usuario'],
             'contrasena' => Hash::make($data['contrasena']),
-            // 'rol' => 'jugador', // opcional: tu DB ya define DEFAULT 'jugador'
-            // 'creado_en' => now(), // no hace falta, DEFAULT CURRENT_TIMESTAMP
+            // 'rol' => 'jugador', // la DB ya define DEFAULT 'jugador'
         ]);
 
         Auth::login($user);

@@ -22,7 +22,7 @@ class PlayController extends Controller
     public function add(Request $request)
     {
         $request->validate([
-            'identificador' => ['required','string'],
+            'identificador' => ['required', 'string'],
         ], [
             'identificador.required' => 'Ingresá un ID o un nombre de usuario.',
         ]);
@@ -31,27 +31,36 @@ class PlayController extends Controller
 
         // Buscar por id_usuario (numérico) o por usuario (string)
         if (ctype_digit($ident)) {
-            $user = Usuario::where('id_usuario', (int)$ident)->first();
+            $user = Usuario::where('id_usuario', (int)$ident)
+                ->whereNull('deleted_at') // ✅
+                ->first();
         } else {
-            $user = Usuario::where('usuario', $ident)->first();
+            $user = Usuario::where('usuario', $ident)
+                ->whereNull('deleted_at') // ✅
+                ->first();
         }
 
         if (!$user) {
-            return back()->withErrors(['identificador' => 'No se encontró un usuario con ese ID o nombre.'])
-                         ->withInput();
+            return back()->withErrors([
+                'identificador' => 'No se encontró un usuario activo con ese ID o nombre.',
+            ])->withInput();
         }
 
         $jugadores = session('partida.jugadores', []);
 
         // Máximo 6
         if (count($jugadores) >= 6) {
-            return back()->withErrors(['identificador' => 'La partida ya tiene 6 jugadores (máximo).']);
+            return back()->withErrors([
+                'identificador' => 'La partida ya tiene 6 jugadores (máximo).',
+            ]);
         }
 
         // Evitar duplicados por id_usuario
         foreach ($jugadores as $j) {
             if ((int)$j['id_usuario'] === (int)$user->id_usuario) {
-                return back()->withErrors(['identificador' => 'Ese jugador ya está en la partida.']);
+                return back()->withErrors([
+                    'identificador' => 'Ese jugador ya está en la partida.',
+                ]);
             }
         }
 
@@ -72,7 +81,7 @@ class PlayController extends Controller
     {
         $jugadores = array_values(array_filter(
             session('partida.jugadores', []),
-            fn ($j) => (int)$j['id_usuario'] !== (int)$id
+            fn($j) => (int)$j['id_usuario'] !== (int)$id
         ));
 
         session(['partida.jugadores' => $jugadores]);
