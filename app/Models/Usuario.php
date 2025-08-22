@@ -25,7 +25,8 @@ class Usuario extends Authenticatable
         'usuario',
         'contrasena',
         'rol',
-        'creado_en', // lo completa la DB por DEFAULT CURRENT_TIMESTAMP
+        'creado_en',
+        'deleted_at',
     ];
 
     /** Ocultamos la contraseña al serializar */
