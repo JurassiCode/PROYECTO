@@ -10,17 +10,27 @@ class Partida extends Model
     protected $primaryKey = 'id_partida';
     public $timestamps = false;
 
-    protected $fillable = ['nombre','estado','ronda','turno','dado_restriccion','creador_id','creado_en'];
+    // solo columnas que realmente existen en la tabla
+    protected $fillable = [
+        'nombre',
+        'estado',
+        'creador_id',
+        'creado_en'
+    ];
 
-    public function jugadores() {
-        return $this->hasMany(PartidaJugador::class, 'partida_id', 'id_partida')->orderBy('orden_mesa');
+    public function jugadores()
+    {
+        return $this->hasMany(PartidaJugador::class, 'partida_id', 'id_partida')
+                    ->orderBy('orden_mesa');
     }
 
-    public function colocaciones() {
+    public function colocaciones()
+    {
         return $this->hasMany(Colocacion::class, 'partida_id', 'id_partida');
     }
 
-    public function creador() {
+    public function creador()
+    {
         return $this->belongsTo(Usuario::class, 'creador_id', 'id_usuario');
     }
 }
