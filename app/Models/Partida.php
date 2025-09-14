@@ -10,7 +10,6 @@ class Partida extends Model
     protected $primaryKey = 'id_partida';
     public $timestamps = false;
 
-    // solo columnas que realmente existen en la tabla
     protected $fillable = [
         'nombre',
         'estado',
@@ -21,7 +20,7 @@ class Partida extends Model
     public function jugadores()
     {
         return $this->hasMany(PartidaJugador::class, 'partida_id', 'id_partida')
-                    ->orderBy('orden_mesa');
+            ->orderBy('orden_mesa');
     }
 
     public function colocaciones()

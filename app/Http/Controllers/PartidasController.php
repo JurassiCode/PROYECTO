@@ -98,6 +98,20 @@ class PartidasController extends Controller
             ])->all(),
         ];
 
-        return view('trackeo.partida', compact('datos'));
+        return view('trackeo.partida', [
+            'datos'   => $datos,
+            'partida' => $partida,
+        ]);
+    }
+    public function finalizar(Partida $partida)
+    {
+        // Cambiar estado (placeholder)
+        $partida->estado = 'cerrada';
+        $partida->save();
+
+        // En el futuro: calcular puntos reales
+        return redirect()
+            ->route('resultados.partida.show', $partida->id_partida)
+            ->with('ok', "La partida #{$partida->id_partida} fue finalizada.");
     }
 }

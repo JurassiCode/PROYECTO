@@ -9,6 +9,7 @@ use App\Http\Controllers\TrackeoPartidaController;
 use App\Http\Controllers\PlayController;
 use App\Http\Controllers\PartidasController;
 use App\Http\Controllers\ColocacionesController;
+use App\Http\Controllers\ResultadosController;
 
 /*
 |--------------------------------------------------------------------------
@@ -91,6 +92,18 @@ Route::get('/trackeo-partida/{partida}', [PartidasController::class, 'show'])
 Route::post('/partidas/{partida}/colocaciones', [ColocacionesController::class, 'store'])
     ->whereNumber('partida')
     ->name('colocaciones.store');
+
+// Finalizar partida (medio implementado, corregir a futuro)
+Route::post('/partidas/{partida}/finalizar', [PartidasController::class, 'finalizar'])
+    ->whereNumber('partida')
+    ->name('partidas.finalizar');
+
+// Ver resultados de partida persistida
+Route::get('/resultados-partida/{partida}', [ResultadosController::class, 'show'])
+    ->whereNumber('partida')
+    ->name('resultados.partida.show');
+
+
 /*
 |--------------------------------------------------------------------------
 | Documentación
