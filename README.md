@@ -1,77 +1,86 @@
-# 🦕 JurassiDraft
+# 🦖 JurassiCode – JurassiDraft
 
-**JurassiDraft** es una aplicación web desarrollada por estudiantes de UTU para digitalizar partidas del juego de mesa *Draftosaurus*. Diseñada tanto para jugadores como para docentes, permite registrar y visualizar partidas en tiempo real, promoviendo una experiencia lúdica, educativa y colaborativa.
-
----
-
-## 📌 Descripción
-
-JurassiDraft facilita el seguimiento de partidas de *Draftosaurus* mediante un sistema digital que permite:
-
-- Registrar jugadas y puntajes de cada jugador.
-- Visualizar tableros individuales y generales.
-- Gestionar usuarios con roles diferenciados (jugador y administrador).
-- Acceder a estadísticas detalladas y reportes de cada sesión.
+Este proyecto es un sistema web de gestión de partidas del juego Draftosaurus, desarrollado en **Laravel** con **Vite + TailwindCSS** en el frontend y **MySQL** como base de datos.  
+Permite registrar usuarios, crear partidas, gestionar rondas y turnos, y visualizar resultados.
 
 ---
 
-## 🎯 Objetivos del proyecto
+## ⚠️ Pre-requisitos
 
-### Objetivo general
+Antes de iniciar o instalar el proyecto, asegurate de tener instalado:
 
-Diseñar una plataforma digital que permita gestionar partidas de *Draftosaurus*, combinando usabilidad, funcionalidad y valor educativo.
-
-### Objetivos específicos
-
-- Desarrollar un sistema web con interfaz clara e intuitiva.
-- Implementar una base de datos para registrar usuarios, partidas y resultados.
-- Permitir el acceso y administración mediante roles diferenciados.
-- Fomentar el trabajo colaborativo entre los desarrolladores del proyecto.
-- Incorporar funcionalidades que faciliten el uso del juego en entornos educativos.
+- PHP 8.2 o superior (Podría venir de XAMPP, entre otros)
+- Composer
+- Node.js 20 o superior
+- NPM (Se debería instalar junto con Node.js)
+- MySQL o MariaDB (XAMPP, WAMP, MAMP, etc.)
+- Git
 
 ---
 
-## 🛠️ Tecnologías utilizadas
+## ⚙️ Instalación
 
-- **Frontend:** HTML, CSS (Bootstrap)
-- **Backend:** PHP
-- **Base de datos:** MySQL
-- **Diseño y documentación:** Canva, Google Docs, OnlineGantt
-- **Control de versiones:** Git + GitHub
-
----
-
-## 👨‍💻 Equipo de desarrollo
-
-**We are JurassiCode.**  
-El equipo está conformado por cuatro estudiantes de UTU que combinan conocimientos en programación, diseño, lógica, documentación y presentación.  
-Nos une el interés por los juegos de mesa, la tecnología y el trabajo colaborativo.
-
-| Integrante | Rol                                  |
-|------------|---------------------------------------|
-| Seba       | Backend y base de datos               |
-| Tomi       | Frontend y documentación              |
-| Nacho      | Arquitectura del sistema y diseño     |
-| Joaco      | Testing, validaciones y seguridad     |
-
----
-
-## 📂 Estructura del repositorio
+### 1. Clonar el repositorio
 
 ```bash
-A DEFINIR ESTRUCTURA DE CARPETAS FINAL
+git clone https://github.com/JurassiCode/PROYECTO.git
+cd PROYECTO
 ```
+
+### 2. Instalar dependencias
+
+```bash
+composer install
+npm install
+```
+
+### 3. Crear archivo `.env`
+
+#### 🪟 Windows (PowerShell o CMD)
+
+```powershell
+copy .env.example .env
+```
+
+### 🐧 Linux/Mac
+
+```bash
+cp .env.example .env
+```
+
+Editar el archivo `.env` para configurar la base de datos. La que viene por defecto es MySQL, pero también se puede usar MariaDB.
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=nombre_de_tu_base_de_datos
+DB_USERNAME=tu_usuario
+DB_PASSWORD=tu_contraseña
+```
+
+### 4. Generar clave de aplicación
+
+```bash
+php artisan key:generate
+```
+
+### 5. Dumpear la base de datos
+
+Desde phpMyAdmin o Workbench, importar el archivo `db/draftosaurus.sql`
 
 ---
 
-## 📄 Licencia
+## ✅ Uso
 
-**MIT License**
+```bash
+composer run dev #inicia tanto el servidor de Laravel como el de Vite (necesario para TailwindCSS, entre otros)
+```
 
-Este proyecto es de código abierto y se distribuye bajo los términos de la Licencia MIT.
+Acceder a `http://127.0.0.1:8000`
 
-- ✅ Podés usar, copiar, modificar y distribuir el código libremente, incluso con fines comerciales.
-- 📌 Solo se requiere mantener el aviso de autoría original.
-- ⚠️ El software se entrega "tal como está", sin garantías ni responsabilidades.
+---
 
-&copy; 2025, JurassiCode
+## 📝 Notas
+
+Luego de haber iniciado el proyecto, en `/documentacion` se encuentra la documentación de las tres entregas por separado, indexadas y prolijas.
