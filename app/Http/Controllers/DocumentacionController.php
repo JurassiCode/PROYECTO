@@ -36,7 +36,7 @@ class DocumentacionController extends Controller
                 ];
             });
 
-        $bloqueadas = ['ENTREGA 2', 'ENTREGA 3'];
+        $bloqueadas = ['ENTREGA 3'];
 
         return view('documentacion.index', compact('items', 'relativePath', 'bloqueadas'));
     }
