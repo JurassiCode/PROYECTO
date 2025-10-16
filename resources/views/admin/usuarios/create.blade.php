@@ -29,10 +29,10 @@
       <div>
         <label class="mb-1 block text-sm font-semibold text-gray-700">Usuario (nombreusuario)</label>
         <input
-          type="text" name="usuario" required
-          value="{{ old('usuario') }}"
+          type="text" name="nickname" required
+          value="{{ old('nickname') }}"
           class="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm placeholder:text-gray-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600" />
-        @error('usuario')
+        @error('nickname')
         <div class="mt-1 text-sm text-red-600">{{ $message }}</div>
         @enderror
       </div>

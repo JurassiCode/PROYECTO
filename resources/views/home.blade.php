@@ -51,7 +51,7 @@
                             </span>
                             <span
                                 class="inline-flex items-center justify-center rounded-md bg-gray-200 text-gray-700 text-xs px-2 py-0.5">
-                                ID: {{ auth()->user()->id_usuario }}
+                                ID: {{ auth()->user()->id }}
                             </span>
                         </div>
                     @endauth

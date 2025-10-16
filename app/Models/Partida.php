@@ -7,25 +7,29 @@ use Illuminate\Database\Eloquent\Model;
 class Partida extends Model
 {
     protected $table = 'partidas';
-    protected $primaryKey = 'id_partida';
+    protected $primaryKey = 'id'; // ✅ tu PK real
     public $timestamps = false;
 
     protected $fillable = [
         'nombre',
         'estado',
+        'ronda',
+        'turno',
+        'dado_restriccion',
         'creador_id',
-        'creado_en'
+        'creado_en',
     ];
 
+    // Relaciones
     public function jugadores()
     {
-        return $this->hasMany(PartidaJugador::class, 'partida_id', 'id_partida')
-            ->orderBy('orden_mesa');
+        return $this->hasMany(PartidaJugador::class, 'partida_id', 'id')
+                    ->orderBy('orden_mesa');
     }
 
     public function colocaciones()
     {
-        return $this->hasMany(Colocacion::class, 'partida_id', 'id_partida');
+        return $this->hasMany(Colocacion::class, 'partida_id', 'id');
     }
 
     public function creador()

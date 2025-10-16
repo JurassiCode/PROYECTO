@@ -9,9 +9,9 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 </head>
 
-<body class="min-h-[100dvh] bg-gray-50 flex flex-col items-center px-4
-             md:justify-center md:py-0 py-6">
-    <!-- Logo afuera -->
+<body class="min-h-[100dvh] bg-gray-50 flex flex-col items-center px-4 md:justify-center md:py-0 py-6">
+
+    <!-- Logo -->
     <div class="mb-5 md:mb-4">
         <img src="{{ asset('images/logojuego_nobg.png') }}" alt="Logo JurassiDraft" class="h-28 md:h-12 w-auto">
     </div>
@@ -40,13 +40,13 @@
                     @enderror
                 </div>
 
-                <!-- Usuario -->
+                <!-- Nickname -->
                 <div>
-                    <label for="usuario" class="mb-1 block text-sm font-medium text-gray-700">Usuario</label>
-                    <input id="usuario" name="usuario" type="text" inputmode="text" autocomplete="username"
-                        placeholder="Tu usuario" value="{{ old('usuario') }}" required
+                    <label for="nickname" class="mb-1 block text-sm font-medium text-gray-700">Usuario</label>
+                    <input id="nickname" name="nickname" type="text" inputmode="text" autocomplete="username"
+                        placeholder="Tu usuario" value="{{ old('nickname') }}" required
                         class="block w-full rounded-md border border-gray-300 px-3 py-2 md:py-2 text-gray-900 shadow-sm placeholder:text-gray-400 focus:border-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-600 text-[15px]">
-                    @error('usuario')
+                    @error('nickname')
                         <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
@@ -71,8 +71,9 @@
 
                 <!-- Confirmación -->
                 <div>
-                    <label for="contrasena_confirmation" class="mb-1 block text-sm font-medium text-gray-700">Confirmar
-                        contraseña</label>
+                    <label for="contrasena_confirmation" class="mb-1 block text-sm font-medium text-gray-700">
+                        Confirmar contraseña
+                    </label>
                     <div class="relative">
                         <input id="contrasena_confirmation" name="contrasena_confirmation" type="password"
                             autocomplete="new-password" placeholder="Repetí tu contraseña" required
@@ -121,8 +122,7 @@
                         icon.classList.toggle('bi-eye', !isPwd);
                         icon.classList.toggle('bi-eye-slash', isPwd);
                     }
-                    const pressed = btn.getAttribute('aria-pressed') === 'true';
-                    btn.setAttribute('aria-pressed', (!pressed).toString());
+                    btn.setAttribute('aria-pressed', (!isPwd).toString());
                 });
             };
             mkToggle('togglePassword', 'contrasena');

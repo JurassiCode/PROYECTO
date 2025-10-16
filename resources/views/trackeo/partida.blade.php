@@ -193,9 +193,8 @@
                         Reiniciar partida
                     </span>
 
-                    <!-- Botón real: Finalizar partida -->
-                    <form action="{{ route('partidas.finalizar', $partida->id_partida) }}" method="POST"
-                        class="col-span-2">
+                    <!-- Botón q si funciona: Finalizar partida -->
+                    <form action="{{ route('partidas.finalizar', $partida->id) }}" method="POST" class="col-span-2">
                         @csrf
                         <button type="submit"
                             class="w-full rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow-sm
