@@ -13,9 +13,7 @@ class AuthController extends Controller
 {
     /** -------------------- LOGIN -------------------- */
 
-    /**
-     * Muestra el login si no está autenticado; si lo está, redirige según rol.
-     */
+    /** Muestra el login si no está autenticado; si lo está, redirige según rol. */
     public function show(Request $request)
     {
         if (Auth::check()) {
@@ -27,67 +25,63 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
-    /**
-     * Procesa el login con usuario + password.
-     */
+    /** Procesa el login con nickname + contraseña. */
     public function login(Request $request)
     {
+        // ✅ Validación coherente con los campos del form
         $cred = $request->validate(
             [
-                'usuario'  => ['required', 'string'],
-                'password' => ['required', 'string'],
+                'nickname'   => ['required', 'string'],
+                'contrasena' => ['required', 'string'],
             ],
             [
-                'usuario.required'  => 'El campo usuario es obligatorio.',
-                'usuario.string'    => 'El usuario debe ser un texto válido.',
-                'password.required' => 'La contraseña es obligatoria.',
-                'password.string'   => 'La contraseña debe ser un texto válido.',
+                'nickname.required'   => 'El campo usuario es obligatorio.',
+                'nickname.string'     => 'El usuario debe ser un texto válido.',
+                'contrasena.required' => 'La contraseña es obligatoria.',
+                'contrasena.string'   => 'La contraseña debe ser un texto válido.',
             ]
         );
 
-        // 1) Buscar usuario por nombre
-        $usuario = Usuario::where('usuario', $cred['usuario'])->first();
+        // 1️⃣ Buscar usuario por nickname
+        $usuario = Usuario::where('nickname', $cred['nickname'])->first();
 
         if (!$usuario) {
             return back()
-                ->withErrors(['usuario' => 'Usuario o contraseña incorrectos.'])
-                ->onlyInput('usuario');
+                ->withErrors(['nickname' => 'Usuario o contraseña incorrectos.'])
+                ->onlyInput('nickname');
         }
 
-        // 2) Verificar si está desactivado
-        if ($usuario->deleted_at !== null) {
+        // 2️⃣ Verificar si está desactivado
+        if (!is_null($usuario->deleted_at)) {
             return back()
-                ->withErrors(['usuario' => 'Este usuario ha sido desactivado.'])
-                ->onlyInput('usuario');
+                ->withErrors(['nickname' => 'Este usuario ha sido desactivado.'])
+                ->onlyInput('nickname');
         }
 
-        // 3) Intentar login con Auth::attempt
-        if (Auth::attempt(['usuario' => $cred['usuario'], 'password' => $cred['password']], false)) {
-            $request->session()->regenerate();
-
-            // Soportar "next" solo si es ruta interna (evitar open redirect)
-            if ($request->filled('next') && Str::startsWith($request->next, '/')) {
-                return redirect($request->next);
-            }
-
-            // Si venía de /admin y es admin → admin.home
-            $prevUrl = url()->previous();
-            if (str_contains($prevUrl, '/admin') && Auth::user()->rol === 'admin') {
-                return redirect()->route('admin.home');
-            }
-
-            // Por defecto → home
-            return redirect()->route('home');
+        // 3️⃣ Verificar contraseña con Hash::check
+        if (!Hash::check($cred['contrasena'], $usuario->contrasena)) {
+            return back()
+                ->withErrors(['contrasena' => 'Usuario o contraseña incorrectos.'])
+                ->onlyInput('nickname');
         }
 
-        return back()
-            ->withErrors(['usuario' => 'Usuario o contraseña incorrectos.'])
-            ->onlyInput('usuario');
+        // 4️⃣ Autenticar manualmente (sin Auth::attempt)
+        Auth::login($usuario);
+        $request->session()->regenerate();
+
+        // 5️⃣ Redirecciones según contexto
+        if ($request->filled('next') && Str::startsWith($request->next, '/')) {
+            return redirect($request->next);
+        }
+
+        if (str_contains(url()->previous(), '/admin') && Auth::user()->rol === 'admin') {
+            return redirect()->route('admin.home');
+        }
+
+        return redirect()->route('home');
     }
 
-    /**
-     * Cierra sesión.
-     */
+    /** Cierra sesión. */
     public function logout(Request $request)
     {
         Auth::logout();
@@ -99,9 +93,7 @@ class AuthController extends Controller
 
     /** ------------------ REGISTER ------------------- */
 
-    /**
-     * Muestra el formulario de registro si no está autenticado.
-     */
+    /** Muestra el formulario de registro si no está autenticado. */
     public function showRegister(Request $request)
     {
         if (Auth::check()) {
@@ -113,24 +105,20 @@ class AuthController extends Controller
         return view('auth.register');
     }
 
-    /**
-     * Procesa registro de nuevo usuario.
-     */
+    /** Procesa registro de nuevo usuario. */
     public function register(Request $request)
     {
         $data = $request->validate(
             [
-                'nombre'      => ['required', 'string', 'max:100'],
-                'usuario' => [
+                'nombre' => ['required', 'string', 'max:100'],
+                'nickname' => [
                     'required',
                     'string',
                     'max:50',
                     'alpha_dash',
-                    Rule::unique('usuarios', 'usuario')->where(function ($query) {
-                        $query->whereNull('deleted_at');
-                    }),
+                    Rule::unique('usuarios', 'nickname')->where(fn($q) => $q->whereNull('deleted_at')),
                 ],
-                'contrasena'  => ['required', 'string', 'min:8', 'confirmed'],
+                'contrasena' => ['required', 'string', 'min:8', 'confirmed'],
             ],
             [
                 'contrasena.confirmed' => 'La confirmación de contraseña no coincide.',
@@ -140,9 +128,8 @@ class AuthController extends Controller
 
         $user = Usuario::create([
             'nombre'     => $data['nombre'],
-            'usuario'    => $data['usuario'],
+            'nickname'   => $data['nickname'],
             'contrasena' => Hash::make($data['contrasena']),
-            // 'rol' => 'jugador', // la DB ya define DEFAULT 'jugador'
         ]);
 
         Auth::login($user);

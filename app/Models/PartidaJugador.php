@@ -16,6 +16,6 @@ class PartidaJugador extends Model
     }
 
     public function usuario() {
-        return $this->belongsTo(Usuario::class, 'usuario_id', 'id_usuario');
+        return $this->belongsTo(Usuario::class, 'usuario_id', 'id');
     }
 }

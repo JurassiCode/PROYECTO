@@ -69,17 +69,21 @@ Route::middleware(['auth', EsAdmin::class])
 |--------------------------------------------------------------------------
 */
 Route::middleware('auth')->group(function () {
-    // Módulo PLAY (gestiona jugadores de la partida en sesión)
+    // Pantalla principal de configuración de partida
     Route::get('/play', [PlayController::class, 'index'])->name('play');
+
+    // Agregar jugador (POST)
     Route::post('/play/add', [PlayController::class, 'add'])->name('play.add');
+
+    // Quitar jugador (POST con parámetro {id})
     Route::post('/play/remove/{id}', [PlayController::class, 'remove'])->name('play.remove');
+
+    // Vaciar lista completa (POST)
     Route::post('/play/clear', [PlayController::class, 'clear'])->name('play.clear');
 
-    // Trackeo visual que usa los jugadores de la sesión
-    Route::get('/trackeo-partida', [TrackeoPartidaController::class, 'index'])
-        ->name('trackeo.partida.index');
+    // Crear partida definitiva (guarda en BD)
+    Route::post('/partidas', [PartidaController::class, 'store'])->name('partidas.store');
 });
-
 // Crear partida desde /play (usa jugadores guardados en sesión)
 Route::post('/partidas', [PartidasController::class, 'store'])->name('partidas.store');
 

@@ -35,40 +35,42 @@
                 @endif
 
                 <!-- Usuario -->
-                <div>
-                    <label for="usuario" class="mb-1 block text-sm font-medium text-gray-700">Usuario</label>
-                    <input id="usuario" name="usuario" type="text" inputmode="text" autocomplete="username"
-                        placeholder="Tu usuario" value="{{ old('usuario') }}" required autofocus
-                        @class([
-                            'block w-full rounded-md px-3 py-2 text-gray-900 shadow-sm placeholder:text-gray-400 focus:border-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-600',
-                            'border border-red-300' => $errors->has('usuario'),
-                            'border border-gray-300' => !$errors->has('usuario'),
-                        ])>
-                    @error('usuario')
-                        <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
-                    @enderror
-                </div>
+         <!-- Usuario -->
+<div>
+    <label for="nickname" class="mb-1 block text-sm font-medium text-gray-700">Usuario</label>
+    <input id="nickname" name="nickname" type="text" inputmode="text" autocomplete="username"
+        placeholder="Tu usuario" value="{{ old('nickname') }}" required autofocus
+        @class([
+            'block w-full rounded-md px-3 py-2 text-gray-900 shadow-sm placeholder:text-gray-400 focus:border-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-600',
+            'border border-red-300' => $errors->has('nickname'),
+            'border border-gray-300' => !$errors->has('nickname'),
+        ])>
+    @error('nickname')
+        <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+    @enderror
+</div>
 
-                <!-- Contraseña -->
-                <div>
-                    <label for="password" class="mb-1 block text-sm font-medium text-gray-700">Contraseña</label>
-                    <div class="relative">
-                        <input id="password" name="password" type="password" autocomplete="current-password"
-                            placeholder="Tu contraseña" required @class([
-                                'block w-full rounded-md px-3 py-2 pr-10 text-gray-900 shadow-sm placeholder:text-gray-400 focus:border-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-600',
-                                'border border-red-300' => $errors->has('password'),
-                                'border border-gray-300' => !$errors->has('password'),
-                            ])>
-                        <button type="button" id="togglePassword"
-                            class="absolute inset-y-0 right-0 my-auto mr-1 inline-flex h-8 w-8 items-center justify-center rounded-md text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-600"
-                            aria-label="Mostrar u ocultar contraseña" aria-pressed="false" tabindex="-1">
-                            <i class="bi bi-eye"></i>
-                        </button>
-                    </div>
-                    @error('password')
-                        <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
-                    @enderror
-                </div>
+<!-- Contraseña -->
+<div>
+    <label for="contrasena" class="mb-1 block text-sm font-medium text-gray-700">Contraseña</label>
+    <div class="relative">
+        <input id="contrasena" name="contrasena" type="password" autocomplete="current-password"
+            placeholder="Tu contraseña" required
+            @class([
+                'block w-full rounded-md px-3 py-2 pr-10 text-gray-900 shadow-sm placeholder:text-gray-400 focus:border-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-600',
+                'border border-red-300' => $errors->has('contrasena'),
+                'border border-gray-300' => !$errors->has('contrasena'),
+            ])>
+        <button type="button" id="togglePassword"
+            class="absolute inset-y-0 right-0 my-auto mr-1 inline-flex h-8 w-8 items-center justify-center rounded-md text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-600"
+            aria-label="Mostrar u ocultar contraseña" aria-pressed="false" tabindex="-1">
+            <i class="bi bi-eye"></i>
+        </button>
+    </div>
+    @error('contrasena')
+        <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+    @enderror
+</div>
 
                 <!-- Acciones -->
                 <div class="space-y-3">

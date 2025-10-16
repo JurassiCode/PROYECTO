@@ -9,12 +9,11 @@ class Usuario extends Authenticatable
 {
     use Notifiable;
 
-    /** Tabla y PK personalizadas */
+    /** Tabla y clave primaria */
     protected $table = 'usuarios';
-    protected $primaryKey = 'id_usuario';
+    protected $primaryKey = 'id'; // ← tu BD usa 'id', no 'id_usuario'
     public $incrementing = true;
     protected $keyType = 'int';
-
     public $timestamps = false;
 
     protected $rememberTokenName = null;
@@ -22,7 +21,7 @@ class Usuario extends Authenticatable
     /** Campos asignables */
     protected $fillable = [
         'nombre',
-        'usuario',
+        'nickname',    
         'contrasena',
         'rol',
         'creado_en',
@@ -35,25 +34,18 @@ class Usuario extends Authenticatable
     ];
 
     /**
-     * Hace que Auth::attempt([... 'password' => ...]) compare contra "contrasena".
+     * Le dice a Laravel que el campo de autenticación de contraseña es "contrasena"
      */
     public function getAuthPassword()
     {
         return $this->contrasena;
     }
 
-    public function setPasswordAttribute($value): void
-    {
-        $this->attributes['contrasena'] = $value;
-    }
-
-    public function getPasswordAttribute(): ?string
-    {
-        return $this->contrasena;
-    }
-
+    /**
+     * Le dice a Laravel que el identificador de usuario (username) es "nickname"
+     */
     public function getAuthIdentifierName()
-{
-    return 'id_usuario';
-}
+    {
+        return 'nickname';
+    }
 }

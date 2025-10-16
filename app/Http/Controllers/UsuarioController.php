@@ -15,7 +15,7 @@ class UsuarioController extends Controller
     public function index()
     {
         $usuarios = Usuario::whereNull('deleted_at')
-            ->orderBy('id_usuario', 'desc')
+            ->orderBy('id', 'desc') // ← tu PK real es id
             ->paginate(10);
 
         return view('admin.usuarios.index', compact('usuarios'));
@@ -36,7 +36,7 @@ class UsuarioController extends Controller
     {
         $data = $request->validate([
             'nombre'     => ['required', 'string', 'max:100'],
-            'usuario'    => ['required', 'string', 'max:50', 'unique:usuarios,usuario'],
+            'nickname'   => ['required', 'string', 'max:50', 'unique:usuarios,nickname'],
             'rol'        => ['required', Rule::in(['jugador', 'admin'])],
             'contrasena' => ['required', 'string', 'min:6', 'confirmed'],
         ], [
@@ -67,12 +67,11 @@ class UsuarioController extends Controller
     {
         $data = $request->validate([
             'nombre'     => ['required', 'string', 'max:100'],
-            'usuario'    => [
+            'nickname'   => [
                 'required',
                 'string',
                 'max:50',
-                Rule::unique('usuarios', 'usuario')
-                    ->ignore($usuario->id_usuario, 'id_usuario')
+                Rule::unique('usuarios', 'nickname')->ignore($usuario->id, 'id'),
             ],
             'rol'        => ['required', Rule::in(['jugador', 'admin'])],
             'contrasena' => ['nullable', 'string', 'min:6', 'confirmed'],
@@ -98,14 +97,14 @@ class UsuarioController extends Controller
      */
     public function destroy(Usuario $usuario)
     {
-        if (Auth::id() === $usuario->id_usuario) {
+        if (Auth::id() === $usuario->id) {
             return back()->with('error', 'No podés eliminar tu propio usuario.');
         }
 
-        // Soft delete manual + renombrar username para liberar el UNIQUE
+        // Soft delete manual + renombrar nickname para liberar el UNIQUE
         $usuario->update([
             'deleted_at' => now(),
-            'usuario'    => $usuario->usuario . '_deleted_' . $usuario->id_usuario,
+            'nickname'   => $usuario->nickname . '_deleted_' . $usuario->id,
         ]);
 
         return redirect()

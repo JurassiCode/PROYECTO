@@ -84,10 +84,10 @@
                             class="rounded-lg border border-gray-200 bg-white p-3 shadow-sm flex items-center justify-between">
                             <div>
                                 <div class="text-sm font-medium">{{ $j['nombre'] ?: $j['usuario'] }}</div>
-                                <div class="text-xs text-gray-500">ID: {{ $j['id_usuario'] }} · Usuario: {{ $j['usuario'] }}
+                                <div class="text-xs text-gray-500">ID: {{ $j['id'] }} · Usuario: {{ $j['nickname'] }}
                                 </div>
                             </div>
-                            <form method="POST" action="{{ route('play.remove', $j['id_usuario']) }}">
+                                <form method="POST" action="{{ route('play.remove', ['id' => $j['id']]) }}">
                                 @csrf
                                 <button
                                     class="rounded-md border border-red-300 px-2 py-1 text-xs text-red-700 hover:bg-red-50">

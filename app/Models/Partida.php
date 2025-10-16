@@ -30,6 +30,6 @@ class Partida extends Model
 
     public function creador()
     {
-        return $this->belongsTo(Usuario::class, 'creador_id', 'id_usuario');
+        return $this->belongsTo(Usuario::class, 'creador_id', 'id');
     }
 }
