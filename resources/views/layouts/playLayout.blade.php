@@ -79,11 +79,12 @@
                             @endif
 
                             <li>
-                                <a href="#"
+                                <a href="{{ route('perfil.edit') }}"
                                     class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                                     <i class="bi bi-person-gear mr-2 text-blue-600"></i> Editar perfil
                                 </a>
                             </li>
+
 
                             <li>
                                 <form action="{{ route('logout') }}" method="POST" class="m-0">
@@ -132,10 +133,11 @@
                 </a>
                 @endif
 
-                <a href="#"
+                <a href="{{ route('perfil.edit') }}"
                     class="block w-full rounded-md px-4 py-2 text-gray-700 hover:bg-gray-50">
                     <i class="bi bi-person-gear mr-2"></i> Editar perfil
                 </a>
+
 
                 <form action="{{ route('logout') }}" method="POST" class="pt-1">
                     @csrf

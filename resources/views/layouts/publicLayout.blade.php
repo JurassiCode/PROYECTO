@@ -84,7 +84,7 @@
               </li>
 
               <li>
-                <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                <a href="{{ route('perfil.edit') }}" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                   <i class="bi bi-person-gear mr-2 text-blue-600"></i>Editar perfil
                 </a>
               </li>
@@ -140,7 +140,7 @@
           class="block w-full rounded-md px-4 py-2 text-gray-700 hover:bg-gray-50">
           <i class="bi {{ $mainBtnIcon }} mr-2"></i>{{ $mainActionLabel }}
         </a>
-        <a href="#"
+        <a href="{{ route('perfil.edit') }}"
           class="mt-1 block w-full rounded-md px-4 py-2 text-gray-700 hover:bg-gray-50">
           <i class="bi bi-person-gear mr-2"></i>Editar perfil
         </a>

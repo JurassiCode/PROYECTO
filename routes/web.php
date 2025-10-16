@@ -10,6 +10,7 @@ use App\Http\Controllers\PlayController;
 use App\Http\Controllers\PartidasController;
 use App\Http\Controllers\ColocacionesController;
 use App\Http\Controllers\ResultadosController;
+use App\Http\Controllers\PerfilController;
 
 /*
 |--------------------------------------------------------------------------
@@ -116,3 +117,15 @@ Route::get('/resultados-partida/{partida}', [ResultadosController::class, 'show'
 Route::get('/documentacion/{path?}', [DocumentacionController::class, 'index'])
     ->where('path', '.*')
     ->name('documentacion');
+
+
+/*
+|--------------------------------------------------------------------------
+| Perfil
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/perfil', [PerfilController::class, 'edit'])->name('perfil.edit');
+    Route::put('/perfil', [PerfilController::class, 'update'])->name('perfil.update');
+});
