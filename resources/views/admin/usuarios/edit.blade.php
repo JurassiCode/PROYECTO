@@ -7,7 +7,7 @@
   <div class="p-6">
     <h1 class="mb-4 flex items-center gap-2 text-lg font-semibold">
       <i class="bi bi-pencil-square text-blue-600"></i>
-      <span>Editar usuario <span class="font-normal text-gray-500">#{{ $usuario->id_usuario }}</span></span>
+      <span>Editar usuario <span class="font-normal text-gray-500">#{{ $usuario->id }}</span></span>
     </h1>
 
     <form method="POST" action="{{ route('admin.usuarios.update', $usuario) }}" class="space-y-4">
@@ -26,15 +26,15 @@
         @enderror
       </div>
 
-      {{-- Usuario --}}
+      {{-- Nickname (usuario de login) --}}
       <div>
         <label class="mb-1 block text-sm font-semibold text-gray-700">Usuario (login)</label>
         <input
-          type="text" name="usuario" required
-          value="{{ old('usuario', $usuario->usuario) }}"
+          type="text" name="nickname" required
+          value="{{ old('nickname', $usuario->nickname) }}"
           class="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
-        @error('usuario')
+        @error('nickname')
           <div class="mt-1 text-sm text-red-600">{{ $message }}</div>
         @enderror
       </div>
