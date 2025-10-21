@@ -106,6 +106,16 @@
                 </div>
             </form>
         </div>
+        <!-- Botón volver -->
+        <div class="flex justify-center">
+            <button
+                type="button"
+                onclick="history.back()"
+                class="mt-6 w-1/2 rounded-xl bg-gradient-to-r from-gray-100 to-gray-200 px-6 py-3 text-lg font-medium text-gray-800 shadow-md transition-all duration-200 hover:from-gray-200 hover:to-gray-300 hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-gray-400 active:scale-95"
+            >
+                ← Volver atrás
+            </button>
+        </div>
     </div>
 
     <script>
