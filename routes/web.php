@@ -129,3 +129,18 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/perfil', [PerfilController::class, 'edit'])->name('perfil.edit');
     Route::put('/perfil', [PerfilController::class, 'update'])->name('perfil.update');
 });
+
+
+// 🎲 Tirar dado (local)
+Route::post('/trackeo/tirar-dado', [TrackeoPartidaController::class, 'tirarDado'])
+    ->name('partidas.tirarDado');
+
+// 🦕 Agregar colocación (local)
+Route::post('/trackeo/agregar-colocacion', [TrackeoPartidaController::class, 'agregarColocacion'])
+    ->name('partidas.agregarColocacion');
+
+// ✅ Finalizar partida (local temporal)
+Route::post('/trackeo/finalizar', function () {
+    session()->forget(['partida.jugadores', 'colocaciones']);
+    return back()->with('ok', '✅ Partida finalizada localmente.');
+})->name('partidas.finalizar');

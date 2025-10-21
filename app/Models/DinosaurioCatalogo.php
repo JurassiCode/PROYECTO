@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class DinosaurioCatalogo extends Model
 {
     protected $table = 'dinosaurios_catalogo';
-    protected $primaryKey = 'id_dino';
+    protected $primaryKey = 'id';
     public $timestamps = false;
 
     protected $fillable = ['nombre_corto','categoria'];

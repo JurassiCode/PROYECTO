@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Recinto extends Model
 {
-    protected $table = 'recintos';
-    protected $primaryKey = 'id_recinto';
+    protected $table = 'recintos_catalogo';
+    protected $primaryKey = 'id';
     public $timestamps = false;
 
     protected $fillable = ['clave','descripcion'];
