@@ -41,7 +41,7 @@ class PartidasController extends Controller
                 'estado'      => 'config',
                 'ronda'       => 1,
                 'turno'       => 1,
-                'creador_id'  => $user->id, 
+                'creador_id'  => $user->id,
             ]);
 
             // Insertar jugadores asociados
@@ -73,12 +73,12 @@ class PartidasController extends Controller
     public function show(Partida $partida)
     {
         $pj = $partida->jugadores()->with('usuario')->get();
-    
+
         $palette = ['emerald', 'sky', 'purple', 'rose', 'amber', 'teal'];
         $jugadores = [];
         foreach ($pj as $i => $row) {
             $jugadores[] = [
-                'id'     => $row->usuario->id, 
+                'id'     => $row->usuario->id,
                 'nombre' => $row->usuario->nombre ?: $row->usuario->nickname,
                 'estado' => 'Listo',
                 'hand'   => 6,
@@ -87,7 +87,7 @@ class PartidasController extends Controller
                 'color'  => $palette[$i % count($palette)],
             ];
         }
-    
+
         $datos = [
             'sala'    => $partida->nombre,
             'fase'    => 'Draft',
@@ -107,18 +107,18 @@ class PartidasController extends Controller
                 'rio'      => 0,
                 'total'    => $p['score'],
             ])->all(),
-    
-           
+
+
             'dinosaurios' => \App\Models\DinosaurioCatalogo::all(),
             'recintos'    => \App\Models\Recinto::all(),
         ];
-    
+
         return view('trackeo.partida', [
             'datos'   => $datos,
             'partida' => $partida,
         ]);
     }
-    
+
 
     /**
      * Finaliza una partida (placeholder)
@@ -135,90 +135,88 @@ class PartidasController extends Controller
 
 
     public function tirarDado(Partida $partida)
-{
-    $opciones = [
-        ['titulo' => 'Zona Izquierda', 'desc' => 'Colocar en la mitad izquierda del parque.'],
-        ['titulo' => 'Zona Derecha', 'desc' => 'Colocar en la mitad derecha del parque.'],
-        ['titulo' => 'Zona Boscosa', 'desc' => 'Colocar en un recinto tipo bosque o pradera.'],
-        ['titulo' => 'Zona Rocosa', 'desc' => 'Colocar en un recinto de montaña o solitaria.'],
-        ['titulo' => 'Recinto Vacío', 'desc' => 'Debe colocarse en un recinto sin dinosaurios.'],
-        ['titulo' => 'Sin T-Rex', 'desc' => 'Debe colocarse en un recinto sin T-Rex.'],
-    ];
+    {
+        $opciones = [
+            ['titulo' => 'Zona Izquierda', 'desc' => 'Colocar en la mitad izquierda del parque.'],
+            ['titulo' => 'Zona Derecha', 'desc' => 'Colocar en la mitad derecha del parque.'],
+            ['titulo' => 'Zona Boscosa', 'desc' => 'Colocar en un recinto tipo bosque o pradera.'],
+            ['titulo' => 'Zona Rocosa', 'desc' => 'Colocar en un recinto de montaña o solitaria.'],
+            ['titulo' => 'Recinto Vacío', 'desc' => 'Debe colocarse en un recinto sin dinosaurios.'],
+            ['titulo' => 'Sin T-Rex', 'desc' => 'Debe colocarse en un recinto sin T-Rex.'],
+        ];
 
-    $random = $opciones[array_rand($opciones)];
-    $partida->dado_restriccion = $random['titulo'];
-    $partida->save();
+        $random = $opciones[array_rand($opciones)];
+        $partida->dado_restriccion = $random['titulo'];
+        $partida->save();
 
-    session()->flash('restriccion', $random);
-    return redirect()->route('trackeo.partida.show', $partida);
-}
-
-public function agregarColocacion(Request $request, Partida $partida)
-{
-    $data = $request->validate([
-        'jugador' => 'required',
-        'dino' => 'required',
-        'recinto' => 'required',
-    ]);
-
-    // 1️⃣ Guardar la colocación en sesión
-    $colocaciones = session('colocaciones', []);
-    $colocaciones[] = $data;
-    session(['colocaciones' => $colocaciones]);
-
-    // 2️⃣ Recuperar los datos actuales
-    $datos = session('partida.datos') ?? [];
-
-    $jugadores = collect($datos['jugadores'] ?? []);
-    $recintos = collect($datos['recintos'] ?? []);
-    $dinos = collect($datos['dinosaurios'] ?? []);
-
-    // 3️⃣ Buscar el jugador que colocó
-    $jugadorId = $data['jugador'];
-    $jugadorIndex = $jugadores->search(fn($j) => $j['id'] == $jugadorId);
-
-    if ($jugadorIndex === false) {
-        return back()->withErrors(['Jugador no encontrado en sesión']);
+        session()->flash('restriccion', $random);
+        return redirect()->route('trackeo.partida.show', $partida);
     }
 
-    // 4️⃣ Determinar el recinto para puntuar
-    $recinto = $recintos->firstWhere('id', $data['recinto']);
-    $dino = $dinos->firstWhere('id', $data['dino']);
-    $puntos = 0;
+    public function agregarColocacion(Request $request, Partida $partida)
+    {
+        $data = $request->validate([
+            'jugador' => 'required',
+            'dino' => 'required',
+            'recinto' => 'required',
+        ]);
 
-    if ($recinto && str_contains(strtolower($recinto->descripcion), 'bosque')) {
-        $puntos = 3;
-    } elseif ($recinto && str_contains(strtolower($recinto->descripcion), 'montaña')) {
-        $puntos = 4;
-    } elseif ($recinto && str_contains(strtolower($recinto->descripcion), 'río')) {
-        $puntos = 2;
-    } elseif ($dino && str_contains(strtolower($dino->nombre_corto), 'rex')) {
-        $puntos = 5;
-    } else {
-        $puntos = 1;
+        // 1️⃣ Guardar la colocación en sesión
+        $colocaciones = session('colocaciones', []);
+        $colocaciones[] = $data;
+        session(['colocaciones' => $colocaciones]);
+
+        // 2️⃣ Recuperar los datos actuales
+        $datos = session('partida.datos') ?? [];
+
+        $jugadores = collect($datos['jugadores'] ?? []);
+        $recintos = collect($datos['recintos'] ?? []);
+        $dinos = collect($datos['dinosaurios'] ?? []);
+
+        // 3️⃣ Buscar el jugador que colocó
+        $jugadorId = $data['jugador'];
+        $jugadorIndex = $jugadores->search(fn($j) => $j['id'] == $jugadorId);
+
+        if ($jugadorIndex === false) {
+            return back()->withErrors(['Jugador no encontrado en sesión']);
+        }
+
+        // 4️⃣ Determinar el recinto para puntuar
+        $recinto = $recintos->firstWhere('id', $data['recinto']);
+        $dino = $dinos->firstWhere('id', $data['dino']);
+        $puntos = 0;
+
+        if ($recinto && str_contains(strtolower($recinto->descripcion), 'bosque')) {
+            $puntos = 3;
+        } elseif ($recinto && str_contains(strtolower($recinto->descripcion), 'montaña')) {
+            $puntos = 4;
+        } elseif ($recinto && str_contains(strtolower($recinto->descripcion), 'río')) {
+            $puntos = 2;
+        } elseif ($dino && str_contains(strtolower($dino->nombre_corto), 'rex')) {
+            $puntos = 5;
+        } else {
+            $puntos = 1;
+        }
+
+        // 5️⃣ Actualizar puntaje y cantidad colocada
+        $jugadores[$jugadorIndex]['score'] += $puntos;
+        $jugadores[$jugadorIndex]['placed']++;
+
+        // 6️⃣ Actualizar tabla de puntajes (snapshot)
+        $scoreRows = collect($jugadores)->map(fn($p) => [
+            'jugador'  => $p['nombre'],
+            'recintos' => $p['placed'],
+            'parejas'  => 0,
+            'trex'     => 0,
+            'rio'      => 0,
+            'total'    => $p['score'],
+        ])->values()->all();
+
+        // 7️⃣ Guardar todo actualizado en sesión
+        $datos['jugadores'] = $jugadores->values()->all();
+        $datos['score_rows'] = $scoreRows;
+        session(['partida.datos' => $datos]);
+
+        return back()->with('ok', "Colocación agregada (+{$puntos} pts)");
     }
-
-    // 5️⃣ Actualizar puntaje y cantidad colocada
-    $jugadores[$jugadorIndex]['score'] += $puntos;
-    $jugadores[$jugadorIndex]['placed']++;
-
-    // 6️⃣ Actualizar tabla de puntajes (snapshot)
-    $scoreRows = collect($jugadores)->map(fn($p) => [
-        'jugador'  => $p['nombre'],
-        'recintos' => $p['placed'],
-        'parejas'  => 0,
-        'trex'     => 0,
-        'rio'      => 0,
-        'total'    => $p['score'],
-    ])->values()->all();
-
-    // 7️⃣ Guardar todo actualizado en sesión
-    $datos['jugadores'] = $jugadores->values()->all();
-    $datos['score_rows'] = $scoreRows;
-    session(['partida.datos' => $datos]);
-
-    return back()->with('ok', "Colocación agregada (+{$puntos} pts)");
-}
-
-
 }

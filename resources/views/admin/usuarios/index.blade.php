@@ -3,24 +3,29 @@
 @section('title','Usuarios')
 
 @section('content')
-<div x-data="{ open:false, del:{username:'', id:'', role:'', created:'', action:''} }" class="space-y-4">
+<div
+  x-data="{ open:false, del:{username:'', id:'', role:'', created:'', action:''} }"
+  class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 text-gray-100">
 
   <!-- Header -->
-  <div class="grid grid-cols-1 md:grid-cols-3 items-center gap-2">
-    <h1 class="text-xl font-semibold flex items-center gap-2 text-gray-800 md:col-span-2">
-      <i class="bi bi-people-fill"></i> <span>Gestión de usuarios</span>
-    </h1>
+  <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+    <div>
+      <h1 class="text-2xl font-bold flex items-center gap-2 text-white">
+        <i class="bi bi-people-fill text-amber-400"></i> Gestión de usuarios
+      </h1>
+      <p class="text-sm text-emerald-200/70">Visualizá, editá o eliminá usuarios del sistema.</p>
+    </div>
     <a href="{{ route('admin.usuarios.create') }}"
-      class="inline-flex items-center justify-center gap-2 rounded-md bg-emerald-600 px-4 py-2 text-white shadow-sm hover:bg-emerald-700 focus:ring-2 focus:ring-emerald-500">
-      <i class="bi bi-person-plus-fill"></i> <span>Nuevo usuario</span>
+      class="inline-flex items-center gap-2 rounded-md bg-emerald-600 hover:bg-emerald-700 px-4 py-2 font-medium text-white shadow-sm transition">
+      <i class="bi bi-person-plus-fill"></i> Nuevo usuario
     </a>
   </div>
 
-  <!-- Card -->
-  <div class="rounded-lg border border-gray-200 bg-white shadow-sm overflow-hidden">
+  <!-- Tabla -->
+  <div class="rounded-xl overflow-hidden border border-white/10 bg-gray-900/60 backdrop-blur-md shadow-lg">
     <div class="overflow-x-auto">
-      <table class="min-w-full divide-y divide-gray-200">
-        <thead class="bg-gray-50 text-xs font-semibold uppercase tracking-wider text-gray-600">
+      <table class="min-w-full text-sm text-gray-200">
+        <thead class="bg-emerald-800/70 text-emerald-100 uppercase text-xs font-semibold tracking-wider">
           <tr>
             <th class="px-4 py-3 text-left">ID</th>
             <th class="px-4 py-3 text-left">Nombre</th>
@@ -30,44 +35,47 @@
             <th class="px-4 py-3 text-right">Acciones</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-gray-100">
+        <tbody class="divide-y divide-white/10">
           @forelse($usuarios as $u)
           @php
           $badge = match($u->rol) {
-          'admin' => 'bg-blue-100 text-blue-800 ring-blue-200',
-          'jugador' => 'bg-emerald-100 text-emerald-800 ring-emerald-200',
-          default => 'bg-gray-100 text-gray-800 ring-gray-200'
+          'admin' => 'bg-amber-500/20 text-amber-300 border border-amber-500/30',
+          'jugador' => 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
           };
           @endphp
-          <tr class="hover:bg-gray-50">
-            <td class="px-4 py-3 font-semibold text-gray-900">{{ $u->id_usuario }}</td>
+          <tr class="hover:bg-emerald-800/10 transition">
+            <td class="px-4 py-3 font-semibold">{{ $u->id }}</td>
             <td class="px-4 py-3">{{ $u->nombre }}</td>
             <td class="px-4 py-3">{{ $u->usuario }}</td>
             <td class="px-4 py-3">
-              <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ring-1 ring-inset {{ $badge }}">
+              <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold {{ $badge }}">
                 {{ Str::upper($u->rol) }}
               </span>
             </td>
-            <td class="px-4 py-3 text-gray-700">{{ \Carbon\Carbon::parse($u->creado_en)->format('Y-m-d H:i') }}</td>
+            <td class="px-4 py-3 text-emerald-100/80">
+              {{ \Carbon\Carbon::parse($u->creado_en)->format('Y-m-d H:i') }}
+            </td>
             <td class="px-4 py-3">
               <div class="flex justify-end gap-2">
+                <!-- Editar -->
                 <a href="{{ route('admin.usuarios.edit', $u) }}"
-                  class="inline-flex h-9 w-9 items-center justify-center rounded-md border border-blue-200 text-blue-700 hover:bg-blue-50 focus:ring-2 focus:ring-blue-500"
+                  class="inline-flex h-9 w-9 items-center justify-center rounded-md border border-blue-400/30 text-blue-300 hover:bg-blue-500/10 focus:ring-2 focus:ring-blue-400/40 transition"
                   title="Editar">
                   <i class="bi bi-pencil-square"></i>
                 </a>
+                <!-- Eliminar -->
                 <button type="button"
                   @click="
-                            del = {
-                              username: '{{ $u->usuario }}',
-                              id: '{{ $u->id_usuario }}',
-                              role: '{{ Str::upper($u->rol) }}',
-                              created: '{{ \Carbon\Carbon::parse($u->creado_en)->format('Y-m-d H:i') }}',
-                              action: '{{ route('admin.usuarios.destroy', $u) }}'
-                            };
-                            open = true;
-                          "
-                  class="inline-flex h-9 w-9 items-center justify-center rounded-md border border-red-200 text-red-700 hover:bg-red-50 focus:ring-2 focus:ring-red-500"
+                      del = {
+                        username: '{{ $u->nombre }}',
+                        id: '{{ $u->id }}',
+                        role: '{{ Str::upper($u->rol) }}',
+                        created: '{{ \Carbon\Carbon::parse($u->creado_en)->format('Y-m-d H:i') }}',
+                        action: '{{ route('admin.usuarios.destroy', $u) }}'
+                      };
+                      open = true;
+                    "
+                  class="inline-flex h-9 w-9 items-center justify-center rounded-md border border-red-400/30 text-red-300 hover:bg-red-500/10 focus:ring-2 focus:ring-red-400/40 transition"
                   title="Eliminar">
                   <i class="bi bi-trash3-fill"></i>
                 </button>
@@ -76,55 +84,61 @@
           </tr>
           @empty
           <tr>
-            <td colspan="6" class="px-4 py-8 text-center text-gray-500">
-              <div class="flex flex-col items-center">
-                <i class="bi bi-emoji-frown text-3xl mb-2"></i>
-                <span>No hay usuarios registrados</span>
-              </div>
+            <td colspan="6" class="px-4 py-10 text-center text-emerald-100/70">
+              <i class="bi bi-emoji-frown text-3xl mb-2"></i><br>
+              No hay usuarios registrados.
             </td>
           </tr>
           @endforelse
         </tbody>
       </table>
     </div>
-    <div class="p-4">
+
+    <!-- Paginación -->
+    <div class="p-4 border-t border-white/10">
       {{ $usuarios->links() }}
     </div>
   </div>
 
-  <!-- Modal -->
+  <!-- Modal de eliminación -->
   <div x-cloak x-show="open" x-transition.opacity class="fixed inset-0 z-50 flex items-center justify-center p-4">
-    <div class="fixed inset-0 bg-black/40" @click="open = false"></div>
-    <div x-transition.scale class="relative z-10 w-full max-w-md rounded-lg bg-white shadow-2xl overflow-hidden">
-      <div class="px-5 py-4 text-white" style="background:linear-gradient(135deg,#dc3545,#6f1d1b)">
-        <div class="flex items-center justify-between">
-          <h5 class="text-base font-semibold flex items-center gap-2">
-            <i class="bi bi-exclamation-octagon-fill"></i> Eliminar usuario
-          </h5>
-          <button @click="open = false" class="rounded p-1 hover:bg-white/10 focus:ring-2 focus:ring-white">
-            <i class="bi bi-x-lg"></i>
-          </button>
-        </div>
+    <div class="fixed inset-0 bg-black/60 backdrop-blur-sm" @click="open=false"></div>
+
+    <div x-transition.scale
+      class="relative z-10 w-full max-w-md rounded-xl border border-white/10 bg-gray-900/90 text-gray-100 shadow-2xl overflow-hidden">
+      <!-- Header -->
+      <div class="flex items-center justify-between px-5 py-4 bg-gradient-to-r from-red-700 to-red-600">
+        <h5 class="text-base font-semibold flex items-center gap-2">
+          <i class="bi bi-exclamation-octagon-fill text-white"></i> Confirmar eliminación
+        </h5>
+        <button @click="open=false"
+          class="rounded p-1 hover:bg-white/10 focus:ring-2 focus:ring-white/30">
+          <i class="bi bi-x-lg"></i>
+        </button>
       </div>
-      <div class="px-5 py-4 text-gray-800">
-        <p>Estás por borrar al usuario <strong x-text="del.username"></strong> (ID <span x-text="del.id"></span>)</p>
-        <ul class="mt-1 text-sm text-gray-600">
-          <li>Rol: <span class="font-medium" x-text="del.role"></span></li>
-          <li>Creado: <span class="font-medium" x-text="del.created"></span></li>
+
+      <!-- Contenido -->
+      <div class="px-6 py-5">
+        <p class="mb-1">¿Seguro que querés eliminar a <strong x-text="del.username"></strong> (ID <span x-text="del.id"></span>)?</p>
+        <ul class="text-sm text-gray-300 space-y-0.5 mb-4">
+          <li>Rol: <span class="font-semibold text-emerald-300" x-text="del.role"></span></li>
+          <li>Creado: <span class="font-semibold text-emerald-300" x-text="del.created"></span></li>
         </ul>
-        <div class="mt-4 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-red-800">
-          Esta acción es irreversible.
+        <div class="rounded-md border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-200">
+          Esta acción es irreversible. El usuario será eliminado permanentemente.
         </div>
       </div>
-      <div class="flex justify-end gap-2 px-5 pb-5">
-        <button @click="open = false"
-          class="rounded-md border border-gray-300 bg-white px-4 py-2 text-gray-700 hover:bg-gray-50 focus:ring-2 focus:ring-gray-400">
+
+      <!-- Botones -->
+      <div class="flex justify-end gap-3 px-6 pb-6">
+        <button @click="open=false"
+          class="rounded-md border border-gray-400/30 bg-gray-800 px-4 py-2 text-gray-200 hover:bg-gray-700 focus:ring-2 focus:ring-gray-400/50 transition">
           Cancelar
         </button>
         <form :action="del.action" method="POST">
           @csrf @method('DELETE')
           <button type="submit"
-            class="rounded-md bg-red-600 px-4 py-2 text-white hover:bg-red-700 focus:ring-2 focus:ring-red-500">
+            class="rounded-md bg-red-600 px-4 py-2 text-white hover:bg-red-700 focus:ring-2 focus:ring-red-500/60 transition">
             Sí, eliminar
           </button>
         </form>
@@ -132,6 +146,4 @@
     </div>
   </div>
 </div>
-
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 @endsection

@@ -83,10 +83,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/play/clear', [PlayController::class, 'clear'])->name('play.clear');
 
     // Crear partida definitiva (guarda en BD)
-    Route::post('/partidas', [PartidaController::class, 'store'])->name('partidas.store');
+    Route::post('/partidas', [PartidasController::class, 'store'])->name('partidas.store');
 });
-// Crear partida desde /play (usa jugadores guardados en sesión)
-Route::post('/partidas', [PartidasController::class, 'store'])->name('partidas.store');
 
 // Ver trackeo de partida persistida
 Route::get('/trackeo-partida/{partida}', [PartidasController::class, 'show'])

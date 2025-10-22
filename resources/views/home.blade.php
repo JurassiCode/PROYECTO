@@ -3,246 +3,159 @@
 @section('title', 'Inicio')
 
 @section('content')
-    <!-- Hero -->
-    <section class="py-12 bg-white">
-        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 lg:grid-cols-2 items-center gap-8">
+<!-- HERO -->
+<section class="relative overflow-hidden bg-gradient-to-br from-emerald-700 via-emerald-800 to-gray-900 text-white py-20">
+  <div class="absolute inset-0 bg-[url('/images/pattern_dinos.svg')] opacity-10 bg-repeat"></div>
 
-                {{-- Texto y acciones --}}
-                <div>
-                    <h1 class="text-4xl md:text-5xl font-extrabold mb-3">
-                        ¡Bienvenido a <span class="text-emerald-600">JurassiDraft</span>!
-                    </h1>
-                    <p class="text-lg text-gray-600 mb-6">
-                        Gestioná partidas de <strong>Draftosaurus</strong>: creá salas, administrá jugadores y llevá el
-                        puntaje sin papelitos.
-                        Ideal para clases, torneos o juntadas con amigos.
-                    </p>
+  <div class="relative mx-auto max-w-7xl px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+    {{-- Texto --}}
+    <div class="space-y-6">
+      <h1 class="text-5xl md:text-6xl font-extrabold leading-tight">
+        ¡Bienvenido a <span class="text-emerald-300 drop-shadow-sm">JurassiDraft</span>!
+      </h1>
+      <p class="text-lg text-emerald-100">
+        La forma moderna de jugar <strong>Draftosaurus</strong>: gestioná tus partidas, turnos y puntajes de manera digital, rápida y divertida.
+      </p>
 
-                    @auth
-                        <div class="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2">
-                            @if (auth()->user()->rol === 'admin')
-                                <a href="{{ route('admin.usuarios.index') }}"
-                                    class="inline-flex items-center justify-center rounded-md bg-amber-500 px-6 py-3 text-white text-lg shadow-sm hover:bg-amber-600 w-full md:w-auto">
-                                    Panel admin
-                                </a>
-                            @endif
-                            <a href="{{ route('play') }}"
-                                class="inline-flex items-center justify-center rounded-md bg-emerald-600 px-6 py-3 text-white text-lg shadow-sm hover:bg-emerald-700 w-full md:w-auto">
-                                Iniciar partida
-                            </a>
+      @auth
+        <div class="flex flex-wrap gap-3">
+          @if (auth()->user()->rol === 'admin')
+            <a href="{{ route('admin.usuarios.index') }}"
+               class="flex items-center gap-2 rounded-md bg-amber-500 hover:bg-amber-600 px-6 py-3 font-semibold shadow-md transition">
+              <i class="bi bi-speedometer2"></i> Panel Admin
+            </a>
+          @endif
 
+          <a href="{{ route('play') }}"
+             class="flex items-center gap-2 rounded-md bg-emerald-500 hover:bg-emerald-600 px-6 py-3 font-semibold shadow-md transition">
+            <i class="bi bi-play-fill"></i> Iniciar partida
+          </a>
 
-                            <form action="{{ route('logout') }}" method="POST" class="w-full md:w-auto">
-                                @csrf
-                                <button
-                                    class="inline-flex items-center justify-center rounded-md border border-red-300 px-6 py-3 text-red-700 text-lg shadow-sm hover:bg-red-50 w-full">
-                                    Cerrar sesión
-                                </button>
-                            </form>
-                        </div>
-
-                        <div
-                            class="mt-3 inline-flex items-center gap-2 px-3 py-2 bg-emerald-50 text-emerald-700 rounded-full shadow-sm">
-                            <span
-                                class="inline-flex items-center justify-center rounded-md bg-blue-600 text-white text-xs px-2 py-0.5">👋</span>
-                            <span class="font-semibold">
-                                ¡Hola, {{ auth()->user()->nombre ?? auth()->user()->usuario }}!
-                            </span>
-                            <span
-                                class="inline-flex items-center justify-center rounded-md bg-gray-200 text-gray-700 text-xs px-2 py-0.5">
-                                ID: {{ auth()->user()->id }}
-                            </span>
-                        </div>
-                    @endauth
-
-                    @guest
-                        <div class="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2">
-                            <a href="{{ route('login') }}"
-                                class="inline-flex items-center justify-center rounded-md bg-emerald-600 px-6 py-3 text-white text-lg shadow-sm hover:bg-emerald-700 w-full md:w-auto">
-                                Iniciar sesión
-                            </a>
-                            <a href="{{ route('register') }}"
-                                class="inline-flex items-center justify-center rounded-md bg-white px-6 py-3 text-emerald-600 text-lg shadow-sm border border-emerald-600 hover:bg-emerald-50 w-full md:w-auto">
-                                Registrarse
-                            </a>
-
-                        </div>
-                    @endguest
-                </div>
-
-                {{-- Imagen --}}
-                <div>
-                    <div class="rounded-2xl border border-gray-200 bg-white shadow-lg overflow-hidden">
-                        <div class="bg-emerald-50 aspect-video flex items-center justify-center">
-                            <img src="{{ asset('images/logojuego_nobg.png') }}" alt="Vista previa de JurassiDraft"
-                                class="w-full h-full p-6 object-contain">
-                        </div>
-                    </div>
-                </div>
-
-            </div>
+          <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button
+              class="flex items-center gap-2 rounded-md border border-red-400 text-red-400 hover:bg-red-600/10 px-6 py-3 font-semibold transition">
+              <i class="bi bi-box-arrow-right"></i> Salir
+            </button>
+          </form>
         </div>
-    </section>
 
-    <!-- Cómo funciona -->
-    <section class="py-12 bg-gray-50 border-t border-gray-200">
-        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div class="mb-8 text-center">
-                <h2 class="text-2xl font-semibold mb-1">¿Cómo funciona?</h2>
-                <p class="text-gray-600">Cuatro pasos y ya estás jugando.</p>
-            </div>
+        <p class="mt-4 text-sm text-emerald-200">
+          👋 Hola, <span class="font-semibold">{{ auth()->user()->nombre ?? auth()->user()->usuario }}</span> · ID {{ auth()->user()->id }}
+        </p>
+      @endauth
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="h-full">
-                    <div
-                        class="h-full flex flex-row items-start gap-3 p-4 rounded-xl border border-gray-200 bg-white shadow-sm">
-                        <img src="{{ asset('images/logojuego_nobg.png') }}" alt="Draft"
-                            class="rounded w-20 h-20 object-cover">
-                        <div>
-                            <h5 class="text-lg font-semibold mb-1">1) Elegí tus dinosaurios</h5>
-                            <p class="text-gray-600 mb-0">
-                                Tomá dinos al azar, mantenelos en secreto y seleccioná uno por turno. El draft define tu
-                                estrategia.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="h-full">
-                    <div
-                        class="h-full flex flex-row items-start gap-3 p-4 rounded-xl border border-gray-200 bg-white shadow-sm">
-                        <img src="{{ asset('images/logojuego_nobg.png') }}" alt="Dado"
-                            class="rounded w-20 h-20 object-cover">
-                        <div>
-                            <h5 class="text-lg font-semibold mb-1">2) Restricción del dado</h5>
-                            <p class="text-gray-600 mb-0">
-                                En cada turno, el dado impone una regla de colocación. Adaptate y maximizá tus opciones.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="h-full">
-                    <div
-                        class="h-full flex flex-row items-start gap-3 p-4 rounded-xl border border-gray-200 bg-white shadow-sm">
-                        <img src="{{ asset('images/logojuego_nobg.png') }}" alt="Parque"
-                            class="rounded w-20 h-20 object-cover">
-                        <div>
-                            <h5 class="text-lg font-semibold mb-1">3) Colocá los dinosaurios</h5>
-                            <p class="text-gray-600 mb-0">
-                                Cada recinto puntúa distinto. Pensá dónde poner cada especie para sumar al máximo.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="h-full">
-                    <div
-                        class="h-full flex flex-row items-start gap-3 p-4 rounded-xl border border-gray-200 bg-white shadow-sm">
-                        <img src="{{ asset('images/logojuego_nobg.png') }}" alt="Puntaje"
-                            class="rounded w-20 h-20 object-cover">
-                        <div>
-                            <h5 class="text-lg font-semibold mb-1">4) Sumá puntos y ganá</h5>
-                            <p class="text-gray-600 mb-0">
-                                Tras dos rondas, el sistema calcula puntajes por recinto, parejas, T-Rex y río. El mejor
-                                parque gana.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            @guest
-                <div class="text-center mt-6">
-                    <a href="{{ route('register') }}"
-                        class="inline-flex items-center justify-center rounded-md bg-emerald-600 px-6 py-3 text-white text-lg shadow-sm hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-600 transition">
-                        Crear cuenta y empezar
-                    </a>
-                </div>
-            @endguest
+      @guest
+        <div class="flex flex-wrap gap-3">
+          <a href="{{ route('login') }}"
+             class="flex items-center gap-2 rounded-md bg-emerald-600 hover:bg-emerald-700 px-6 py-3 font-semibold shadow-md transition">
+            Iniciar sesión
+          </a>
+          <a href="{{ route('register') }}"
+             class="flex items-center gap-2 rounded-md border border-emerald-400 text-emerald-400 hover:bg-emerald-500/10 px-6 py-3 font-semibold transition">
+            Registrarse
+          </a>
         </div>
-    </section>
+      @endguest
+    </div>
 
-    {{-- CARACTERÍSTICAS --}}
-    <section class="py-12 bg-white border-t border-gray-200">
-        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div class="mb-8">
-                <h2 class="text-2xl font-semibold mb-1">Características</h2>
-                <p class="text-gray-600">Todo lo que necesitás para una partida prolija.</p>
-            </div>
+    {{-- Imagen --}}
+    <div class="relative">
+      <div class="rounded-2xl bg-white/10 border border-white/20 backdrop-blur-md shadow-xl overflow-hidden">
+        <img src="{{ asset('images/logojuego_nobg.png') }}" alt="JurassiDraft Logo"
+             class="object-contain w-full h-full p-10">
+      </div>
+      <div class="absolute -z-10 -top-10 -right-10 w-72 h-72 bg-emerald-500/30 rounded-full blur-3xl"></div>
+    </div>
+  </div>
+</section>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="h-full">
-                    <div class="h-full rounded-xl border border-gray-200 bg-white shadow-sm p-5">
-                        <div
-                            class="mb-2 inline-flex items-center justify-center rounded-md bg-emerald-50 text-emerald-700 px-2 py-1">
-                            🔐</div>
-                        <h3 class="text-lg font-semibold mb-1">Usuarios y roles</h3>
-                        <p class="text-gray-600">Admin y jugador con permisos acotados por rol.</p>
-                    </div>
-                </div>
+<!-- CÓMO FUNCIONA -->
+<section class="py-20 bg-gray-50 border-t border-gray-200">
+  <div class="mx-auto max-w-7xl px-6 lg:px-8 text-center">
+    <h2 class="text-4xl font-bold text-gray-900 mb-3">¿Cómo funciona?</h2>
+    <p class="text-gray-600 mb-12">Aprendé a jugar en solo cuatro pasos.</p>
 
-                <div class="h-full">
-                    <div class="h-full rounded-xl border border-gray-200 bg-white shadow-sm p-5">
-                        <div
-                            class="mb-2 inline-flex items-center justify-center rounded-md bg-emerald-50 text-emerald-700 px-2 py-1">
-                            🧩</div>
-                        <h3 class="text-lg font-semibold mb-1">Partidas</h3>
-                        <p class="text-gray-600">Creá, configurá y relanzá partidas con tu grupo.</p>
-                    </div>
-                </div>
-
-                <div class="h-full">
-                    <div class="h-full rounded-xl border border-gray-200 bg-white shadow-sm p-5">
-                        <div
-                            class="mb-2 inline-flex items-center justify-center rounded-md bg-emerald-50 text-emerald-700 px-2 py-1">
-                            📈</div>
-                        <h3 class="text-lg font-semibold mb-1">Puntuación</h3>
-                        <p class="text-gray-600">Anotá, validá y compará puntajes por ronda.</p>
-                    </div>
-                </div>
-            </div>
-
-            @auth
-                <div class="text-center mt-6">
-                    <a href="{{ route('play') }}"
-                        class="inline-flex items-center justify-center rounded-md bg-emerald-600 px-6 py-3 text-white text-lg shadow-sm hover:bg-emerald-700">
-                        Crear nueva partida
-                    </a>
-                </div>
-            @endauth
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      @foreach ([
+        ['🦕','Elegí tus dinosaurios','Seleccioná uno por turno y planeá tu estrategia.'],
+        ['🎲','Cargá la restricción del dado','Limitando las colocaciones.'],
+        ['🏞️','Colocá en los recintos','Cada tipo puntúa distinto: pensá antes de actuar.'],
+        ['🏆','Sumá puntos y ganá','Al final de la segunda ronda, el sistema calcula el ganador.']
+      ] as [$icon,$title,$desc])
+        <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-8 hover:shadow-md hover:-translate-y-1 transition">
+          <div class="text-4xl mb-4">{{ $icon }}</div>
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ $title }}</h3>
+          <p class="text-gray-600 text-sm">{{ $desc }}</p>
         </div>
-    </section>
+      @endforeach
+    </div>ƒ
 
-    {{-- QUIÉNES SOMOS --}}
-    <section id="quienes-somos" class="py-12 bg-gray-50 border-t border-gray-200">
-        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-2 items-center gap-8">
-                <div>
-                    <h2 class="text-2xl font-semibold mb-3">¿Quiénes somos?</h2>
-                    <p class="text-gray-800">
-                        <strong>JurassiDraft</strong> es una solución de <strong>JurassiCode</strong>, un equipo de
-                        estudiantes
-                        apasionados por el desarrollo web y los juegos de mesa. Digitalizamos la experiencia para hacerla
-                        más
-                        fluida, organizada y divertida.
-                    </p>
-                    <ul class="mt-3 space-y-1">
-                        <li><strong>Misión:</strong> Simplificar la gestión de puntos y turnos.</li>
-                        <li><strong>Visión:</strong> Ser la plataforma de referencia para partidas asistidas.</li>
-                        <li><strong>Valores:</strong> Innovación, claridad, accesibilidad y diversión.</li>
-                    </ul>
-                </div>
-                <div class="text-center">
-                    <div class="inline-block rounded-2xl border border-gray-200 bg-white shadow-lg overflow-hidden">
-                        <div class="bg-emerald-50 p-6">
-                            <img src="https://jurassicode.vercel.app/images/logo.png" alt="Equipo JurassiCode"
-                                class="mx-auto max-h-60 object-contain">
-                        </div>
-                    </div>
-                </div>
-            </div>
+    @guest
+      <a href="{{ route('register') }}"
+         class="mt-12 inline-flex items-center gap-2 rounded-md bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 text-lg font-semibold shadow transition">
+         <i class="bi bi-person-plus"></i> Crear cuenta y jugar gratis
+      </a>
+    @endguest
+  </div>
+</section>
+
+<!-- CARACTERÍSTICAS -->
+<section class="py-20 bg-white border-t border-gray-200">
+  <div class="mx-auto max-w-7xl px-6 lg:px-8">
+    <div class="text-center mb-12">
+      <h2 class="text-4xl font-bold text-gray-900 mb-3">Características principales</h2>
+      <p class="text-gray-600">Todo lo que necesitás para disfrutar una partida digital.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      @foreach ([
+        ['🔐','Gestión de usuarios y roles','Jugadores y administradores con permisos definidos.'],
+        ['🧩','Partidas configurables','Crea, edita y relanzá partidas en cualquier momento.'],
+        ['📊','Puntuación automatizada','El sistema valida jugadas y calcula los puntos al instante.']
+      ] as [$icon,$title,$desc])
+        <div class="rounded-2xl bg-gray-50 border border-gray-200 p-8 shadow-sm hover:shadow-md transition">
+          <div class="text-4xl mb-3">{{ $icon }}</div>
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ $title }}</h3>
+          <p class="text-gray-600">{{ $desc }}</p>
         </div>
-    </section>
+      @endforeach
+    </div>
+
+    @auth
+      <div class="text-center mt-12">
+        <a href="{{ route('play') }}"
+           class="inline-flex items-center gap-2 rounded-md bg-emerald-600 hover:bg-emerald-700 px-6 py-3 text-white text-lg font-semibold shadow transition">
+           <i class="bi bi-controller"></i> Crear nueva partida
+        </a>
+      </div>
+    @endauth
+  </div>
+</section>
+
+<!-- EQUIPO -->
+<section class="py-20 bg-gray-50 border-t border-gray-200">
+  <div class="mx-auto max-w-7xl px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 items-center gap-12">
+    <div>
+      <h2 class="text-4xl font-bold mb-4 text-gray-900">¿Quiénes somos?</h2>
+      <p class="text-gray-700 mb-4 leading-relaxed">
+        <strong>JurassiDraft</strong> es una creación del equipo <strong>JurassiCode</strong>, un grupo de estudiantes apasionados por la programación, la innovación y los juegos de mesa.
+      </p>
+      <ul class="space-y-2 text-gray-700">
+        <li><strong>Misión:</strong> Hacer que el seguimiento de partidas sea simple y divertido.</li>
+        <li><strong>Visión:</strong> Convertirse en la herramienta digital de referencia para Draftosaurus.</li>
+        <li><strong>Valores:</strong> Innovación, claridad, accesibilidad y pasión por el juego.</li>
+      </ul>
+    </div>
+
+    <div class="text-center">
+      <div class="inline-block rounded-2xl bg-white shadow-lg border border-gray-200 overflow-hidden">
+        <div class="bg-emerald-50 p-6">
+          <img src="https://jurassicode.vercel.app/images/logo.png" alt="Equipo JurassiCode"
+               class="mx-auto max-h-64 object-contain">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 @endsection
