@@ -9,15 +9,19 @@ $mensajes = session('partida.mensajes', []);
 $jugadorMap = collect($datos['jugadores'] ?? [])->keyBy('id');
 $dinoMap = collect($datos['dinosaurios'] ?? [])->keyBy('id');
 $recintoMap = collect($datos['recintos'] ?? [])->keyBy('id');
-$restric = $datos['restric'] ?? ['titulo' => '—', 'desc' => '—'];
+$restricBase = $datos['restric'] ?? ['titulo' => '—', 'desc' => '—'];
+$restricSesion = session('restriccion', $restricBase);
+$estadoJugadores = session('jugadores_estado', []);
+$flash = session('ok');
 @endphp
 
 <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4 space-y-8">
 
-  {{-- ✅ Flash --}}
-  @if (session('ok'))
-  <div class="rounded-md border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-800 shadow-sm">
-    {{ session('ok') }}
+  {{-- ✅ Flash (ok o nueva ronda) --}}
+  @if ($flash)
+  <div class="rounded-md border border-emerald-400 bg-emerald-50 p-4 text-emerald-800 shadow-sm text-sm font-medium
+    @if (str_contains($flash, 'Ronda')) animate-pulse ring-2 ring-emerald-400 ring-offset-2 @endif">
+    {{ $flash }}
   </div>
   @endif
 
@@ -75,10 +79,11 @@ $restric = $datos['restric'] ?? ['titulo' => '—', 'desc' => '—'];
     <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
       <div class="flex items-center justify-between mb-3">
         <h2 class="text-sm font-semibold text-gray-700">Restricción del dado</h2>
-        <form method="POST" action="{{ route('partidas.tirarDado') }}">
+        <form method="POST" action="{{ route('partidas.tirarDado', $partida->id) }}">
           @csrf
           <button type="submit"
-            class="rounded-md bg-emerald-600 px-3 py-1.5 text-white text-xs font-semibold shadow hover:bg-emerald-700 transition">
+            class="rounded-md bg-emerald-600 px-3 py-1.5 text-white text-xs font-semibold shadow hover:bg-emerald-700 transition disabled:opacity-50"
+            @disabled(!empty($partida->dado_restriccion))>
             🎲 Tirar Dado
           </button>
         </form>
@@ -90,8 +95,8 @@ $restric = $datos['restric'] ?? ['titulo' => '—', 'desc' => '—'];
           🎲
         </div>
         <div class="flex-1">
-          <div class="text-sm font-medium text-gray-900">{{ $restric['titulo'] ?? '—' }}</div>
-          <p class="text-sm text-gray-600 leading-snug">{{ $restric['desc'] ?? '—' }}</p>
+          <div class="text-sm font-medium text-gray-900">{{ $restricSesion['titulo'] ?? '—' }}</div>
+          <p class="text-sm text-gray-600 leading-snug">{{ $restricSesion['desc'] ?? '—' }}</p>
         </div>
       </div>
     </div>
@@ -122,6 +127,7 @@ $restric = $datos['restric'] ?? ['titulo' => '—', 'desc' => '—'];
         'teal' => 'bg-teal-100 text-teal-700',
         ];
         $avatar = $palette[$p['color']] ?? 'bg-gray-100 text-gray-700';
+        $stats = $estadoJugadores[$p['id']] ?? ['hand' => $p['hand'], 'placed' => $p['placed']];
         @endphp
 
         <article class="rounded-lg border border-gray-200 bg-white p-3 shadow-sm hover:shadow-md transition">
@@ -140,11 +146,11 @@ $restric = $datos['restric'] ?? ['titulo' => '—', 'desc' => '—'];
           <dl class="mt-2 grid grid-cols-3 gap-2 text-center">
             <div class="rounded-md bg-gray-50 p-2">
               <dt class="text-[11px] text-gray-500">En mano</dt>
-              <dd class="text-sm font-semibold text-gray-900">{{ $p['hand'] }}</dd>
+              <dd class="text-sm font-semibold text-gray-900">{{ $stats['hand'] }}</dd>
             </div>
             <div class="rounded-md bg-gray-50 p-2">
               <dt class="text-[11px] text-gray-500">Colocados</dt>
-              <dd class="text-sm font-semibold text-gray-900">{{ $p['placed'] }}</dd>
+              <dd class="text-sm font-semibold text-gray-900">{{ $stats['placed'] }}</dd>
             </div>
             <div class="rounded-md bg-gray-50 p-2">
               <dt class="text-[11px] text-gray-500">Puntos</dt>
@@ -162,7 +168,7 @@ $restric = $datos['restric'] ?? ['titulo' => '—', 'desc' => '—'];
   <section class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
     <h2 class="text-sm font-semibold text-gray-700 mb-4">Colocar Dinosaurio</h2>
 
-    <form method="POST" action="{{ route('partidas.agregarColocacion') }}" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+    <form method="POST" action="{{ route('partidas.agregarColocacion', $partida->id) }}" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
       @csrf
       <div>
         <label class="block text-xs font-medium text-gray-600 mb-1">Jugador</label>
@@ -203,77 +209,33 @@ $restric = $datos['restric'] ?? ['titulo' => '—', 'desc' => '—'];
     </form>
 
     @if (!empty($colocaciones))
-    <div class="mt-5">
-      <h3 class="text-xs font-semibold text-gray-700 mb-2">Colocaciones del turno actual</h3>
-      <div class="overflow-x-auto rounded-md border border-gray-200">
-        <table class="min-w-full text-sm">
-          <thead class="bg-gray-50 text-gray-500 text-xs">
-            <tr>
-              <th class="px-3 py-2 text-left">Jugador</th>
-              <th class="px-3 py-2 text-left">Dino</th>
-              <th class="px-3 py-2 text-left">Recinto</th>
-            </tr>
-          </thead>
-          <tbody>
-            @foreach ($colocaciones as $c)
-            <tr class="border-t text-gray-700 hover:bg-gray-50 transition">
-              <td class="px-3 py-1.5">{{ $jugadorMap[$c['jugador']]['nombre'] ?? 'Jugador' }}</td>
-              <td class="px-3 py-1.5">{{ $dinoMap[$c['dino']]->nombre_corto ?? '—' }}</td>
-              <td class="px-3 py-1.5">{{ $recintoMap[$c['recinto']]->descripcion ?? '—' }}</td>
-            </tr>
-            @endforeach
-          </tbody>
-        </table>
-      </div>
-    </div>
-    @endif
-  </section>
+<div class="mt-5">
+  <h3 class="text-xs font-semibold text-gray-700 mb-2">Colocaciones del turno actual</h3>
+  <div class="overflow-x-auto rounded-md border border-gray-200">
+    <table class="min-w-full text-sm">
+      <thead class="bg-gray-50 text-gray-500 text-xs">
+        <tr>
+          <th class="px-3 py-2 text-left">Jugador</th>
+          <th class="px-3 py-2 text-left">Dino</th>
+          <th class="px-3 py-2 text-left">Recinto</th>
+          <th class="px-3 py-2 text-right">Puntos</th>
+        </tr>
+      </thead>
+      <tbody>
+        @foreach ($colocaciones as $c)
+        <tr class="border-t text-gray-700 hover:bg-gray-50 transition">
+          <td class="px-3 py-1.5">{{ $c['jugador'] ?? 'Jugador' }}</td>
+          <td class="px-3 py-1.5">{{ $c['dino'] ?? '—' }}</td>
+          <td class="px-3 py-1.5">{{ $c['recinto'] ?? '—' }}</td>
+          <td class="px-3 py-1.5 text-right font-semibold text-emerald-700">+{{ $c['puntos'] ?? 0 }}</td>
+        </tr>
+        @endforeach
+      </tbody>
+    </table>
+  </div>
+</div>
+@endif
 
-  {{-- 🧮 Puntuación / Acciones --}}
-  <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-    {{-- Tabla de puntuación --}}
-    <div class="lg:col-span-2 rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
-      <div class="flex items-center justify-between mb-3">
-        <h2 class="text-sm font-semibold text-gray-700">Puntuación</h2>
-        <span class="text-xs text-gray-500">Visual</span>
-      </div>
-
-      <div class="overflow-x-auto">
-        <table class="min-w-full text-sm">
-          <thead>
-            <tr class="text-left text-gray-500 border-b">
-              <th class="py-2 pr-4">Jugador</th>
-              <th class="py-2 pl-4 text-right">Total</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-gray-100">
-            @foreach ($datos['score_rows'] as $r)
-            <tr>
-              <td class="py-2 pr-4 font-medium text-gray-800">{{ $r['jugador'] }}</td>
-              <td class="py-2 pl-4 text-right font-semibold text-gray-900">{{ $r['total'] }}</td>
-            </tr>
-            @endforeach
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    {{-- Acciones finales --}}
-    <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
-      <h2 class="text-sm font-semibold text-gray-700 mb-3">Acciones</h2>
-      <div class="grid grid-cols-1 gap-2">
-        <form action="#" method="POST" onsubmit="alert('Partida finalizada (local).'); return false;">
-          @csrf
-          <button type="submit"
-            class="w-full rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-700 transition">
-            ✅ Finalizar partida
-          </button>
-        </form>
-      </div>
-      <p class="mt-3 text-xs text-gray-500 leading-relaxed">
-        * La partida se guarda localmente hasta finalizar.
-      </p>
-    </div>
   </section>
 </div>
 @endsection

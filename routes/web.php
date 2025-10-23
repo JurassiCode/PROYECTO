@@ -129,14 +129,16 @@ Route::middleware(['auth'])->group(function () {
 });
 
 
-// 🎲 Tirar dado (local)
-Route::post('/trackeo/tirar-dado', [TrackeoPartidaController::class, 'tirarDado'])
+// 🎲 Tirar dado real (BD)
+Route::post('/partidas/{partida}/tirar-dado', [PartidasController::class, 'tirarDado'])
+    ->whereNumber('partida')
     ->name('partidas.tirarDado');
 
 // 🦕 Agregar colocación (local)
-Route::post('/trackeo/agregar-colocacion', [TrackeoPartidaController::class, 'agregarColocacion'])
+// Registrar jugada (trackeo real)
+Route::post('/partidas/{partida}/colocaciones', [PartidasController::class, 'agregarColocacion'])
+    ->whereNumber('partida')
     ->name('partidas.agregarColocacion');
-
 // ✅ Finalizar partida (local temporal)
 Route::post('/trackeo/finalizar', function () {
     session()->forget(['partida.jugadores', 'colocaciones']);
