@@ -46,7 +46,7 @@
           <tr class="hover:bg-emerald-800/10 transition">
             <td class="px-4 py-3 font-semibold">{{ $u->id }}</td>
             <td class="px-4 py-3">{{ $u->nombre }}</td>
-            <td class="px-4 py-3">{{ $u->usuario }}</td>
+            <td class="px-4 py-3">{{ $u->nickname }}</td>
             <td class="px-4 py-3">
               <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold {{ $badge }}">
                 {{ Str::upper($u->rol) }}
