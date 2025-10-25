@@ -155,7 +155,7 @@
         </div>
         <div class="text-center md:text-right space-x-4">
           @auth
-          <a href="{{ route('play') }}"
+          <a href="{{ route('lobby') }}"
             class="inline-flex items-center gap-2 rounded-md border border-emerald-400 text-emerald-200 px-3 py-2 hover:bg-emerald-600/10">
             <i class="bi bi-play-fill"></i> Jugar
           </a>

@@ -1,241 +1,112 @@
 @extends('layouts.playLayout')
 
-@section('title', 'Trackeo de Partida')
+@section('title', 'Seguimiento de Partida')
 
 @section('content')
 @php
-$colocaciones = session('colocaciones', []);
-$mensajes = session('partida.mensajes', []);
-$jugadorMap = collect($datos['jugadores'] ?? [])->keyBy('id');
-$dinoMap = collect($datos['dinosaurios'] ?? [])->keyBy('id');
-$recintoMap = collect($datos['recintos'] ?? [])->keyBy('id');
-$restricBase = $datos['restric'] ?? ['titulo' => '—', 'desc' => '—'];
-$restricSesion = session('restriccion', $restricBase);
-$estadoJugadores = session('jugadores_estado', []);
-$flash = session('ok');
+  $mensajes       = session('partida.mensajes', []);
+  $restricSesion  = session('restriccion', $datos['restric'] ?? ['titulo' => '—', 'desc' => '—']);
+  $estadoJugadores= session('jugadores_estado', []);
+  $flash          = session('ok');
 @endphp
 
-<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4 space-y-8">
-
-  {{-- ✅ Flash (ok o nueva ronda) --}}
-  @if ($flash)
-  <div class="rounded-md border border-emerald-400 bg-emerald-50 p-4 text-emerald-800 shadow-sm text-sm font-medium
-    @if (str_contains($flash, 'Ronda')) animate-pulse ring-2 ring-emerald-400 ring-offset-2 @endif">
-    {{ $flash }}
+<!-- ===== Fondo jurásico limpio ===== -->
+<div class="min-h-[100dvh] relative overflow-x-hidden bg-[radial-gradient(1200px_600px_at_10%_-10%,#064e3b_10%,#022c22_35%,#0b1412_70%)]">
+  <div class="pointer-events-none absolute inset-0 opacity-[0.08] mix-blend-overlay"
+       style="background-image:url('/images/pattern_dinos.svg');background-size:360px;background-repeat:repeat;">
   </div>
-  @endif
 
-  {{-- ⚠️ Errores --}}
-  @if ($errors->any())
-  <div class="rounded-md border border-rose-200 bg-rose-50 p-3 text-sm text-rose-800 shadow-sm">
-    <ul class="list-disc pl-5 space-y-0.5">
-      @foreach ($errors->all() as $e)
-      <li>{{ $e }}</li>
-      @endforeach
-    </ul>
-  </div>
-  @endif
-
-  {{-- 💬 Mensajes dinámicos --}}
-  @if (!empty($mensajes))
-  <div class="rounded-md border border-blue-200 bg-blue-50 p-3 text-sm text-blue-800 shadow-sm">
-    <ul class="list-disc pl-4 space-y-0.5">
-      @foreach ($mensajes as $m)
-      <li>{{ $m }}</li>
-      @endforeach
-    </ul>
-  </div>
-  @endif
-
-  {{-- 🦕 Encabezado --}}
-  <header class="flex items-center justify-between py-4 border-b border-gray-200">
-    <h1 class="text-xl font-bold text-gray-900 tracking-tight">Trackeo de Partida</h1>
-    <div class="flex items-center gap-2 text-sm">
-      <span class="rounded-md bg-emerald-50 text-emerald-700 px-2 py-0.5 font-medium">Sala</span>
-      <span class="font-mono text-white">{{ $datos['sala'] ?? 'Local' }}</span>
+  <!-- ===== Top bar ===== -->
+  <header class="sticky top-0 z-30 backdrop-blur supports-[backdrop-filter]:bg-emerald-950/60 bg-emerald-950/80 border-b border-emerald-800">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <h1 class="text-sm sm:text-base font-semibold text-emerald-50 tracking-wide">
+          Seguimiento de Partida
+        </h1>
+      </div>
+      <div class="flex items-center gap-2 text-xs">
+        <span class="rounded-md bg-emerald-700/60 text-emerald-50 px-2 py-0.5 border border-emerald-600/60">Sala</span>
+        <span class="font-mono text-emerald-100">{{ $datos['sala'] }}</span>
+      </div>
     </div>
   </header>
 
-  {{-- 🎲 Estado global --}}
-  <section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-    {{-- Fase / Turno / Ronda --}}
-    <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
-      <div class="flex items-center justify-between mb-3">
-        <h2 class="text-sm font-semibold text-gray-700">Estado</h2>
-        <span class="text-xs text-gray-500">Draft en curso</span>
+  <!-- ===== Contenido principal ===== -->
+  <main class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 space-y-6 z-10">
+
+    {{-- ✅ Flash --}}
+    @if ($flash)
+      <div class="rounded-lg border border-emerald-500/50 bg-emerald-900/40 text-emerald-100 px-4 py-3 text-sm shadow ring-1 ring-emerald-500/30">
+        {{ $flash }}
       </div>
-
-      <div class="grid grid-cols-3 gap-3 text-center">
-        @foreach ([['Fase', $datos['fase'] ?? 'Draft'], ['Turno', $datos['turno'][0] . ' / ' . $datos['turno'][1]], ['Ronda', $datos['ronda'][0] . ' / ' . $datos['ronda'][1]]] as [$label, $value])
-        <div class="rounded-lg bg-gray-50 p-3">
-          <div class="text-xs text-gray-500">{{ $label }}</div>
-          <div class="text-lg font-semibold text-gray-900">{{ $value }}</div>
-        </div>
-        @endforeach
-      </div>
-    </div>
-
-    {{-- Restricción del dado --}}
-    <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
-      <div class="flex items-center justify-between mb-3">
-        <h2 class="text-sm font-semibold text-gray-700">Restricción del dado</h2>
-        <form method="POST" action="{{ route('partidas.tirarDado', $partida->id) }}">
-          @csrf
-          <button type="submit"
-            class="rounded-md bg-emerald-600 px-3 py-1.5 text-white text-xs font-semibold shadow hover:bg-emerald-700 transition disabled:opacity-50"
-            @disabled(!empty($partida->dado_restriccion))>
-            🎲 Tirar Dado
-          </button>
-        </form>
-      </div>
-
-      <div class="flex items-center gap-4">
-        <div
-          class="rounded-xl border border-gray-200 bg-emerald-50 text-emerald-700 w-20 h-20 flex items-center justify-center text-3xl font-bold shadow-sm select-none">
-          🎲
-        </div>
-        <div class="flex-1">
-          <div class="text-sm font-medium text-gray-900">{{ $restricSesion['titulo'] ?? '—' }}</div>
-          <p class="text-sm text-gray-600 leading-snug">{{ $restricSesion['desc'] ?? '—' }}</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  {{-- 👥 Jugadores --}}
-  <section class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
-    <div class="flex items-center justify-between mb-3">
-      <h2 class="text-sm font-semibold text-gray-700">Jugadores</h2>
-      <span class="text-xs text-gray-500">{{ count($datos['jugadores'] ?? []) }} / 6</span>
-    </div>
-
-    @if (empty($datos['jugadores']))
-    <div class="rounded-md border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
-      No hay jugadores cargados. Agregalos desde <a href="{{ route('play') }}" class="underline font-medium">/play</a>.
-    </div>
-    @else
-    <div class="overflow-x-auto">
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 min-w-[640px]">
-        @foreach ($datos['jugadores'] as $p)
-        @php
-        $palette = [
-        'emerald' => 'bg-emerald-100 text-emerald-700',
-        'sky' => 'bg-sky-100 text-sky-700',
-        'purple' => 'bg-purple-100 text-purple-700',
-        'rose' => 'bg-rose-100 text-rose-700',
-        'amber' => 'bg-amber-100 text-amber-700',
-        'teal' => 'bg-teal-100 text-teal-700',
-        ];
-        $avatar = $palette[$p['color']] ?? 'bg-gray-100 text-gray-700';
-        $stats = $estadoJugadores[$p['id']] ?? ['hand' => $p['hand'], 'placed' => $p['placed']];
-        @endphp
-
-        <article class="rounded-lg border border-gray-200 bg-white p-3 shadow-sm hover:shadow-md transition">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <div class="h-8 w-8 rounded-full {{ $avatar }} flex items-center justify-center text-sm font-semibold">
-                {{ strtoupper(substr($p['nombre'], 0, 1)) }}
-              </div>
-              <h3 class="text-sm font-semibold text-gray-900">{{ $p['nombre'] }}</h3>
-            </div>
-            <span class="rounded-full bg-emerald-50 text-emerald-700 text-xs px-2 py-0.5 font-medium">
-              {{ $p['estado'] }}
-            </span>
-          </div>
-
-          <dl class="mt-2 grid grid-cols-3 gap-2 text-center">
-            <div class="rounded-md bg-gray-50 p-2">
-              <dt class="text-[11px] text-gray-500">En mano</dt>
-              <dd class="text-sm font-semibold text-gray-900">{{ $stats['hand'] }}</dd>
-            </div>
-            <div class="rounded-md bg-gray-50 p-2">
-              <dt class="text-[11px] text-gray-500">Colocados</dt>
-              <dd class="text-sm font-semibold text-gray-900">{{ $stats['placed'] }}</dd>
-            </div>
-            <div class="rounded-md bg-gray-50 p-2">
-              <dt class="text-[11px] text-gray-500">Puntos</dt>
-              <dd class="text-sm font-semibold text-gray-900">{{ $p['score'] }}</dd>
-            </div>
-          </dl>
-        </article>
-        @endforeach
-      </div>
-    </div>
     @endif
-  </section>
 
-  {{-- 🦴 Colocar dinosaurio --}}
-  <section class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
-    <h2 class="text-sm font-semibold text-gray-700 mb-4">Colocar Dinosaurio</h2>
-
-    <form method="POST" action="{{ route('partidas.agregarColocacion', $partida->id) }}" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-      @csrf
-      <div>
-        <label class="block text-xs font-medium text-gray-600 mb-1">Jugador</label>
-        <select name="jugador" class="w-full rounded-md border-gray-300 text-sm focus:ring-emerald-500" required>
-          <option value="">Seleccionar</option>
-          @foreach ($datos['jugadores'] as $j)
-          <option value="{{ $j['id'] }}">{{ $j['nombre'] }}</option>
+    {{-- ⚠️ Errores --}}
+    @if ($errors->any())
+      <div class="rounded-lg border border-rose-500/40 bg-rose-900/30 text-rose-100 px-4 py-3 text-sm shadow">
+        <ul class="list-disc pl-5 space-y-0.5">
+          @foreach ($errors->all() as $e)
+            <li>{{ $e }}</li>
           @endforeach
-        </select>
+        </ul>
+      </div>
+    @endif
+
+    {{-- 💬 Mensajes dinámicos --}}
+    @if (!empty($mensajes))
+      <div class="rounded-lg border border-sky-500/40 bg-sky-900/30 text-sky-100 px-4 py-3 text-sm shadow">
+        <ul class="list-disc pl-4 space-y-0.5">
+          @foreach ($mensajes as $m)
+            <li>{{ $m }}</li>
+          @endforeach
+        </ul>
+      </div>
+    @endif
+
+
+    <!-- =========================
+         FILA 1: Estado + Dado
+         ========================= -->
+    <section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {{-- Estado --}}
+      @include('partials.estado')
+
+      {{-- Tirar dado --}}
+      @include('partials.dado')
+    </section>
+
+
+    <!-- =========================
+         FILA 2: Agregar colocación + Colocaciones
+         ========================= -->
+    <section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {{-- Agregar colocación --}}
+      @include('partials.colocacion')
+
+      {{-- Tabla colocaciones --}}
+      @include('partials.colocaciones')
+    </section>
+
+
+    <!-- =========================
+         FILA 3: Jugadores + Placeholder Finalizar
+         ========================= -->
+    <section class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+      {{-- Jugadores ocupa 4/5 --}}
+      <div class="lg:col-span-4">
+        @include('partials.jugadores')
       </div>
 
-      <div>
-        <label class="block text-xs font-medium text-gray-600 mb-1">Dinosaurio</label>
-        <select name="dino" class="w-full rounded-md border-gray-300 text-sm focus:ring-emerald-500" required>
-          <option value="">Seleccionar</option>
-          @foreach ($datos['dinosaurios'] as $d)
-          <option value="{{ $d->id }}">{{ $d->nombre_corto }}</option>
-          @endforeach
-        </select>
-      </div>
-
-      <div>
-        <label class="block text-xs font-medium text-gray-600 mb-1">Recinto</label>
-        <select name="recinto" class="w-full rounded-md border-gray-300 text-sm focus:ring-emerald-500" required>
-          <option value="">Seleccionar</option>
-          @foreach ($datos['recintos'] as $r)
-          <option value="{{ $r->id }}">{{ $r->descripcion }}</option>
-          @endforeach
-        </select>
-      </div>
-
-      <div class="col-span-1 sm:col-span-3">
-        <button type="submit"
-          class="w-full rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 transition">
-          🦕 Agregar colocación
+      {{-- Placeholder finalizar --}}
+      <div class="lg:col-span-1 rounded-2xl border border-emerald-800/60 bg-emerald-950/40 shadow-inner ring-1 ring-emerald-500/10 flex flex-col justify-center items-center text-center p-6">
+        <h3 class="text-sm font-semibold text-emerald-200 mb-3">Finalizar partida</h3>
+        <p class="text-xs text-emerald-400/80 mb-4">Una vez que todos los turnos finalicen, podrás cerrar la partida.</p>
+        <button disabled class="rounded-md bg-emerald-700/60 px-4 py-2 text-sm text-white font-semibold opacity-60 cursor-not-allowed">
+          🏁 Finalizar
         </button>
       </div>
-    </form>
+    </section>
 
-    @if (!empty($colocaciones))
-<div class="mt-5">
-  <h3 class="text-xs font-semibold text-gray-700 mb-2">Colocaciones del turno actual</h3>
-  <div class="overflow-x-auto rounded-md border border-gray-200">
-    <table class="min-w-full text-sm">
-      <thead class="bg-gray-50 text-gray-500 text-xs">
-        <tr>
-          <th class="px-3 py-2 text-left">Jugador</th>
-          <th class="px-3 py-2 text-left">Dino</th>
-          <th class="px-3 py-2 text-left">Recinto</th>
-          <th class="px-3 py-2 text-right">Puntos</th>
-        </tr>
-      </thead>
-      <tbody>
-        @foreach ($colocaciones as $c)
-        <tr class="border-t text-gray-700 hover:bg-gray-50 transition">
-          <td class="px-3 py-1.5">{{ $c['jugador'] ?? 'Jugador' }}</td>
-          <td class="px-3 py-1.5">{{ $c['dino'] ?? '—' }}</td>
-          <td class="px-3 py-1.5">{{ $c['recinto'] ?? '—' }}</td>
-          <td class="px-3 py-1.5 text-right font-semibold text-emerald-700">+{{ $c['puntos'] ?? 0 }}</td>
-        </tr>
-        @endforeach
-      </tbody>
-    </table>
-  </div>
-</div>
-@endif
-
-  </section>
+  </main>
 </div>
 @endsection

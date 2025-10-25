@@ -29,7 +29,7 @@
         </a>
         @endif
 
-        <a href="{{ route('play') }}"
+        <a href="{{ route('lobby') }}"
           class="flex items-center gap-2 rounded-md bg-emerald-500 hover:bg-emerald-600 px-6 py-3 font-semibold shadow-md transition">
           <i class="bi bi-play-fill"></i> Iniciar partida
         </a>
@@ -127,7 +127,7 @@
 
     @auth
     <div class="text-center mt-12">
-      <a href="{{ route('play') }}"
+      <a href="{{ route('lobby') }}"
         class="inline-flex items-center gap-2 rounded-md bg-emerald-600 hover:bg-emerald-700 px-6 py-3 text-white text-lg font-semibold shadow transition">
         <i class="bi bi-controller"></i> Crear nueva partida
       </a>

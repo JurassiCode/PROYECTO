@@ -21,7 +21,7 @@ class Usuario extends Authenticatable
     /** Campos asignables */
     protected $fillable = [
         'nombre',
-        'nickname',    
+        'nickname',
         'contrasena',
         'rol',
         'creado_en',

@@ -6,7 +6,7 @@ use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\DocumentacionController;
 use App\Http\Middleware\EsAdmin;
 use App\Http\Controllers\TrackeoPartidaController;
-use App\Http\Controllers\PlayController;
+use App\Http\Controllers\LobbyController;
 use App\Http\Controllers\PartidasController;
 use App\Http\Controllers\ColocacionesController;
 use App\Http\Controllers\ResultadosController;
@@ -19,7 +19,7 @@ use App\Http\Controllers\PerfilController;
 */
 
 Route::get('/', function () {
-    return view('home');
+    return view('index');
 })->name('home');
 
 /*
@@ -69,22 +69,18 @@ Route::middleware(['auth', EsAdmin::class])
 | Jugador + Trackeo (auth)
 |--------------------------------------------------------------------------
 */
+
 Route::middleware('auth')->group(function () {
-    // Pantalla principal de configuración de partida
-    Route::get('/play', [PlayController::class, 'index'])->name('play');
-
-    // Agregar jugador (POST)
-    Route::post('/play/add', [PlayController::class, 'add'])->name('play.add');
-
-    // Quitar jugador (POST con parámetro {id})
-    Route::post('/play/remove/{id}', [PlayController::class, 'remove'])->name('play.remove');
-
-    // Vaciar lista completa (POST)
-    Route::post('/play/clear', [PlayController::class, 'clear'])->name('play.clear');
+    // Lobby de configuración de partida
+    Route::get('/lobby', [LobbyController::class, 'index'])->name('lobby');
+    Route::post('/lobby/add', [LobbyController::class, 'add'])->name('lobby.add');
+    Route::post('/lobby/remove/{id}', [LobbyController::class, 'remove'])->name('lobby.remove');
+    Route::post('/lobby/clear', [LobbyController::class, 'clear'])->name('lobby.clear');
 
     // Crear partida definitiva (guarda en BD)
     Route::post('/partidas', [PartidasController::class, 'store'])->name('partidas.store');
 });
+
 
 // Ver trackeo de partida persistida
 Route::get('/trackeo-partida/{partida}', [PartidasController::class, 'show'])

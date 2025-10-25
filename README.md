@@ -67,7 +67,8 @@ php artisan key:generate
 
 ### 5. Dumpear la base de datos
 
-Desde phpMyAdmin o Workbench, importar el archivo `db/draftosaurus.sql`
+Desde phpMyAdmin o Workbench, crear la base de datos y luego importar el dump desde el archivo `db/jurassidraft.sql`
+Modificar en el .env la base de datos para que coincida con la que se creó, reemplazar DB_DATABASE, DB_USERNAME y DB_PASSWORD por los valores de la base de de datos creada y/o valores de mysql.
 
 ---
 

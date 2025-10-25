@@ -39,7 +39,7 @@
           @auth
           @php
           $isAdmin = auth()->user()->rol === 'admin';
-          $mainActionUrl = $isAdmin ? route('admin.usuarios.index') : route('play');
+          $mainActionUrl = $isAdmin ? route('admin.usuarios.index') : route('lobby');
           $mainActionLabel = $isAdmin ? 'Panel Admin' : 'Jugar';
           $avatarUrl = 'https://www.gravatar.com/avatar/?s=160&d=mp';
           $displayName = auth()->user()->nombre ?? auth()->user()->usuario;
@@ -162,7 +162,7 @@
         </div>
         <div class="text-center md:text-right space-x-4">
           @auth
-          <a href="{{ route('play') }}"
+          <a href="{{ route('lobby') }}"
             class="inline-flex items-center gap-2 rounded-md border border-emerald-400 text-emerald-200 px-3 py-2 hover:bg-emerald-600/10">
             <i class="bi bi-play-fill"></i> Jugar
           </a>

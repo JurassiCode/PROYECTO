@@ -2,17 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Usuario;
 use Illuminate\Http\Request;
+use App\Models\Usuario;
 
-class PlayController extends Controller
+class LobbyController extends Controller
 {
+    /**
+     * Muestra el lobby de configuración de partida.
+     * Los jugadores se cargan desde la sesión.
+     */
     public function index(Request $request)
     {
         $jugadores = session('partida.jugadores', []);
-        return view('player.play', compact('jugadores'));
+        return view('lobby.index', compact('jugadores'));
     }
 
+    /**
+     * Agrega un jugador al lobby (por ID o nickname).
+     */
     public function add(Request $request)
     {
         $request->validate([
@@ -23,16 +30,10 @@ class PlayController extends Controller
 
         $ident = trim($request->input('identificador'));
 
-        // Buscar por ID numérico o por nickname (coincide con la BD actual)
-        if (ctype_digit($ident)) {
-            $user = Usuario::where('id', (int) $ident)
-                ->whereNull('deleted_at')
-                ->first();
-        } else {
-            $user = Usuario::where('nickname', $ident)
-                ->whereNull('deleted_at')
-                ->first();
-        }
+        // Buscar por ID numérico o nickname
+        $user = ctype_digit($ident)
+            ? Usuario::where('id', (int) $ident)->whereNull('deleted_at')->first()
+            : Usuario::where('nickname', $ident)->whereNull('deleted_at')->first();
 
         if (!$user) {
             return back()->withErrors([
@@ -42,23 +43,23 @@ class PlayController extends Controller
 
         $jugadores = session('partida.jugadores', []);
 
-        // Máximo 6 jugadores
+        // Límite máximo de 6 jugadores
         if (count($jugadores) >= 6) {
             return back()->withErrors([
                 'identificador' => 'La partida ya tiene 6 jugadores (máximo).',
             ]);
         }
 
-        // Evitar duplicados por ID
+        // Evitar duplicados
         foreach ($jugadores as $j) {
             if ((int) $j['id'] === (int) $user->id) {
                 return back()->withErrors([
-                    'identificador' => 'Ese jugador ya está en la partida.',
+                    'identificador' => 'Ese jugador ya está en la lista.',
                 ]);
             }
         }
 
-        // Guardar en sesión (con claves coherentes con la vista)
+        // Agregar jugador a la sesión
         $jugadores[] = [
             'id'       => $user->id,
             'nickname' => $user->nickname,
@@ -68,9 +69,12 @@ class PlayController extends Controller
 
         session(['partida.jugadores' => $jugadores]);
 
-        return redirect()->route('play')->with('ok', 'Jugador agregado.');
+        return redirect()->route('lobby')->with('ok', 'Jugador agregado al lobby.');
     }
 
+    /**
+     * Quita un jugador del lobby.
+     */
     public function remove(Request $request, int $id)
     {
         $jugadores = array_values(array_filter(
@@ -80,12 +84,15 @@ class PlayController extends Controller
 
         session(['partida.jugadores' => $jugadores]);
 
-        return redirect()->route('play')->with('ok', 'Jugador eliminado.');
+        return redirect()->route('lobby')->with('ok', 'Jugador eliminado del lobby.');
     }
 
+    /**
+     * Vacía completamente la lista del lobby.
+     */
     public function clear(Request $request)
     {
         session()->forget('partida.jugadores');
-        return redirect()->route('play')->with('ok', 'Se vació la lista de jugadores.');
+        return redirect()->route('lobby')->with('ok', 'Se vació la lista de jugadores.');
     }
 }

@@ -10,5 +10,5 @@ class DinosaurioCatalogo extends Model
     protected $primaryKey = 'id';
     public $timestamps = false;
 
-    protected $fillable = ['nombre_corto','categoria'];
+    protected $fillable = ['nombre_corto', 'categoria'];
 }
