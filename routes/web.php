@@ -115,14 +115,18 @@ Route::get('/documentacion/{path?}', [DocumentacionController::class, 'index'])
 
 /*
 |--------------------------------------------------------------------------
-| Perfil
+| Perfil de Usuario
 |--------------------------------------------------------------------------
 */
-
 Route::middleware(['auth'])->group(function () {
-    Route::get('/perfil', [PerfilController::class, 'edit'])->name('perfil.edit');
-    Route::put('/perfil', [PerfilController::class, 'update'])->name('perfil.update');
+    // Perfil principal (dashboard del usuario)
+    Route::get('/perfil', [PerfilController::class, 'show'])->name('perfil.show');
+
+    // Editar perfil
+    Route::get('/perfil/editar', [PerfilController::class, 'edit'])->name('perfil.edit');
+    Route::put('/perfil/actualizar', [PerfilController::class, 'update'])->name('perfil.update');
 });
+
 
 
 // 🎲 Tirar dado real (BD)

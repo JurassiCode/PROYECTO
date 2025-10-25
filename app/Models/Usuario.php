@@ -11,7 +11,7 @@ class Usuario extends Authenticatable
 
     /** Tabla y clave primaria */
     protected $table = 'usuarios';
-    protected $primaryKey = 'id'; // ← tu BD usa 'id', no 'id_usuario'
+    protected $primaryKey = 'id';
     public $incrementing = true;
     protected $keyType = 'int';
     public $timestamps = false;
@@ -31,6 +31,12 @@ class Usuario extends Authenticatable
     /** Ocultamos la contraseña al serializar */
     protected $hidden = [
         'contrasena',
+    ];
+
+    /** 🕒 Casts automáticos de fecha */
+    protected $casts = [
+        'creado_en' => 'datetime',
+        'deleted_at' => 'datetime',
     ];
 
     /**
