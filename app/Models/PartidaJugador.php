@@ -15,9 +15,9 @@ class PartidaJugador extends Model
         'puntos_totales',
     ];
 
-    /* ===============================================================
-     | 🧩 RELACIONES PRINCIPALES
-     |===============================================================*/
+    /* 
+     |  RELACIONES PRINCIPALES
+     */
 
     /**
      * Partida a la que pertenece el jugador.

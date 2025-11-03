@@ -12,25 +12,25 @@ use App\Models\PartidaJugador;
 class PerfilController extends Controller
 {
     /**
-     * 🦖 Mostrar perfil del usuario logueado
+     *  Mostrar perfil del usuario logueado
      */
     public function show()
     {
         /** @var \App\Models\Usuario $user */
         $user = Auth::user();
 
-        // ✅ Partidas creadas por el usuario
+        //  Partidas creadas por el usuario
         $partidasCreadas = Partida::where('creador_id', $user->id)
             ->orderBy('creado_en', 'desc')
             ->get();
 
-        // ✅ Partidas donde participó
+        //  Partidas donde participó
         $partidasJugadas = PartidaJugador::with('partida')
             ->where('usuario_id', $user->id)
             ->orderByDesc('id')
             ->get();
 
-        // ✅ Stats básicas
+        //   Stats básicas
         $stats = [
             'jugadas' => $partidasJugadas->count(),
             'creadas' => $partidasCreadas->count(),
@@ -42,7 +42,7 @@ class PerfilController extends Controller
     }
 
     /**
-     * ✏️ Mostrar formulario de edición del perfil
+     *   Mostrar formulario de edición del perfil
      */
     public function edit()
     {
@@ -51,7 +51,7 @@ class PerfilController extends Controller
     }
 
     /**
-     * 💾 Actualizar los datos del perfil del usuario
+     *  Actualizar los datos del perfil del usuario
      */
     public function update(Request $request)
     {

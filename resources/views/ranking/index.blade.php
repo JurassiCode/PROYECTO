@@ -4,7 +4,7 @@
 
 @section('content')
 <section class="relative overflow-hidden bg-gradient-to-br from-emerald-700 via-emerald-800 to-gray-900 text-white py-20">
-  <!-- 🌿 Patrón de fondo -->
+  <!--  Patrón de fondo -->
   <div class="absolute inset-0 opacity-10 bg-repeat" style="background-image: url(/images/pattern_dinos.svg);"></div>
 
   <div class="relative mx-auto max-w-6xl px-6 lg:px-8 text-center mb-12">
@@ -17,7 +17,7 @@
     </p>
   </div>
 
-  <!-- 🦖 Tabla ranking -->
+  <!--  Tabla ranking -->
   <div class="relative mx-auto max-w-5xl px-6 lg:px-8">
     <div class="backdrop-blur-md bg-white/10 border border-white/20 rounded-3xl shadow-xl overflow-hidden">
       <table class="w-full border-collapse">
@@ -69,7 +69,7 @@
     </div>
   </div>
 
-  <!-- 🌋 Frase final -->
+  <!--  Frase final -->
   <div class="relative text-center mt-12 text-emerald-100 px-6">
     <p class="text-lg italic">
       “Solo los más hábiles conquistan el tablero de <span class="text-amber-300 font-semibold">JurassiDraft</span>.”

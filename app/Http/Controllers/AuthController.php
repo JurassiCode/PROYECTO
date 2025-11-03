@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
-    /** -------------------- LOGIN -------------------- */
+    /** ---LOGIN ---  */
 
     /** Muestra el login si no está autenticado; si lo está, redirige según rol. */
     public function show(Request $request)
@@ -28,7 +28,7 @@ class AuthController extends Controller
     /** Procesa el login con nickname + contraseña. */
     public function login(Request $request)
     {
-        // ✅ Validación coherente con los campos del form
+        //  Validación coherente con los campos del form
         $cred = $request->validate(
             [
                 'nickname'   => ['required', 'string'],
@@ -42,7 +42,7 @@ class AuthController extends Controller
             ]
         );
 
-        // 1️⃣ Buscar usuario por nickname
+        // 1️ Buscar usuario por nickname
         $usuario = Usuario::where('nickname', $cred['nickname'])->first();
 
         if (!$usuario) {
@@ -51,25 +51,25 @@ class AuthController extends Controller
                 ->onlyInput('nickname');
         }
 
-        // 2️⃣ Verificar si está desactivado
+        // 2 Verificar si está desactivado
         if (!is_null($usuario->deleted_at)) {
             return back()
                 ->withErrors(['nickname' => 'Este usuario ha sido desactivado.'])
                 ->onlyInput('nickname');
         }
 
-        // 3️⃣ Verificar contraseña con Hash::check
+        // 3  Verificar contraseña con Hash::check
         if (!Hash::check($cred['contrasena'], $usuario->contrasena)) {
             return back()
                 ->withErrors(['contrasena' => 'Usuario o contraseña incorrectos.'])
                 ->onlyInput('nickname');
         }
 
-        // 4️⃣ Autenticar manualmente (sin Auth::attempt)
+        // 4  Autenticar manualmente (sin Auth::attempt)
         Auth::login($usuario);
         $request->session()->regenerate();
 
-        // 5️⃣ Redirecciones según contexto
+        // 5️ Redirecciones según contexto
         if ($request->filled('next') && Str::startsWith($request->next, '/')) {
             return redirect($request->next);
         }
@@ -91,7 +91,7 @@ class AuthController extends Controller
         return redirect()->route('home');
     }
 
-    /** ------------------ REGISTER ------------------- */
+    /** ---REGISTER ---- */
 
     /** Muestra el formulario de registro si no está autenticado. */
     public function showRegister(Request $request)

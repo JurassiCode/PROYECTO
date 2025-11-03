@@ -5,13 +5,13 @@
 @section('content')
 <!-- HERO -->
 <section class="relative overflow-hidden bg-gradient-to-br from-emerald-700 via-emerald-800 to-gray-900 text-white py-20">
-  <!-- 🌿 Patrón de dinosaurios -->
+  <!--  Patrón de dinosaurios -->
   <div class="absolute inset-0 opacity-10 bg-repeat" style="background-image: url(/images/pattern_dinos.svg);"></div>
 
-  <!-- 🦕 Contenido principal -->
+  <!--  Contenido principal -->
   <div class="relative mx-auto max-w-7xl px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
     
-    {{-- 🌴 Columna de texto --}}
+    {{--  Columna de texto --}}
     <div class="space-y-8">
       <div>
         <h1 class="text-5xl md:text-6xl font-extrabold leading-tight drop-shadow-sm">
@@ -23,7 +23,7 @@
         </p>
       </div>
 
-      {{-- 🎮 Botones principales --}}
+      {{--  Botones principales --}}
       <div class="flex flex-wrap gap-3">
         {{-- 🔗 Ver Ranking (visible para todos) --}}
         <a href="{{ route('ranking.index') }}"
@@ -71,7 +71,7 @@
       </div>
     </div>
 
-    {{-- 🦖 Imagen lateral --}}
+    {{--  Imagen lateral --}}
     <div class="relative">
       <div class="rounded-2xl bg-white/10 border border-white/20 backdrop-blur-md shadow-xl overflow-hidden">
         <img src="{{ asset('images/logojuego_nobg.png') }}" alt="JurassiDraft Logo"

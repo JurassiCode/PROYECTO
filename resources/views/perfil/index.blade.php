@@ -8,7 +8,7 @@
   x-init="if(showToast){ setTimeout(() => showToast = false, 3000) }"
   class="min-h-[100vh] bg-gradient-to-br from-emerald-900 via-emerald-950 to-gray-900 text-gray-100 py-12 relative">
 
-  {{-- ✅ Toast de éxito --}}
+  {{--  Toast de éxito --}}
   <div
     x-show="showToast"
     x-transition.opacity
@@ -18,7 +18,7 @@
 
   <div class="max-w-5xl mx-auto px-6 space-y-10">
 
-    {{-- 🧑 Encabezado --}}
+    {{--  Encabezado --}}
     <header class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
       <div>
         <h1 class="text-4xl font-extrabold text-emerald-300 drop-shadow-sm">
@@ -41,7 +41,7 @@
       </button>
     </header>
 
-    {{-- 📊 Estadísticas --}}
+    {{--  Estadísticas --}}
     <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 text-center">
       <div class="bg-emerald-800/30 hover:bg-emerald-800/50 p-5 rounded-xl shadow-sm transition">
         <p class="text-4xl font-extrabold text-emerald-200">{{ $stats['jugadas'] }}</p>
@@ -67,7 +67,7 @@
     </div>
 
 
-    {{-- 🎮 Partidas jugadas --}}
+    {{--  Partidas jugadas --}}
     <section>
       <h2 class="text-xl font-semibold mb-4 text-emerald-400 flex items-center gap-2">
         🎲 Partidas jugadas
@@ -84,7 +84,7 @@
       @endforelse
     </section>
 
-    {{-- 🦖 Partidas creadas --}}
+    {{--  Partidas creadas --}}
     <section>
       <h2 class="text-xl font-semibold mb-4 text-emerald-400 flex items-center gap-2">
         👷‍♂️ Partidas creadas
@@ -102,7 +102,7 @@
     </section>
   </div>
 
-  {{-- 🧾 Modal de edición de perfil --}}
+  {{--  Modal de edición de perfil --}}
   <div
     x-show="openModal"
     x-cloak

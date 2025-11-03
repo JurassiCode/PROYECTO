@@ -21,9 +21,9 @@ class Partida extends Model
         'creado_en',
     ];
 
-    /* ===============================================================
-     | 🧩 RELACIONES PRINCIPALES
-     |===============================================================*/
+    /*
+     |  RELACIONES PRINCIPALES
+     */
 
     /**
      * Jugadores asociados a esta partida.

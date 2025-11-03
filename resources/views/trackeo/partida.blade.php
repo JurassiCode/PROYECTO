@@ -34,14 +34,14 @@ $flash = session('ok');
   <!-- ===== Contenido principal ===== -->
   <main class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 space-y-6 z-10">
 
-    {{-- ✅ Flash --}}
+    {{--  Flash --}}
     @if ($flash)
     <div class="rounded-lg border border-emerald-500/50 bg-emerald-900/40 text-emerald-100 px-4 py-3 text-sm shadow ring-1 ring-emerald-500/30">
       {{ $flash }}
     </div>
     @endif
 
-    {{-- ⚠️ Errores --}}
+    {{--  Errores --}}
     @if ($errors->any())
     <div class="rounded-lg border border-rose-500/40 bg-rose-900/30 text-rose-100 px-4 py-3 text-sm shadow">
       <ul class="list-disc pl-5 space-y-0.5">
@@ -52,7 +52,7 @@ $flash = session('ok');
     </div>
     @endif
 
-    {{-- 💬 Mensajes dinámicos --}}
+    {{--  Mensajes dinámicos --}}
     @if (!empty($mensajes))
     <div class="rounded-lg border border-sky-500/40 bg-sky-900/30 text-sky-100 px-4 py-3 text-sm shadow">
       <ul class="list-disc pl-4 space-y-0.5">
@@ -64,9 +64,9 @@ $flash = session('ok');
     @endif
 
 
-    <!-- =========================
+    <!--
          FILA 1: Estado + Dado
-         ========================= -->
+    -->
     <section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {{-- Estado --}}
       @include('partials.estado')
@@ -76,9 +76,9 @@ $flash = session('ok');
     </section>
 
 
-    <!-- =========================
+    <!--
          FILA 2: Agregar colocación + Colocaciones
-         ========================= -->
+     -->
     <section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {{-- Agregar colocación --}}
       @include('partials.colocacion')
@@ -88,16 +88,16 @@ $flash = session('ok');
     </section>
 
 
-    <!-- =========================
+    <!--
          FILA 3: Jugadores + Placeholder Finalizar
-         ========================= -->
+     -->
     <section class="grid grid-cols-1 lg:grid-cols-5 gap-6">
       {{-- Jugadores ocupa 4/5 --}}
       <div class="lg:col-span-4">
         @include('partials.jugadores')
       </div>
 
-      {{-- ✅ Finalizar partida real --}}
+      {{--  Finalizar partida real --}}
       <div class="lg:col-span-1 rounded-2xl border border-emerald-800/60 bg-emerald-950/40 shadow-inner ring-1 ring-emerald-500/10 flex flex-col justify-center items-center text-center p-6">
         <h3 class="text-sm font-semibold text-emerald-200 mb-3">Finalizar partida</h3>
         <p class="text-xs text-emerald-400/80 mb-4">

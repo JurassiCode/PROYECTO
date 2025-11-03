@@ -6,7 +6,7 @@
 <section class="min-h-[100vh] bg-gradient-to-br from-emerald-800 via-emerald-900 to-gray-900 text-gray-100 py-10">
     <div class="mx-auto max-w-6xl px-6">
 
-        {{-- 🦖 Encabezado --}}
+        {{--  Encabezado --}}
         <div class="mb-8 text-center">
             <h1 class="text-4xl font-extrabold mb-2 tracking-tight">
                 Lobby de <span class="text-emerald-300">Partida</span>
@@ -26,7 +26,7 @@
         </div>
         @endif
 
-        {{-- 🎮 GRID PRINCIPAL --}}
+        {{--  GRID PRINCIPAL --}}
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {{-- Formulario principal --}}
             <div class="lg:col-span-2 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md shadow-md p-6">
@@ -89,7 +89,7 @@
             </div>
         </div>
 
-        {{-- 👥 Lista de jugadores --}}
+        {{--  Lista de jugadores --}}
         <div class="mt-8 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md shadow-md p-6">
             <div class="flex items-center justify-between mb-3">
                 <h2 class="text-lg font-semibold flex items-center gap-2 text-white">

@@ -18,7 +18,7 @@ $colores = [
     <div class="pointer-events-none absolute inset-0 opacity-[0.06] mix-blend-overlay"
         style="background-image:url('/images/pattern_dinos.svg');background-size:400px;background-repeat:repeat;"></div>
 
-    <!-- 🏆 Encabezado -->
+    <!--  Encabezado -->
     <div class="relative text-center mb-14">
         <h1 class="text-5xl font-extrabold tracking-tight drop-shadow-lg text-amber-300">
             🦖 Resultados de la Partida
@@ -26,10 +26,10 @@ $colores = [
         <p class="mt-3 text-emerald-100/90 text-lg">Partida #{{ $partida->id }} ({{ $partida->nombre }}) finalizada</p>
     </div>
 
-    <!-- 🥇 Podio -->
+    <!--  Podio -->
     <div class="relative z-10 grid grid-cols-3 gap-6 items-end max-w-5xl w-full mb-20">
 
-        {{-- 🥈 Segundo Lugar --}}
+        {{--  Segundo Lugar --}}
         @if (isset($jugadores[1]))
         <div class="flex flex-col items-center">
             <div class="bg-gradient-to-b {{ $colores[1]['bg'] }} {{ $colores[1]['text'] }} 
@@ -43,7 +43,7 @@ $colores = [
         </div>
         @endif
 
-        {{-- 🥇 Primer Lugar --}}
+        {{--  Primer Lugar --}}
         @if (isset($jugadores[0]))
         <div class="flex flex-col items-center scale-110">
             <div class="bg-gradient-to-b {{ $colores[0]['bg'] }} {{ $colores[0]['text'] }} 
@@ -57,7 +57,7 @@ $colores = [
         </div>
         @endif
 
-        {{-- 🥉 Tercer Lugar --}}
+        {{--  Tercer Lugar --}}
         @if (isset($jugadores[2]))
         <div class="flex flex-col items-center">
             <div class="bg-gradient-to-b {{ $colores[2]['bg'] }} {{ $colores[2]['text'] }} 
@@ -72,7 +72,7 @@ $colores = [
         @endif
     </div>
 
-    <!-- 📊 Tabla completa -->
+    <!--  Tabla completa -->
     <div class="relative z-10 w-full max-w-3xl bg-emerald-950/40 border border-emerald-800/40 
               rounded-2xl overflow-hidden backdrop-blur-sm shadow-xl">
         <table class="w-full text-center">
@@ -107,7 +107,7 @@ $colores = [
         </table>
     </div>
 
-    <!-- 🎮 Botones -->
+    <!--  Botones -->
     <div class="relative z-10 mt-12 flex flex-wrap justify-center gap-4">
         <a href="{{ route('lobby') }}"
             class="px-8 py-4 bg-emerald-600 hover:bg-emerald-500 text-lg font-semibold rounded-xl shadow-md transition

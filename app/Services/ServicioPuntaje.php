@@ -21,7 +21,7 @@ class ServicioPuntaje
         $restriccion = trim(strtolower($restriccion));
         $clave = strtolower($recinto->clave);
 
-        // 🔹 Mapeo de recintos válidos por cara del dado
+        //  Mapeo de recintos válidos por cara del dado
         $mapaRestricciones = [
             'el bosque'         => ['rio', 'bosque_semejanza', 'trio_frondoso', 'rey_selva'],
             'llanura'           => ['pradera_amor', 'prado_diferencia', 'isla_solitario', 'rio'],
@@ -31,7 +31,7 @@ class ServicioPuntaje
             '¡cuidado con el t-rex!' => ['*'],
         ];
 
-        // 🔸 Validación general (ubicación)
+        //  Validación general (ubicación)
         if (isset($mapaRestricciones[$restriccion]) && $mapaRestricciones[$restriccion][0] !== '*') {
             $permitidos = $mapaRestricciones[$restriccion];
             if (!in_array($clave, $permitidos)) {
@@ -42,10 +42,10 @@ class ServicioPuntaje
             }
         }
 
-        // 🔸 Validaciones especiales (filtradas por jugador)
+        //  Validaciones especiales (filtradas por jugador)
         if ($partidaId && $usuarioId) {
 
-            // 🏠 Recinto Vacío → ese recinto del jugador no debe tener dinos
+            //  Recinto Vacío → ese recinto del jugador no debe tener dinos
             if ($restriccion === 'recinto vacío') {
                 $ocupado = Colocacion::where('partida_id', $partidaId)
                     ->where('usuario_id', $usuarioId)
@@ -60,7 +60,7 @@ class ServicioPuntaje
                 }
             }
 
-            // 🦖 ¡Cuidado con el T-Rex! → ese recinto del jugador no debe tener T-Rex
+            //  ¡Cuidado con el T-Rex! → ese recinto del jugador no debe tener T-Rex
             if ($restriccion === '¡cuidado con el t-rex!') {
                 $hayTrex = Colocacion::where('partida_id', $partidaId)
                     ->where('usuario_id', $usuarioId)
@@ -91,13 +91,13 @@ class ServicioPuntaje
     ): int {
         if (!$partidaId || !$usuarioId) return (int) ($recinto->puntos_base ?? 0);
 
-        // 🧩 Colocaciones del jugador (su propio parque)
+        //  Colocaciones del jugador (su propio parque)
         $colocaciones = Colocacion::where('partida_id', $partidaId)
             ->where('usuario_id', $usuarioId)
             ->with('dinoCatalogo')
             ->get();
 
-        // 🟩 Bosque de las Semejanzas
+        //  Bosque de las Semejanzas
         if ($recinto->tipo_regla === 'semejanza') {
             $enRecinto = $colocaciones->where('recinto_id', $recinto->id);
             if ($enRecinto->isNotEmpty()) {
@@ -112,7 +112,7 @@ class ServicioPuntaje
             return $tabla[$cantidad] ?? end($tabla);
         }
 
-        // 🟦 Prado de la Diferencia
+        //  Prado de la Diferencia
         if ($recinto->tipo_regla === 'variedad') {
             $enRecinto = $colocaciones->where('recinto_id', $recinto->id);
             $tiposExistentes = $enRecinto->pluck('dinoCatalogo.nombre_corto')->map('strtolower')->toArray();
@@ -126,7 +126,7 @@ class ServicioPuntaje
             return $tabla[$cantidad] ?? end($tabla);
         }
 
-        // 🩷 Pradera del Amor (parejas del mismo tipo)
+        //  Pradera del Amor (parejas del mismo tipo)
         if ($recinto->tipo_regla === 'parejas') {
             $enRecinto = $colocaciones->where('recinto_id', $recinto->id);
 
@@ -148,7 +148,7 @@ class ServicioPuntaje
             return $totalParejas * 5;
         }
 
-        // 🟨 Isla del Solitario
+        //  Isla del Solitario
         if ($recinto->tipo_regla === 'solitario') {
             $repetidos = $colocaciones
                 ->where('tipo_dino', $dino->id)
@@ -157,7 +157,7 @@ class ServicioPuntaje
             return $repetidos > 0 ? 0 : 7;
         }
 
-        // 🌳 Trío Frondoso (exactamente 3 dinosaurios)
+        //  Trío Frondoso (exactamente 3 dinosaurios)
         if ($recinto->tipo_regla === 'exactos') {
             $enRecinto = $colocaciones->where('recinto_id', $recinto->id);
             $cantidad = $enRecinto->count() + 1; // +1 por el nuevo dino que se está colocando
@@ -165,7 +165,7 @@ class ServicioPuntaje
             return $cantidad === 3 ? 7 : 0;
         }
 
-        // 🦁 Rey de la Selva (especial) — mayoría global por especie
+        //  Rey de la Selva (especial) — mayoría global por especie
         if ($recinto->tipo_regla === 'especial') {
             // Contar cuántos dinosaurios de esa especie tiene cada jugador
             $conteoPorJugador = Colocacion::where('partida_id', $partidaId)
@@ -180,12 +180,12 @@ class ServicioPuntaje
             // Si el jugador tiene la cantidad máxima (o empatado en ella), obtiene 7 puntos
             return $cantidadJugador === $maximo ? 7 : 0;
         }
-        // 🌊 Río (cada dino = 1 punto fijo)
+        //  Río (cada dino = 1 punto fijo)
         if (strtolower($recinto->clave) === 'rio') {
             return 1;
         }
 
-        // 🔸 Por defecto
+        //  Por defecto
         return (int) ($recinto->puntos_base ?? 0);
     }
 
@@ -199,7 +199,7 @@ class ServicioPuntaje
         ?int $partidaId = null,
         ?int $usuarioId = null
     ): array {
-        // ⚡ Si el jugador es quien lanzó el dado → libre
+        //  Si el jugador es quien lanzó el dado → libre
         $tiradorId = session('tirador_id');
         if ($usuarioId && $tiradorId && $usuarioId === $tiradorId) {
             $puntos = $this->calcularPuntos($recinto, $dino, $partidaId, $usuarioId);
@@ -210,7 +210,7 @@ class ServicioPuntaje
             ];
         }
 
-        // 🔹 Validación normal para el resto
+        //  Validación normal para el resto
         $validacion = $this->validarRestriccion($restriccion, $recinto, $partidaId, $usuarioId);
 
         if (!$validacion['valido']) {

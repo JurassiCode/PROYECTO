@@ -15,9 +15,7 @@ use App\Services\ServicioPuntaje;
 
 class PartidasController extends Controller
 {
-    /* ===============================================================
-     | 🦖 Crear una nueva partida (desde el lobby)
-     |===============================================================*/
+    /*🦖.    Crear una nueva partida (desde el lobby)   */
     public function store(Request $request)
     {
         $jugadores = session('partida.jugadores', []);
@@ -38,7 +36,7 @@ class PartidasController extends Controller
 
         $user = Auth::user();
 
-        // 💾 Crear partida y asociar jugadores
+        //  Crear partida y asociar jugadores
         $partida = DB::transaction(function () use ($request, $jugadores, $user) {
             $p = Partida::create([
                 'nombre'      => $request->nombre,
@@ -68,19 +66,17 @@ class PartidasController extends Controller
             ->with('ok', '✅ Partida creada correctamente.');
     }
 
-    /* ===============================================================
-     | 🎮 Mostrar partida en curso (pantalla de trackeo)
-     |===============================================================*/
+    /*   Mostrar partida en curso (pantalla de trackeo)*/
     public function show(Partida $partida)
     {
-        // 🚫 Si la partida ya fue cerrada, redirigir directamente a los resultados
+        //  Si la partida ya fue cerrada, redirigir directamente a los resultados
         if ($partida->estado === 'cerrada') {
             return redirect()
                 ->route('resultados.partida.show', $partida->id)
                 ->with('info', 'Esta partida ya fue finalizada.');
         }
 
-        // 🔹 Obtener jugadores y estado actual de la partida
+        //  Obtener jugadores y estado actual de la partida
         $pj = $partida->jugadores()->with('usuario')->get();
         $palette = ['emerald', 'sky', 'purple', 'rose', 'amber', 'teal'];
 
@@ -107,7 +103,7 @@ class PartidasController extends Controller
             ->with(['usuario', 'recintoCatalogo', 'dinoCatalogo'])
             ->get();
 
-        // 🧩 Descripciones reales según el manual del Dado
+        //  Descripciones reales según el manual del Dado
         $descripciones = [
             'El Bosque' => 'Los dinosaurios deben colocarse en cualquier recinto del área de Bosque del parque.',
             'Llanura' => 'Los dinosaurios deben colocarse en cualquier recinto del área de Llanura del parque.',
@@ -152,9 +148,7 @@ class PartidasController extends Controller
     }
 
 
-    /* ===============================================================
-     | 🦕 Registrar una colocación real
-     |===============================================================*/
+    /*  Registrar una colocación real. */
     public function agregarColocacion(Request $request, Partida $partida)
     {
         $data = $request->validate([
@@ -240,9 +234,7 @@ class PartidasController extends Controller
         return back()->with('ok', "🦕 {$jugador->nombre} colocó un {$dino->nombre_corto} (+{$resultado['puntos']} pts)");
     }
 
-    /* ===============================================================
-     | 🎲 Tirar dado (real)
-     |===============================================================*/
+    /* Tirar dado (real).  */
     public function tirarDado(Request $request, Partida $partida)
     {
         // 🔸 Validar jugador
@@ -265,14 +257,14 @@ class PartidasController extends Controller
 
         $random = $opciones[array_rand($opciones)];
 
-        // 🔹 Guardar restricción y quién tiró (en sesión)
+        //   Guardar restricción y quién tiró (en sesión)
         $partida->update(['dado_restriccion' => $random['titulo']]);
         session([
             'restriccion' => [
                 'titulo' => $random['titulo'],
                 'desc'   => $random['desc'],
             ],
-            'tirador_id' => (int) $request->tirador, // 👈 se guarda el tirador actual
+            'tirador_id' => (int) $request->tirador, //  se guarda el tirador actual
         ]);
 
         return back()->with('ok', '🎲 Dado lanzado: ' . $random['titulo']);
@@ -281,21 +273,21 @@ class PartidasController extends Controller
 
     public function finalizar(Partida $partida)
     {
-        // 🚫 Evitar cierre duplicado
+        //  Evitar cierre duplicado
         if ($partida->estado === 'cerrada') {
             return redirect()->route('resultados.partida.show', $partida->id);
         }
 
-        // 🔹 Marcar como cerrada
+        //  Marcar como cerrada
         $partida->update([
             'estado' => 'cerrada',
             'dado_restriccion' => null,
         ]);
 
-        // 🔹 Limpiar sesión
+        //  Limpiar sesión
         session()->forget(['restriccion', 'tirador_id']);
 
-        // 🔹 Redirigir a la ruta de resultados
+        //  Redirigir a la ruta de resultados
         return redirect()
             ->route('resultados.partida.show', $partida->id)
             ->with('ok', "🏁 La partida '{$partida->nombre}' fue cerrada correctamente.");
