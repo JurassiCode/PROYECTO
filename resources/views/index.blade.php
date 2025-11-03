@@ -4,74 +4,86 @@
 
 @section('content')
 <!-- HERO -->
-<section class="relative overflow-hidden bg-gradient-to-br from-emerald-700 via-emerald-800 to-gray-900 text-white py-4">
-  <div class="absolute inset-0 opacity-10 bg-repeat"
-    style="background-image: url(/images/pattern_dinos.svg);">
-  </div>
+<section class="relative overflow-hidden bg-gradient-to-br from-emerald-700 via-emerald-800 to-gray-900 text-white py-20">
+  <!-- 🌿 Patrón de dinosaurios -->
+  <div class="absolute inset-0 opacity-10 bg-repeat" style="background-image: url(/images/pattern_dinos.svg);"></div>
 
-  </div>
-  <div class="relative mx-auto max-w-7xl px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-    {{-- Texto --}}
-    <div class="space-y-6">
-      <h1 class="text-5xl md:text-6xl font-extrabold leading-tight">
-        ¡Bienvenido a <span class="text-emerald-300 drop-shadow-sm">JurassiDraft</span>!
-      </h1>
-      <p class="text-lg text-emerald-100">
-        La forma moderna de jugar <strong>Draftosaurus</strong>: gestioná tus partidas, turnos y puntajes de manera digital, rápida y divertida.
-      </p>
-
-      @auth
-      <div class="flex flex-wrap gap-3">
-        @if (auth()->user()->rol === 'admin')
-        <a href="{{ route('admin.usuarios.index') }}"
-          class="flex items-center gap-2 rounded-md bg-amber-500 hover:bg-amber-600 px-6 py-3 font-semibold shadow-md transition">
-          <i class="bi bi-speedometer2"></i> Panel Admin
-        </a>
-        @endif
-
-        <a href="{{ route('lobby') }}"
-          class="flex items-center gap-2 rounded-md bg-emerald-500 hover:bg-emerald-600 px-6 py-3 font-semibold shadow-md transition">
-          <i class="bi bi-play-fill"></i> Iniciar partida
-        </a>
-
-        <form method="POST" action="{{ route('logout') }}">
-          @csrf
-          <button
-            class="flex items-center gap-2 rounded-md border border-red-400 text-red-400 hover:bg-red-600/10 px-6 py-3 font-semibold transition">
-            <i class="bi bi-box-arrow-right"></i> Salir
-          </button>
-        </form>
+  <!-- 🦕 Contenido principal -->
+  <div class="relative mx-auto max-w-7xl px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+    
+    {{-- 🌴 Columna de texto --}}
+    <div class="space-y-8">
+      <div>
+        <h1 class="text-5xl md:text-6xl font-extrabold leading-tight drop-shadow-sm">
+          ¡Bienvenido a <span class="text-emerald-300">JurassiDraft</span>!
+        </h1>
+        <p class="mt-4 text-lg text-emerald-100 max-w-lg">
+          La forma moderna de jugar <strong>Draftosaurus</strong>: gestioná tus partidas, turnos y puntajes 
+          de manera digital, rápida y divertida.
+        </p>
       </div>
 
-      <p class="mt-4 text-sm text-emerald-200">
-        👋 Hola, <span class="font-semibold">{{ auth()->user()->nombre ?? auth()->user()->usuario }}</span> · ID {{ auth()->user()->id }}
-      </p>
-      @endauth
-
-      @guest
+      {{-- 🎮 Botones principales --}}
       <div class="flex flex-wrap gap-3">
-        <a href="{{ route('login') }}"
-          class="flex items-center gap-2 rounded-md bg-emerald-600 hover:bg-emerald-700 px-6 py-3 font-semibold shadow-md transition">
-          Iniciar sesión
+        {{-- 🔗 Ver Ranking (visible para todos) --}}
+        <a href="{{ route('ranking.index') }}"
+          class="flex items-center gap-2 rounded-md border border-amber-400 text-amber-400 hover:bg-amber-500/10 px-6 py-3 font-semibold transition">
+          <i class="bi bi-trophy"></i> Ver Ranking
         </a>
-        <a href="{{ route('register') }}"
-          class="flex items-center gap-2 rounded-md border border-emerald-400 text-emerald-400 hover:bg-emerald-500/10 px-6 py-3 font-semibold transition">
-          Registrarse
-        </a>
+
+        @auth
+          @if (auth()->user()->rol === 'admin')
+          <a href="{{ route('admin.usuarios.index') }}"
+            class="flex items-center gap-2 rounded-md bg-amber-500 hover:bg-amber-600 px-6 py-3 font-semibold shadow-md transition">
+            <i class="bi bi-speedometer2"></i> Panel Admin
+          </a>
+          @endif
+
+          <a href="{{ route('lobby') }}"
+            class="flex items-center gap-2 rounded-md bg-emerald-500 hover:bg-emerald-600 px-6 py-3 font-semibold shadow-md transition">
+            <i class="bi bi-play-fill"></i> Iniciar partida
+          </a>
+
+          <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button
+              class="flex items-center gap-2 rounded-md border border-red-400 text-red-400 hover:bg-red-600/10 px-6 py-3 font-semibold transition">
+              <i class="bi bi-box-arrow-right"></i> Salir
+            </button>
+          </form>
+
+          <p class="w-full mt-4 text-sm text-emerald-200">
+            👋 Hola, <span class="font-semibold">{{ auth()->user()->nombre ?? auth()->user()->usuario }}</span> · ID {{ auth()->user()->id }}
+          </p>
+        @endauth
+
+        @guest
+          <a href="{{ route('login') }}"
+            class="flex items-center gap-2 rounded-md bg-emerald-600 hover:bg-emerald-700 px-6 py-3 font-semibold shadow-md transition">
+            <i class="bi bi-box-arrow-in-right"></i> Iniciar sesión
+          </a>
+
+          <a href="{{ route('register') }}"
+            class="flex items-center gap-2 rounded-md border border-emerald-400 text-emerald-400 hover:bg-emerald-500/10 px-6 py-3 font-semibold transition">
+            <i class="bi bi-person-plus"></i> Registrarse
+          </a>
+        @endguest
       </div>
-      @endguest
     </div>
 
-    {{-- Imagen --}}
+    {{-- 🦖 Imagen lateral --}}
     <div class="relative">
       <div class="rounded-2xl bg-white/10 border border-white/20 backdrop-blur-md shadow-xl overflow-hidden">
         <img src="{{ asset('images/logojuego_nobg.png') }}" alt="JurassiDraft Logo"
           class="object-contain w-full h-full p-10">
       </div>
-      <div class="absolute -z-10 -top-10 -right-10 w-72 h-72 bg-emerald-500/30 rounded-full blur-3xl"></div>
+
+      <div class="absolute -z-10 -top-12 -right-12 w-80 h-80 bg-emerald-500/30 rounded-full blur-3xl"></div>
     </div>
   </div>
 </section>
+
+
 
 <!-- CÓMO FUNCIONA -->
 <section class="py-20 bg-gray-50 border-t border-gray-200">

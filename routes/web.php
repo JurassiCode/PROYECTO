@@ -5,12 +5,12 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\DocumentacionController;
 use App\Http\Middleware\EsAdmin;
-use App\Http\Controllers\TrackeoPartidaController;
 use App\Http\Controllers\LobbyController;
 use App\Http\Controllers\PartidasController;
-use App\Http\Controllers\ColocacionesController;
 use App\Http\Controllers\ResultadosController;
 use App\Http\Controllers\PerfilController;
+use App\Http\Controllers\RankingController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -133,3 +133,9 @@ Route::post('/partidas/{partida}/tirar-dado', [PartidasController::class, 'tirar
 Route::post('/partidas/{partida}/colocaciones', [PartidasController::class, 'agregarColocacion'])
     ->whereNumber('partida')
     ->name('partidas.agregarColocacion');
+
+
+//Ranking
+
+
+Route::get('/ranking', [RankingController::class, 'index'])->name('ranking.index');

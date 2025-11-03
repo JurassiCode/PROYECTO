@@ -118,6 +118,10 @@ $colores = [
             class="px-8 py-4 bg-gray-700 hover:bg-gray-600 text-lg font-semibold rounded-xl shadow-md transition">
             🏠 Volver al inicio
         </a>
+         <a href="{{ route('ranking.index') }}"
+          class="flex items-center gap-2 rounded-md border border-amber-400 text-amber-400 hover:bg-amber-500/10 px-6 py-3 font-semibold transition">
+          <i class="bi bi-trophy"></i> Ver Ranking
+        </a>
     </div>
 </section>
 @endsection
