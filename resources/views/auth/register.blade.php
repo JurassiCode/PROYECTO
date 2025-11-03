@@ -130,35 +130,6 @@
     </div>
   </div>
 
-  <!-- Script -->
-  <script>
-    const toggles = [{
-        btn: 'togglePassword',
-        input: 'contrasena'
-      },
-      {
-        btn: 'togglePassword2',
-        input: 'contrasena_confirmation'
-      },
-    ];
-    toggles.forEach(({
-      btn,
-      input
-    }) => {
-      const b = document.getElementById(btn);
-      const i = document.getElementById(input);
-      if (b && i) {
-        b.addEventListener('click', () => {
-          const isPwd = i.type === 'password';
-          i.type = isPwd ? 'text' : 'password';
-          const icon = b.querySelector('i');
-          icon.classList.toggle('bi-eye');
-          icon.classList.toggle('bi-eye-slash');
-        });
-      }
-    });
-  </script>
-
 </body>
 
 </html>

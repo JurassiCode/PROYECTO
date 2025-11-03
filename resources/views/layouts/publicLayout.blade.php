@@ -41,7 +41,7 @@
           $isAdmin = auth()->user()->rol === 'admin';
           $mainActionUrl = $isAdmin ? route('admin.usuarios.index') : route('lobby');
           $mainActionLabel = $isAdmin ? 'Panel Admin' : 'Jugar';
-          $avatarUrl = 'https://www.gravatar.com/avatar/?s=160&d=mp';
+          $avatarUrl = asset('images/avatar.jpg');
           $displayName = auth()->user()->nombre ?? auth()->user()->usuario;
           $mainBtnClasses = $isAdmin
           ? 'bg-amber-500 hover:bg-amber-600 focus-visible:ring-amber-400'
@@ -181,9 +181,6 @@
       </div>
     </div>
   </footer>
-
-  {{-- AlpineJS --}}
-  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </body>
 
 </html>

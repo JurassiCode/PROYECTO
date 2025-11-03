@@ -39,8 +39,9 @@
           @auth
           @php
           $isAdmin = auth()->user()->rol === 'admin';
-          $avatarUrl = 'https://www.gravatar.com/avatar/?s=160&d=mp';
+          $avatarUrl = asset('images/avatar.jpg');
           @endphp
+
 
           <a href="{{ route('home') }}"
             class="inline-flex items-center gap-2 rounded-md px-4 py-2 text-white font-medium shadow-sm
@@ -175,8 +176,6 @@
     </div>
   </footer>
 
-  {{-- AlpineJS --}}
-  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </body>
 
 </html>

@@ -116,18 +116,6 @@
     </div>
   </div>
 
-  <!-- Script toggle -->
-  <script>
-    const btn = document.getElementById('togglePassword');
-    const input = document.getElementById('contrasena');
-    btn.addEventListener('click', () => {
-      const isHidden = input.type === 'password';
-      input.type = isHidden ? 'text' : 'password';
-      btn.querySelector('i').classList.toggle('bi-eye');
-      btn.querySelector('i').classList.toggle('bi-eye-slash');
-    });
-  </script>
-
 </body>
 
 </html>
