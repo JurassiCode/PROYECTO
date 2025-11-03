@@ -69,7 +69,7 @@
                 </a>
               </li>
               <li>
-                <a href="{{ route('perfil.edit') }}"
+                <a href="{{ route('perfil.show') }}"
                   class="flex items-center px-4 py-2 text-sm text-blue-300 hover:bg-blue-600/10 transition">
                   <i class="bi bi-person mr-2"></i>Ver perfil
                 </a>
@@ -118,7 +118,7 @@
         <a href="{{ route('home') }}" class="block rounded-md px-4 py-2 text-sm hover:bg-emerald-600/10">
           <i class="bi bi-house-fill mr-2"></i>Inicio
         </a>
-        <a href="{{ route('perfil.edit') }}" class="block rounded-md px-4 py-2 text-sm hover:bg-blue-600/10">
+        <a href="{{ route('perfil.show') }}" class="block rounded-md px-4 py-2 text-sm hover:bg-blue-600/10">
           <i class="bi bi-person mr-2"></i>Ver perfil
         </a>
         <form action="{{ route('logout') }}" method="POST" class="pt-2 border-t border-white/10">

@@ -73,8 +73,15 @@ class PartidasController extends Controller
      |===============================================================*/
     public function show(Partida $partida)
     {
-        $pj = $partida->jugadores()->with('usuario')->get();
+        // 🚫 Si la partida ya fue cerrada, redirigir directamente a los resultados
+        if ($partida->estado === 'cerrada') {
+            return redirect()
+                ->route('resultados.partida.show', $partida->id)
+                ->with('info', 'Esta partida ya fue finalizada.');
+        }
 
+        // 🔹 Obtener jugadores y estado actual de la partida
+        $pj = $partida->jugadores()->with('usuario')->get();
         $palette = ['emerald', 'sky', 'purple', 'rose', 'amber', 'teal'];
 
         $jugadores = [];
@@ -113,7 +120,6 @@ class PartidasController extends Controller
         $titulo = $partida->dado_restriccion ?? '—';
         $desc   = $descripciones[$titulo] ?? 'Tirá el dado para comenzar.';
 
-        // 🔹 Guardar en sesión para que la vista lo use siempre
         session(['restriccion' => [
             'titulo' => $titulo,
             'desc'   => $desc,
@@ -144,6 +150,7 @@ class PartidasController extends Controller
             'colocaciones'  => $colocaciones,
         ]);
     }
+
 
     /* ===============================================================
      | 🦕 Registrar una colocación real
@@ -272,16 +279,25 @@ class PartidasController extends Controller
     }
 
 
-    /* ===============================================================
-     | ✅ Finalizar partida (manual)
-     |===============================================================*/
     public function finalizar(Partida $partida)
     {
-        $partida->estado = 'cerrada';
-        $partida->save();
+        // 🚫 Evitar cierre duplicado
+        if ($partida->estado === 'cerrada') {
+            return redirect()->route('resultados.partida.show', $partida->id);
+        }
 
+        // 🔹 Marcar como cerrada
+        $partida->update([
+            'estado' => 'cerrada',
+            'dado_restriccion' => null,
+        ]);
+
+        // 🔹 Limpiar sesión
+        session()->forget(['restriccion', 'tirador_id']);
+
+        // 🔹 Redirigir a la ruta de resultados
         return redirect()
             ->route('resultados.partida.show', $partida->id)
-            ->with('ok', "🏁 La partida #{$partida->id} fue finalizada.");
+            ->with('ok', "🏁 La partida '{$partida->nombre}' fue cerrada correctamente.");
     }
 }

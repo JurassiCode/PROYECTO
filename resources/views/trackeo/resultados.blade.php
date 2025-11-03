@@ -24,7 +24,6 @@ $colores = [
             🦖 Resultados de la Partida
         </h1>
         <p class="mt-3 text-emerald-100/90 text-lg">Partida #{{ $partida->id }} ({{ $partida->nombre }}) finalizada</p>
-        <p class="mt-3 text-emerald-100/90 text-lg">NADA DE ESTO FUNCIONA, ES UN PLACEHOLDER, abrazo!</p>
     </div>
 
     <!-- 🥇 Podio -->
@@ -49,7 +48,7 @@ $colores = [
         <div class="flex flex-col items-center scale-110">
             <div class="bg-gradient-to-b {{ $colores[0]['bg'] }} {{ $colores[0]['text'] }} 
                   w-32 h-40 sm:w-36 sm:h-44 flex flex-col items-center justify-center 
-                  rounded-t-2xl shadow-2xl border border-white/20 animate-bounce-slow">
+                  rounded-t-2xl shadow-2xl border border-white/20">
                 <span class="text-4xl sm:text-5xl">🥇</span>
                 <p class="text-base font-semibold mt-1">{{ $jugadores[0]['nombre'] }}</p>
                 <p class="text-2xl font-extrabold">{{ $jugadores[0]['puntos'] }}</p>
@@ -122,23 +121,3 @@ $colores = [
     </div>
 </section>
 @endsection
-
-@push('styles')
-<style>
-    @keyframes bounce-slow {
-
-        0%,
-        100% {
-            transform: translateY(0);
-        }
-
-        50% {
-            transform: translateY(-6px);
-        }
-    }
-
-    .animate-bounce-slow {
-        animation: bounce-slow 2.2s infinite;
-    }
-</style>
-@endpush

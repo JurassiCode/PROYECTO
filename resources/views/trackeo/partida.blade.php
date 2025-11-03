@@ -4,16 +4,16 @@
 
 @section('content')
 @php
-  $mensajes       = session('partida.mensajes', []);
-  $restricSesion  = session('restriccion', $datos['restric'] ?? ['titulo' => '—', 'desc' => '—']);
-  $estadoJugadores= session('jugadores_estado', []);
-  $flash          = session('ok');
+$mensajes = session('partida.mensajes', []);
+$restricSesion = session('restriccion', $datos['restric'] ?? ['titulo' => '—', 'desc' => '—']);
+$estadoJugadores= session('jugadores_estado', []);
+$flash = session('ok');
 @endphp
 
 <!-- ===== Fondo jurásico limpio ===== -->
 <div class="min-h-[100dvh] relative overflow-x-hidden bg-[radial-gradient(1200px_600px_at_10%_-10%,#064e3b_10%,#022c22_35%,#0b1412_70%)]">
   <div class="pointer-events-none absolute inset-0 opacity-[0.08] mix-blend-overlay"
-       style="background-image:url('/images/pattern_dinos.svg');background-size:360px;background-repeat:repeat;">
+    style="background-image:url('/images/pattern_dinos.svg');background-size:360px;background-repeat:repeat;">
   </div>
 
   <!-- ===== Top bar ===== -->
@@ -36,31 +36,31 @@
 
     {{-- ✅ Flash --}}
     @if ($flash)
-      <div class="rounded-lg border border-emerald-500/50 bg-emerald-900/40 text-emerald-100 px-4 py-3 text-sm shadow ring-1 ring-emerald-500/30">
-        {{ $flash }}
-      </div>
+    <div class="rounded-lg border border-emerald-500/50 bg-emerald-900/40 text-emerald-100 px-4 py-3 text-sm shadow ring-1 ring-emerald-500/30">
+      {{ $flash }}
+    </div>
     @endif
 
     {{-- ⚠️ Errores --}}
     @if ($errors->any())
-      <div class="rounded-lg border border-rose-500/40 bg-rose-900/30 text-rose-100 px-4 py-3 text-sm shadow">
-        <ul class="list-disc pl-5 space-y-0.5">
-          @foreach ($errors->all() as $e)
-            <li>{{ $e }}</li>
-          @endforeach
-        </ul>
-      </div>
+    <div class="rounded-lg border border-rose-500/40 bg-rose-900/30 text-rose-100 px-4 py-3 text-sm shadow">
+      <ul class="list-disc pl-5 space-y-0.5">
+        @foreach ($errors->all() as $e)
+        <li>{{ $e }}</li>
+        @endforeach
+      </ul>
+    </div>
     @endif
 
     {{-- 💬 Mensajes dinámicos --}}
     @if (!empty($mensajes))
-      <div class="rounded-lg border border-sky-500/40 bg-sky-900/30 text-sky-100 px-4 py-3 text-sm shadow">
-        <ul class="list-disc pl-4 space-y-0.5">
-          @foreach ($mensajes as $m)
-            <li>{{ $m }}</li>
-          @endforeach
-        </ul>
-      </div>
+    <div class="rounded-lg border border-sky-500/40 bg-sky-900/30 text-sky-100 px-4 py-3 text-sm shadow">
+      <ul class="list-disc pl-4 space-y-0.5">
+        @foreach ($mensajes as $m)
+        <li>{{ $m }}</li>
+        @endforeach
+      </ul>
+    </div>
     @endif
 
 
@@ -97,14 +97,23 @@
         @include('partials.jugadores')
       </div>
 
-      {{-- Placeholder finalizar --}}
+      {{-- ✅ Finalizar partida real --}}
       <div class="lg:col-span-1 rounded-2xl border border-emerald-800/60 bg-emerald-950/40 shadow-inner ring-1 ring-emerald-500/10 flex flex-col justify-center items-center text-center p-6">
         <h3 class="text-sm font-semibold text-emerald-200 mb-3">Finalizar partida</h3>
-        <p class="text-xs text-emerald-400/80 mb-4">Una vez que todos los turnos finalicen, podrás cerrar la partida.</p>
-        <button disabled class="rounded-md bg-emerald-700/60 px-4 py-2 text-sm text-white font-semibold opacity-60 cursor-not-allowed">
-          🏁 Finalizar
-        </button>
+        <p class="text-xs text-emerald-400/80 mb-4">
+          Cuando todos los turnos hayan terminado, podés cerrar la partida y ver los resultados finales.
+        </p>
+
+        <form action="{{ route('partidas.finalizar', $partida->id) }}" method="POST"
+          onsubmit="return confirm('¿Seguro que querés cerrar la partida? No se podrá volver atrás.')">
+          @csrf
+          <button type="submit"
+            class="rounded-md bg-emerald-600 hover:bg-emerald-500 px-5 py-2 text-sm text-white font-semibold shadow-md transition">
+            🏁 Finalizar partida
+          </button>
+        </form>
       </div>
+
     </section>
 
   </main>

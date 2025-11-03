@@ -87,15 +87,10 @@ Route::get('/trackeo-partida/{partida}', [PartidasController::class, 'show'])
     ->whereNumber('partida')
     ->name('trackeo.partida.show');
 
-// Registrar jugada (para cuando cableen la lógica)
-Route::post('/partidas/{partida}/colocaciones', [ColocacionesController::class, 'store'])
-    ->whereNumber('partida')
-    ->name('colocaciones.store');
-
-// Finalizar partida (medio implementado, corregir a futuro)
 Route::post('/partidas/{partida}/finalizar', [PartidasController::class, 'finalizar'])
     ->whereNumber('partida')
     ->name('partidas.finalizar');
+
 
 // Ver resultados de partida persistida
 Route::get('/resultados-partida/{partida}', [ResultadosController::class, 'show'])
@@ -123,7 +118,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/perfil', [PerfilController::class, 'show'])->name('perfil.show');
 
     // Editar perfil
-    Route::get('/perfil/editar', [PerfilController::class, 'edit'])->name('perfil.edit');
     Route::put('/perfil/actualizar', [PerfilController::class, 'update'])->name('perfil.update');
 });
 
@@ -139,8 +133,3 @@ Route::post('/partidas/{partida}/tirar-dado', [PartidasController::class, 'tirar
 Route::post('/partidas/{partida}/colocaciones', [PartidasController::class, 'agregarColocacion'])
     ->whereNumber('partida')
     ->name('partidas.agregarColocacion');
-// ✅ Finalizar partida (local temporal)
-Route::post('/trackeo/finalizar', function () {
-    session()->forget(['partida.jugadores', 'colocaciones']);
-    return back()->with('ok', '✅ Partida finalizada localmente.');
-})->name('partidas.finalizar');
