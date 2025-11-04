@@ -1,6 +1,6 @@
 @extends('layouts.adminLayout')
 
-@section('title','Usuarios')
+@section('title', __('Users'))
 
 @section('content')
 <div
@@ -11,28 +11,28 @@
   <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
     <div>
       <h1 class="text-2xl font-bold flex items-center gap-2 text-white">
-        <i class="bi bi-people-fill text-amber-400"></i> Gestión de usuarios
+        <i class="bi bi-people-fill text-amber-400"></i> {{ __('User management') }}
       </h1>
-      <p class="text-sm text-emerald-200/70">Visualizá, editá o eliminá usuarios del sistema.</p>
+      <p class="text-sm text-emerald-200/70">{{ __('View, edit or delete users from the system.') }}</p>
     </div>
     <a href="{{ route('admin.usuarios.create') }}"
       class="inline-flex items-center gap-2 rounded-md bg-emerald-600 hover:bg-emerald-700 px-4 py-2 font-medium text-white shadow-sm transition">
-      <i class="bi bi-person-plus-fill"></i> Nuevo usuario
+      <i class="bi bi-person-plus-fill"></i> {{ __('New user') }}
     </a>
   </div>
 
-  <!-- Tabla -->
+  <!-- Table -->
   <div class="rounded-xl overflow-hidden border border-white/10 bg-gray-900/60 backdrop-blur-md shadow-lg">
     <div class="overflow-x-auto">
       <table class="min-w-full text-sm text-gray-200">
         <thead class="bg-emerald-800/70 text-emerald-100 uppercase text-xs font-semibold tracking-wider">
           <tr>
             <th class="px-4 py-3 text-left">ID</th>
-            <th class="px-4 py-3 text-left">Nombre</th>
-            <th class="px-4 py-3 text-left">Usuario</th>
-            <th class="px-4 py-3 text-left">Rol</th>
-            <th class="px-4 py-3 text-left">Creado</th>
-            <th class="px-4 py-3 text-right">Acciones</th>
+            <th class="px-4 py-3 text-left">{{ __('Name') }}</th>
+            <th class="px-4 py-3 text-left">{{ __('Username') }}</th>
+            <th class="px-4 py-3 text-left">{{ __('Role') }}</th>
+            <th class="px-4 py-3 text-left">{{ __('Created') }}</th>
+            <th class="px-4 py-3 text-right">{{ __('Actions') }}</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-white/10">
@@ -57,13 +57,13 @@
             </td>
             <td class="px-4 py-3">
               <div class="flex justify-end gap-2">
-                <!-- Editar -->
+                <!-- Edit -->
                 <a href="{{ route('admin.usuarios.edit', $u) }}"
                   class="inline-flex h-9 w-9 items-center justify-center rounded-md border border-blue-400/30 text-blue-300 hover:bg-blue-500/10 focus:ring-2 focus:ring-blue-400/40 transition"
-                  title="Editar">
+                  title="{{ __('Edit') }}">
                   <i class="bi bi-pencil-square"></i>
                 </a>
-                <!-- Eliminar -->
+                <!-- Delete -->
                 <button type="button"
                   @click="
                       del = {
@@ -76,7 +76,7 @@
                       open = true;
                     "
                   class="inline-flex h-9 w-9 items-center justify-center rounded-md border border-red-400/30 text-red-300 hover:bg-red-500/10 focus:ring-2 focus:ring-red-400/40 transition"
-                  title="Eliminar">
+                  title="{{ __('Delete') }}">
                   <i class="bi bi-trash3-fill"></i>
                 </button>
               </div>
@@ -86,7 +86,7 @@
           <tr>
             <td colspan="6" class="px-4 py-10 text-center text-emerald-100/70">
               <i class="bi bi-emoji-frown text-3xl mb-2"></i><br>
-              No hay usuarios registrados.
+              {{ __('No users registered.') }}
             </td>
           </tr>
           @endforelse
@@ -94,13 +94,13 @@
       </table>
     </div>
 
-    <!-- Paginación -->
+    <!-- Pagination -->
     <div class="p-4 border-t border-white/10">
       {{ $usuarios->links() }}
     </div>
   </div>
 
-  <!-- Modal de eliminación -->
+  <!-- Delete modal -->
   <div x-cloak x-show="open" x-transition.opacity class="fixed inset-0 z-50 flex items-center justify-center p-4">
     <div class="fixed inset-0 bg-black/60 backdrop-blur-sm" @click="open=false"></div>
 
@@ -109,7 +109,7 @@
       <!-- Header -->
       <div class="flex items-center justify-between px-5 py-4 bg-gradient-to-r from-red-700 to-red-600">
         <h5 class="text-base font-semibold flex items-center gap-2">
-          <i class="bi bi-exclamation-octagon-fill text-white"></i> Confirmar eliminación
+          <i class="bi bi-exclamation-octagon-fill text-white"></i> {{ __('Confirm deletion') }}
         </h5>
         <button @click="open=false"
           class="rounded p-1 hover:bg-white/10 focus:ring-2 focus:ring-white/30">
@@ -117,29 +117,29 @@
         </button>
       </div>
 
-      <!-- Contenido -->
+      <!-- Content -->
       <div class="px-6 py-5">
-        <p class="mb-1">¿Seguro que querés eliminar a <strong x-text="del.username"></strong> (ID <span x-text="del.id"></span>)?</p>
+        <p class="mb-1">{{ __('Are you sure you want to delete') }} <strong x-text="del.username"></strong> (ID <span x-text="del.id"></span>)?</p>
         <ul class="text-sm text-gray-300 space-y-0.5 mb-4">
-          <li>Rol: <span class="font-semibold text-emerald-300" x-text="del.role"></span></li>
-          <li>Creado: <span class="font-semibold text-emerald-300" x-text="del.created"></span></li>
+          <li>{{ __('Role') }}: <span class="font-semibold text-emerald-300" x-text="del.role"></span></li>
+          <li>{{ __('Created') }}: <span class="font-semibold text-emerald-300" x-text="del.created"></span></li>
         </ul>
         <div class="rounded-md border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-200">
-          Esta acción es irreversible. El usuario será eliminado permanentemente.
+          {{ __('This action is irreversible. The user will be permanently deleted.') }}
         </div>
       </div>
 
-      <!-- Botones -->
+      <!-- Buttons -->
       <div class="flex justify-end gap-3 px-6 pb-6">
         <button @click="open=false"
           class="rounded-md border border-gray-400/30 bg-gray-800 px-4 py-2 text-gray-200 hover:bg-gray-700 focus:ring-2 focus:ring-gray-400/50 transition">
-          Cancelar
+          {{ __('Cancel') }}
         </button>
         <form :action="del.action" method="POST">
           @csrf @method('DELETE')
           <button type="submit"
             class="rounded-md bg-red-600 px-4 py-2 text-white hover:bg-red-700 focus:ring-2 focus:ring-red-500/60 transition">
-            Sí, eliminar
+            {{ __('Yes, delete') }}
           </button>
         </form>
       </div>

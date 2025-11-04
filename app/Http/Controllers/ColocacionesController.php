@@ -14,11 +14,11 @@ class ColocacionesController extends Controller
     public function store(Request $request, Partida $partida)
     {
         $data = $request->validate([
-            'usuario_id' => ['required','integer'],
-            'ronda'      => ['required','integer','min:1','max:2'],
-            'turno'      => ['required','integer','min:1','max:6'],
-            'recinto_id' => ['required','integer'],
-            'tipo_dino'  => ['required','integer'],
+            'usuario_id' => ['required', 'integer'],
+            'ronda'      => ['required', 'integer', 'min:1', 'max:2'],
+            'turno'      => ['required', 'integer', 'min:1', 'max:6'],
+            'recinto_id' => ['required', 'integer'],
+            'tipo_dino'  => ['required', 'integer'],
         ]);
 
         // Acá va tu validación/puntaje real
@@ -42,10 +42,10 @@ class ColocacionesController extends Controller
             if ($pts !== 0) {
                 PartidaJugador::where('partida_id', $partida->id_partida)
                     ->where('usuario_id', $data['usuario_id'])
-                    ->update(['puntos_totales' => DB::raw('puntos_totales + '.(int)$pts)]);
+                    ->update(['puntos_totales' => DB::raw('puntos_totales + ' . (int)$pts)]);
             }
         });
 
-        return back()->with('ok', 'Jugada registrada.');
+        return back()->with('ok', __('Move registered successfully.'));
     }
 }

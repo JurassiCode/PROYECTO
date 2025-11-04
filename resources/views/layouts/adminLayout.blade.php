@@ -1,13 +1,13 @@
 <!doctype html>
-<html lang="es">
+<html lang="{{ app()->getLocale() }}">
 
 <head>
   <meta charset="utf-8">
   <title>
     @hasSection('title')
-    JurassiDraft – @yield('title')
+      JurassiDraft – @yield('title')
     @else
-    JurassiDraft
+      JurassiDraft
     @endif
   </title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -31,7 +31,7 @@
         <a href="{{ route('admin.usuarios.index') }}" class="group flex items-center font-bold text-white hover:text-emerald-100 hover:scale-[1.03] transition">
           <img src="{{ asset('images/logojuego_nobg.png') }}" alt="JurassiDraft Logo"
             class="h-13 w-auto me-2">
-          <span class="tracking-tight text-lg me-2">JurassiDraft</span> <span class="text-amber-400"> Admin</span>
+          <span class="tracking-tight text-lg me-2">JurassiDraft</span> <span class="text-amber-400">{{ __('Admin') }}</span>
         </a>
 
         <!-- Desktop Menu -->
@@ -42,11 +42,10 @@
           $avatarUrl = asset('images/avatar.jpg');
           @endphp
 
-
           <a href="{{ route('home') }}"
             class="inline-flex items-center gap-2 rounded-md px-4 py-2 text-white font-medium shadow-sm
                      focus:outline-none focus-visible:ring-4 focus-visible:ring-opacity-40 transition-all duration-200 active:scale-[0.98] bg-emerald-600 hover:bg-emerald-700 focus-visible:ring-emerald-500">
-            <i class="bi bi-house"></i>Inicio
+            <i class="bi bi-house"></i>{{ __('Home') }}
           </a>
 
           <!-- Avatar dropdown -->
@@ -66,13 +65,13 @@
               <li>
                 <a href="{{ route('home') }}"
                   class="flex items-center px-4 py-2 text-sm text-emerald-300 hover:bg-emerald-600/10 transition">
-                  <i class="bi bi-house mr-2"></i>Inicio
+                  <i class="bi bi-house mr-2"></i>{{ __('Home') }}
                 </a>
               </li>
               <li>
                 <a href="{{ route('perfil.show') }}"
                   class="flex items-center px-4 py-2 text-sm text-blue-300 hover:bg-blue-600/10 transition">
-                  <i class="bi bi-person mr-2"></i>Ver perfil
+                  <i class="bi bi-person mr-2"></i>{{ __('View profile') }}
                 </a>
               </li>
               <li>
@@ -80,7 +79,7 @@
                   @csrf
                   <button type="submit"
                     class="flex w-full items-center px-4 py-2 text-sm text-red-300 hover:bg-red-600/10 transition">
-                    <i class="bi bi-box-arrow-right mr-2"></i>Salir
+                    <i class="bi bi-box-arrow-right mr-2"></i>{{ __('Logout') }}
                   </button>
                 </form>
               </li>
@@ -91,16 +90,26 @@
             class="inline-flex items-center gap-2 rounded-md border border-emerald-300 text-emerald-200
                      px-4 py-2 text-sm font-medium hover:bg-emerald-600/10 hover:border-emerald-400
                      focus-visible:ring-2 focus-visible:ring-emerald-400 transition">
-            Registrarse
+            {{ __('Register') }}
           </a>
           <a href="{{ route('login') }}"
             class="inline-flex items-center gap-2 rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white shadow-sm
                      hover:bg-emerald-700 focus-visible:ring-2 focus-visible:ring-emerald-500 transition">
-            Iniciar sesión
+            {{ __('Login') }}
           </a>
           @endauth
         </div>
-
+        <div class="ml-4 flex items-center space-x-2 border-l border-white/10 pl-3">
+            <a href="{{ route('lang.switch', 'es') }}"
+              class="text-sm hover:text-emerald-300 {{ app()->getLocale() === 'es' ? 'font-bold text-white' : 'text-gray-400' }}">🇪🇸 ES</a>
+            <span class="text-gray-400">|</span>
+            <a href="{{ route('lang.switch', 'en') }}"
+              class="text-sm hover:text-emerald-300 {{ app()->getLocale() === 'en' ? 'font-bold text-white' : 'text-gray-400' }}">🇬🇧 EN</a>
+          </div>
+        </div>
+        <div class="text-center bg-black/40 text-xs text-gray-300 py-1">
+  Locale actual: {{ app()->getLocale() }}
+</div>
         <!-- Mobile toggle -->
         <button @click="open=!open"
           class="inline-flex items-center justify-center rounded-md p-2 text-gray-200
@@ -117,25 +126,25 @@
         @auth
         <div class="text-sm font-semibold text-emerald-200 mb-2">{{ auth()->user()->nombre ?? '' }}</div>
         <a href="{{ route('home') }}" class="block rounded-md px-4 py-2 text-sm hover:bg-emerald-600/10">
-          <i class="bi bi-house-fill mr-2"></i>Inicio
+          <i class="bi bi-house-fill mr-2"></i>{{ __('Home') }}
         </a>
         <a href="{{ route('perfil.show') }}" class="block rounded-md px-4 py-2 text-sm hover:bg-blue-600/10">
-          <i class="bi bi-person mr-2"></i>Ver perfil
+          <i class="bi bi-person mr-2"></i>{{ __('View profile') }}
         </a>
         <form action="{{ route('logout') }}" method="POST" class="pt-2 border-t border-white/10">
           @csrf
           <button type="submit" class="w-full rounded-md px-4 py-2 text-sm text-red-300 hover:bg-red-600/10">
-            <i class="bi bi-box-arrow-right mr-2"></i>Salir
+            <i class="bi bi-box-arrow-right mr-2"></i>{{ __('Logout') }}
           </button>
         </form>
         @else
         <a href="{{ route('register') }}"
           class="block w-full rounded-md border border-emerald-300 text-emerald-200 px-4 py-2 text-sm font-medium hover:bg-emerald-600/10">
-          Registrarse
+          {{ __('Register') }}
         </a>
         <a href="{{ route('login') }}"
           class="block w-full rounded-md bg-emerald-600 px-4 py-2 text-center text-white text-sm font-medium hover:bg-emerald-700">
-          Iniciar sesión
+          {{ __('Login') }}
         </a>
         @endauth
       </div>
@@ -152,22 +161,22 @@
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 text-gray-300 text-sm">
       <div class="grid grid-cols-1 md:grid-cols-2 items-center gap-4">
         <div class="text-center md:text-left">
-          © {{ date('Y') }} <strong class="text-white">JurassiDraft</strong> — Derechos reservados.
+          © {{ date('Y') }} <strong class="text-white">JurassiDraft</strong> — {{ __('All rights reserved') }}.
         </div>
         <div class="text-center md:text-right space-x-4">
           @auth
           <a href="{{ route('lobby') }}"
             class="inline-flex items-center gap-2 rounded-md border border-emerald-400 text-emerald-200 px-3 py-2 hover:bg-emerald-600/10">
-            <i class="bi bi-play-fill"></i> Jugar
+            <i class="bi bi-play-fill"></i> {{ __('Play') }}
           </a>
           @endauth
-          <a href="{{ url('documentacion') }}" class="hover:text-blue-300">Documentación</a>
-          <a href="mailto:jurassicodeisbo@gmail.com" class="hover:text-emerald-200">Contacto</a>
+          <a href="{{ url('documentacion') }}" class="hover:text-blue-300">{{ __('Documentation') }}</a>
+          <a href="mailto:jurassicodeisbo@gmail.com" class="hover:text-emerald-200">{{ __('Contact') }}</a>
         </div>
       </div>
 
       <div class="mt-3 text-center text-xs text-gray-400">
-        Hecho con ❤️ por <span class="font-medium text-white">Seba, Nacho, Joaco y Tomi</span> —
+        {{ __('Made with love by') }} <span class="font-medium text-white">Seba, Nacho, Joaco & Tomi</span> —
         <a href="https://jurassicode.vercel.app" target="_blank"
           class="underline underline-offset-4 hover:text-emerald-200">
           JurassiCode
@@ -177,5 +186,4 @@
   </footer>
 
 </body>
-
 </html>

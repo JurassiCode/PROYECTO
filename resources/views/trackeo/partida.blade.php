@@ -1,6 +1,6 @@
 @extends('layouts.playLayout')
 
-@section('title', 'Seguimiento de Partida')
+@section('title', __('Game Tracking'))
 
 @section('content')
 @php
@@ -21,11 +21,11 @@ $flash = session('ok');
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
       <div class="flex items-center gap-3">
         <h1 class="text-sm sm:text-base font-semibold text-emerald-50 tracking-wide">
-          Seguimiento de Partida
+          {{ __('Game Tracking') }}
         </h1>
       </div>
       <div class="flex items-center gap-2 text-xs">
-        <span class="rounded-md bg-emerald-700/60 text-emerald-50 px-2 py-0.5 border border-emerald-600/60">Sala</span>
+        <span class="rounded-md bg-emerald-700/60 text-emerald-50 px-2 py-0.5 border border-emerald-600/60">{{ __('Room') }}</span>
         <span class="font-mono text-emerald-100">{{ $datos['sala'] }}</span>
       </div>
     </div>
@@ -34,14 +34,14 @@ $flash = session('ok');
   <!-- ===== Contenido principal ===== -->
   <main class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 space-y-6 z-10">
 
-    {{--  Flash --}}
+    {{-- Flash --}}
     @if ($flash)
     <div class="rounded-lg border border-emerald-500/50 bg-emerald-900/40 text-emerald-100 px-4 py-3 text-sm shadow ring-1 ring-emerald-500/30">
       {{ $flash }}
     </div>
     @endif
 
-    {{--  Errores --}}
+    {{-- Errores --}}
     @if ($errors->any())
     <div class="rounded-lg border border-rose-500/40 bg-rose-900/30 text-rose-100 px-4 py-3 text-sm shadow">
       <ul class="list-disc pl-5 space-y-0.5">
@@ -52,7 +52,7 @@ $flash = session('ok');
     </div>
     @endif
 
-    {{--  Mensajes dinámicos --}}
+    {{-- Mensajes dinámicos --}}
     @if (!empty($mensajes))
     <div class="rounded-lg border border-sky-500/40 bg-sky-900/30 text-sky-100 px-4 py-3 text-sm shadow">
       <ul class="list-disc pl-4 space-y-0.5">
@@ -97,25 +97,23 @@ $flash = session('ok');
         @include('partials.jugadores')
       </div>
 
-      {{--  Finalizar partida real --}}
+      {{-- Finalizar partida real --}}
       <div class="lg:col-span-1 rounded-2xl border border-emerald-800/60 bg-emerald-950/40 shadow-inner ring-1 ring-emerald-500/10 flex flex-col justify-center items-center text-center p-6">
-        <h3 class="text-sm font-semibold text-emerald-200 mb-3">Finalizar partida</h3>
+        <h3 class="text-sm font-semibold text-emerald-200 mb-3">{{ __('End game') }}</h3>
         <p class="text-xs text-emerald-400/80 mb-4">
-          Cuando todos los turnos hayan terminado, podés cerrar la partida y ver los resultados finales.
+          {{ __('When all turns are finished, you can close the game and view the final results.') }}
         </p>
 
         <form action="{{ route('partidas.finalizar', $partida->id) }}" method="POST"
-          onsubmit="return confirm('¿Seguro que querés cerrar la partida? No se podrá volver atrás.')">
+          onsubmit="return confirm('{{ __('Are you sure you want to close the game? This action cannot be undone.') }}')">
           @csrf
           <button type="submit"
             class="rounded-md bg-emerald-600 hover:bg-emerald-500 px-5 py-2 text-sm text-white font-semibold shadow-md transition">
-            🏁 Finalizar partida
+            🏁 {{ __('End game') }}
           </button>
         </form>
       </div>
-
     </section>
-
   </main>
 </div>
 @endsection

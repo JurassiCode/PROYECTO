@@ -15,28 +15,26 @@ use App\Services\ServicioPuntaje;
 
 class PartidasController extends Controller
 {
-    /*🦖.    Crear una nueva partida (desde el lobby)   */
     public function store(Request $request)
     {
         $jugadores = session('partida.jugadores', []);
 
         if (empty($jugadores)) {
-            return back()->withErrors(['general' => 'No hay jugadores cargados en el lobby.']);
+            return back()->withErrors(['general' => __('No players loaded in the lobby.')]);
         }
 
         if (count($jugadores) > 6) {
-            return back()->withErrors(['general' => 'Máximo 6 jugadores por partida.']);
+            return back()->withErrors(['general' => __('Maximum 6 players per game.')]);
         }
 
         $request->validate([
             'nombre' => ['required', 'string', 'max:120'],
         ], [
-            'nombre.required' => 'Poné un nombre para la partida.',
+            'nombre.required' => __('Enter a name for the game.'),
         ]);
 
         $user = Auth::user();
 
-        //  Crear partida y asociar jugadores
         $partida = DB::transaction(function () use ($request, $jugadores, $user) {
             $p = Partida::create([
                 'nombre'      => $request->nombre,
@@ -63,20 +61,17 @@ class PartidasController extends Controller
 
         return redirect()
             ->route('trackeo.partida.show', $partida)
-            ->with('ok', '✅ Partida creada correctamente.');
+            ->with('ok', __('Game created successfully.'));
     }
 
-    /*   Mostrar partida en curso (pantalla de trackeo)*/
     public function show(Partida $partida)
     {
-        //  Si la partida ya fue cerrada, redirigir directamente a los resultados
         if ($partida->estado === 'cerrada') {
             return redirect()
                 ->route('resultados.partida.show', $partida->id)
-                ->with('info', 'Esta partida ya fue finalizada.');
+                ->with('info', __('This game has already been finished.'));
         }
 
-        //  Obtener jugadores y estado actual de la partida
         $pj = $partida->jugadores()->with('usuario')->get();
         $palette = ['emerald', 'sky', 'purple', 'rose', 'amber', 'teal'];
 
@@ -103,18 +98,17 @@ class PartidasController extends Controller
             ->with(['usuario', 'recintoCatalogo', 'dinoCatalogo'])
             ->get();
 
-        //  Descripciones reales según el manual del Dado
         $descripciones = [
-            'El Bosque' => 'Los dinosaurios deben colocarse en cualquier recinto del área de Bosque del parque.',
-            'Llanura' => 'Los dinosaurios deben colocarse en cualquier recinto del área de Llanura del parque.',
-            'Baños' => 'Los dinosaurios deben colocarse únicamente en los recintos que se encuentren a la derecha del Río.',
-            'Cafetería' => 'Los dinosaurios deben colocarse únicamente en los recintos que se encuentren a la izquierda del Río.',
-            'Recinto Vacío' => 'Los dinosaurios deben colocarse en un recinto vacío del parque.',
-            '¡Cuidado con el T-Rex!' => 'Los dinosaurios deben colocarse en un recinto que no contenga previamente un T-Rex.',
+            'El Bosque' => __('The dinosaurs must be placed in any Forest area enclosure.'),
+            'Llanura' => __('The dinosaurs must be placed in any Plain area enclosure.'),
+            'Baños' => __('The dinosaurs must be placed only in enclosures on the right side of the River.'),
+            'Cafetería' => __('The dinosaurs must be placed only in enclosures on the left side of the River.'),
+            'Recinto Vacío' => __('The dinosaurs must be placed in an empty enclosure.'),
+            '¡Cuidado con el T-Rex!' => __('The dinosaurs must be placed in an enclosure that does not already contain a T-Rex.'),
         ];
 
         $titulo = $partida->dado_restriccion ?? '—';
-        $desc   = $descripciones[$titulo] ?? 'Tirá el dado para comenzar.';
+        $desc   = $descripciones[$titulo] ?? __('Roll the dice to start.');
 
         session(['restriccion' => [
             'titulo' => $titulo,
@@ -147,8 +141,6 @@ class PartidasController extends Controller
         ]);
     }
 
-
-    /*  Registrar una colocación real. */
     public function agregarColocacion(Request $request, Partida $partida)
     {
         $data = $request->validate([
@@ -159,7 +151,7 @@ class PartidasController extends Controller
 
         if (empty($partida->dado_restriccion)) {
             return back()->withErrors([
-                'general' => '🎲 No se puede colocar un dinosaurio antes de lanzar el dado.'
+                'general' => __('Cannot place a dinosaur before rolling the dice.')
             ]);
         }
 
@@ -171,7 +163,7 @@ class PartidasController extends Controller
 
         if ($yaColoco) {
             return back()->withErrors([
-                'general' => '🦕 Este jugador ya colocó su dinosaurio en este turno.'
+                'general' => __('This player already placed a dinosaur this turn.')
             ]);
         }
 
@@ -180,7 +172,7 @@ class PartidasController extends Controller
         $recinto = RecintoCatalogo::find($data['recinto']);
 
         if (!$jugador || !$dino || !$recinto) {
-            return back()->withErrors(['general' => 'Datos inválidos o inexistentes.']);
+            return back()->withErrors(['general' => __('Invalid or nonexistent data.')]);
         }
 
         $servicioPuntaje = new ServicioPuntaje();
@@ -193,7 +185,7 @@ class PartidasController extends Controller
         );
 
         if (!$resultado['valido']) {
-            return back()->withErrors(['general' => '❌ Jugada inválida: ' . $resultado['motivo']]);
+            return back()->withErrors(['general' => __('Invalid move:') . ' ' . $resultado['motivo']]);
         }
 
         Colocacion::create([
@@ -228,68 +220,67 @@ class PartidasController extends Controller
 
             session()->forget(['restriccion', 'tirador_id']);
 
-            return back()->with('ok', "🌿 Todos jugaron: pasa al Turno {$partida->turno} (Ronda {$partida->ronda})");
+            return back()->with('ok', __('All players have played, moving to Turn :turn (Round :round)', [
+                'turn' => $partida->turno,
+                'round' => $partida->ronda
+            ]));
         }
 
-        return back()->with('ok', "🦕 {$jugador->nombre} colocó un {$dino->nombre_corto} (+{$resultado['puntos']} pts)");
+        return back()->with('ok', __('Player :name placed a :dino (+:points pts)', [
+            'name' => $jugador->nombre,
+            'dino' => $dino->nombre_corto,
+            'points' => $resultado['puntos']
+        ]));
     }
 
-    /* Tirar dado (real).  */
     public function tirarDado(Request $request, Partida $partida)
     {
-        // 🔸 Validar jugador
         $request->validate([
             'tirador' => 'required|integer|exists:usuarios,id'
         ]);
 
         if (!empty($partida->dado_restriccion)) {
-            return back()->withErrors(['general' => 'El dado ya fue lanzado en este turno.']);
+            return back()->withErrors(['general' => __('The dice has already been rolled this turn.')]);
         }
 
         $opciones = [
-            ['titulo' => 'El Bosque', 'desc' => 'Los dinosaurios deben colocarse en cualquier recinto del área de Bosque del parque.'],
-            ['titulo' => 'Llanura', 'desc' => 'Los dinosaurios deben colocarse en cualquier recinto del área de Llanura del parque.'],
-            ['titulo' => 'Baños', 'desc' => 'Los dinosaurios deben colocarse únicamente en los recintos que se encuentren a la derecha del Río.'],
-            ['titulo' => 'Cafetería', 'desc' => 'Los dinosaurios deben colocarse únicamente en los recintos que se encuentren a la izquierda del Río.'],
-            ['titulo' => 'Recinto Vacío', 'desc' => 'Los dinosaurios deben colocarse en un recinto vacío del parque.'],
-            ['titulo' => '¡Cuidado con el T-Rex!', 'desc' => 'Los dinosaurios deben colocarse en un recinto que no contenga previamente un T-Rex.'],
+            ['titulo' => 'El Bosque', 'desc' => __('The dinosaurs must be placed in any Forest area enclosure.')],
+            ['titulo' => 'Llanura', 'desc' => __('The dinosaurs must be placed in any Plain area enclosure.')],
+            ['titulo' => 'Baños', 'desc' => __('The dinosaurs must be placed only in enclosures on the right side of the River.')],
+            ['titulo' => 'Cafetería', 'desc' => __('The dinosaurs must be placed only in enclosures on the left side of the River.')],
+            ['titulo' => 'Recinto Vacío', 'desc' => __('The dinosaurs must be placed in an empty enclosure.')],
+            ['titulo' => '¡Cuidado con el T-Rex!', 'desc' => __('The dinosaurs must be placed in an enclosure that does not already contain a T-Rex.')],
         ];
 
         $random = $opciones[array_rand($opciones)];
 
-        //   Guardar restricción y quién tiró (en sesión)
         $partida->update(['dado_restriccion' => $random['titulo']]);
         session([
             'restriccion' => [
                 'titulo' => $random['titulo'],
                 'desc'   => $random['desc'],
             ],
-            'tirador_id' => (int) $request->tirador, //  se guarda el tirador actual
+            'tirador_id' => (int) $request->tirador,
         ]);
 
-        return back()->with('ok', '🎲 Dado lanzado: ' . $random['titulo']);
+        return back()->with('ok', __('Dice rolled:') . ' ' . $random['titulo']);
     }
-
 
     public function finalizar(Partida $partida)
     {
-        //  Evitar cierre duplicado
         if ($partida->estado === 'cerrada') {
             return redirect()->route('resultados.partida.show', $partida->id);
         }
 
-        //  Marcar como cerrada
         $partida->update([
             'estado' => 'cerrada',
             'dado_restriccion' => null,
         ]);
 
-        //  Limpiar sesión
         session()->forget(['restriccion', 'tirador_id']);
 
-        //  Redirigir a la ruta de resultados
         return redirect()
             ->route('resultados.partida.show', $partida->id)
-            ->with('ok', "🏁 La partida '{$partida->nombre}' fue cerrada correctamente.");
+            ->with('ok', __('The game :name has been closed successfully.', ['name' => $partida->nombre]));
     }
 }

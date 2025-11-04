@@ -12,6 +12,18 @@ use App\Http\Controllers\PerfilController;
 use App\Http\Controllers\RankingController;
 
 
+Route::get('/lang/{locale}', function ($locale) {
+    if (in_array($locale, ['es', 'en'])) {
+        // Guardar en sesión
+        session(['locale' => $locale]);
+        // Aplicar al instante en este request
+        App::setLocale($locale);
+    }
+
+    // Volver a la página anterior
+    return redirect()->back();
+})->name('lang.switch');
+
 /*
 |--------------------------------------------------------------------------
 | Home público (siempre la landing)

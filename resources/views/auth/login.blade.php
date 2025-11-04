@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="es">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
   <meta charset="utf-8">
-  <title>JurassiDraft – Iniciar Sesión</title>
+  <title>JurassiDraft – {{ __('Login') }}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   @vite(['resources/css/app.css', 'resources/js/app.js'])
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
@@ -23,9 +23,9 @@
       <form method="POST" action="{{ route('login.post') }}" novalidate class="space-y-6">
         @csrf
 
-        <h2 class="text-xl font-semibold text-white text-center mb-4">Iniciar sesión</h2>
+        <h2 class="text-xl font-semibold text-white text-center mb-4">{{ __('Login') }}</h2>
 
-        <!-- Mensajes -->
+        <!-- Messages -->
         @if (session('ok'))
         <div class="rounded-md border border-emerald-300 bg-emerald-50/10 text-emerald-200 p-3 text-sm">
           {{ session('ok') }}
@@ -38,15 +38,15 @@
         </div>
         @endif
 
-        <!-- Usuario -->
+        <!-- Username -->
         <div>
-          <label for="nickname" class="mb-1 block text-sm font-medium text-emerald-100">Usuario</label>
+          <label for="nickname" class="mb-1 block text-sm font-medium text-emerald-100">{{ __('Username') }}</label>
           <input
             id="nickname"
             name="nickname"
             type="text"
             autocomplete="username"
-            placeholder="Tu usuario"
+            placeholder="{{ __('Your username') }}"
             value="{{ old('nickname') }}"
             required
             autofocus
@@ -59,16 +59,16 @@
           @enderror
         </div>
 
-        <!-- Contraseña -->
+        <!-- Password -->
         <div>
-          <label for="contrasena" class="mb-1 block text-sm font-medium text-emerald-100">Contraseña</label>
+          <label for="contrasena" class="mb-1 block text-sm font-medium text-emerald-100">{{ __('Password') }}</label>
           <div class="relative">
             <input
               id="contrasena"
               name="contrasena"
               type="password"
               autocomplete="current-password"
-              placeholder="Tu contraseña"
+              placeholder="{{ __('Your password') }}"
               required
               @class([ 'block w-full rounded-lg px-3 py-2 pr-10 text-white placeholder:text-gray-400 bg-white/10 backdrop-blur-sm border focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent' , 'border-red-400'=> $errors->has('contrasena'),
             'border-white/20' => !$errors->has('contrasena'),
@@ -86,32 +86,32 @@
           @enderror
         </div>
 
-        <!-- Botón principal -->
+        <!-- Submit -->
         <button
           type="submit"
           class="w-full rounded-lg bg-emerald-600 hover:bg-emerald-700 transition-colors px-6 py-3 text-white font-semibold shadow-md focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-          Iniciar sesión
+          {{ __('Login') }}
         </button>
 
-        <!-- Registro -->
+        <!-- Register -->
         <div class="text-center text-sm text-gray-300 space-y-2">
-          <p>¿No tenés cuenta?</p>
+          <p>{{ __('Don’t have an account?') }}</p>
           <a
             href="{{ route('register') }}"
             class="inline-block w-full md:w-auto rounded-lg border border-emerald-500 px-4 py-2 text-emerald-300 hover:bg-emerald-500/10 transition-colors">
-            Registrarse
+            {{ __('Register') }}
           </a>
         </div>
       </form>
     </div>
 
-    <!-- Botón volver -->
+    <!-- Back button -->
     <div class="flex justify-center">
       <button
         type="button"
         onclick="history.back()"
         class="mt-6 w-1/2 rounded-xl bg-white/10 border border-white/20 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-white/20 transition-all focus:ring-2 focus:ring-emerald-400">
-        ← Volver atrás
+        ← {{ __('Go back') }}
       </button>
     </div>
   </div>

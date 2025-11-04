@@ -15,7 +15,7 @@ class UsuarioController extends Controller
     public function index()
     {
         $usuarios = Usuario::whereNull('deleted_at')
-            ->orderBy('id', 'desc') // ← tu PK real es id
+            ->orderBy('id', 'desc')
             ->paginate(10);
 
         return view('admin.usuarios.index', compact('usuarios'));
@@ -40,7 +40,7 @@ class UsuarioController extends Controller
             'rol'        => ['required', Rule::in(['jugador', 'admin'])],
             'contrasena' => ['required', 'string', 'min:6', 'confirmed'],
         ], [
-            'contrasena.confirmed' => 'Las contraseñas no coinciden.',
+            'contrasena.confirmed' => __('Passwords do not match.'),
         ]);
 
         $data['contrasena'] = bcrypt($data['contrasena']);
@@ -49,7 +49,7 @@ class UsuarioController extends Controller
 
         return redirect()
             ->route('admin.usuarios.index')
-            ->with('ok', 'Usuario creado correctamente.');
+            ->with('ok', __('User created successfully.'));
     }
 
     /**
@@ -76,7 +76,7 @@ class UsuarioController extends Controller
             'rol'        => ['required', Rule::in(['jugador', 'admin'])],
             'contrasena' => ['nullable', 'string', 'min:6', 'confirmed'],
         ], [
-            'contrasena.confirmed' => 'Las contraseñas no coinciden.',
+            'contrasena.confirmed' => __('Passwords do not match.'),
         ]);
 
         if (!empty($data['contrasena'])) {
@@ -89,7 +89,7 @@ class UsuarioController extends Controller
 
         return redirect()
             ->route('admin.usuarios.index')
-            ->with('ok', 'Usuario actualizado.');
+            ->with('ok', __('User updated successfully.'));
     }
 
     /**
@@ -98,10 +98,10 @@ class UsuarioController extends Controller
     public function destroy(Usuario $usuario)
     {
         if (Auth::id() === $usuario->id) {
-            return back()->with('error', 'No podés eliminar tu propio usuario.');
+            return back()->with('error', __('You cannot delete your own user.'));
         }
 
-        // Soft delete manual + renombrar nickname para liberar el UNIQUE
+        // Soft delete manual + renombrar nickname
         $usuario->update([
             'deleted_at' => now(),
             'nickname'   => $usuario->nickname . '_deleted_' . $usuario->id,
@@ -109,6 +109,6 @@ class UsuarioController extends Controller
 
         return redirect()
             ->route('admin.usuarios.index')
-            ->with('ok', 'Usuario desactivado correctamente.');
+            ->with('ok', __('User deactivated successfully.'));
     }
 }

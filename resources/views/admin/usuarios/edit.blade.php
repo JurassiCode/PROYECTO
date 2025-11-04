@@ -1,6 +1,6 @@
 @extends('layouts.adminLayout')
 
-@section('title','Editar usuario')
+@section('title', __('Edit user'))
 
 @section('content')
 <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 py-10">
@@ -8,18 +8,18 @@
     <div class="px-6 py-5 border-b border-white/10">
       <h1 class="flex items-center gap-2 text-xl font-bold text-white">
         <i class="bi bi-pencil-square text-blue-400"></i>
-        <span>Editar usuario <span class="text-gray-400 font-medium">{{ $usuario->nombre }}, #{{ $usuario->id }}</span></span>
+        <span>{{ __('Edit user') }} <span class="text-gray-400 font-medium">{{ $usuario->nombre }}, #{{ $usuario->id }}</span></span>
       </h1>
-      <p class="text-sm text-emerald-200/80 mt-1">Modificá los datos del usuario o actualizá su contraseña.</p>
+      <p class="text-sm text-emerald-200/80 mt-1">{{ __('Modify user data or update their password.') }}</p>
     </div>
 
     <div class="p-6 text-gray-100">
       <form method="POST" action="{{ route('admin.usuarios.update', $usuario) }}" class="space-y-5">
         @csrf @method('PUT')
 
-        {{-- Nombre --}}
+        {{-- Name --}}
         <div>
-          <label class="mb-1 block text-sm font-semibold text-emerald-200">Nombre</label>
+          <label class="mb-1 block text-sm font-semibold text-emerald-200">{{ __('Name') }}</label>
           <input
             type="text"
             name="nombre"
@@ -31,9 +31,9 @@
           @enderror
         </div>
 
-        {{-- Usuario de login --}}
+        {{-- Username --}}
         <div>
-          <label class="mb-1 block text-sm font-semibold text-emerald-200">Usuario (login)</label>
+          <label class="mb-1 block text-sm font-semibold text-emerald-200">{{ __('Username (login)') }}</label>
           <input
             type="text"
             name="nickname"
@@ -45,25 +45,26 @@
           @enderror
         </div>
 
-        {{-- Rol --}}
+        {{-- Role --}}
         <div>
-          <label class="mb-1 block text-sm font-semibold text-emerald-200">Rol</label>
+          <label class="mb-1 block text-sm font-semibold text-emerald-200">{{ __('Role') }}</label>
           <select
             name="rol"
             required
             class="block w-full rounded-md border border-white/10 bg-gray-800/70 px-3 py-2 text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none transition">
-            <option value="jugador" @selected(old('rol', $usuario->rol)==='jugador')>Jugador</option>
-            <option value="admin" @selected(old('rol', $usuario->rol)==='admin')>Administrador</option>
+            <option value="jugador" @selected(old('rol', $usuario->rol)==='jugador')>{{ __('Player') }}</option>
+            <option value="admin" @selected(old('rol', $usuario->rol)==='admin')>{{ __('Administrator') }}</option>
           </select>
           @error('rol')
           <div class="mt-1 text-sm text-red-400">{{ $message }}</div>
           @enderror
         </div>
 
-        {{-- Contraseña --}}
+        {{-- Password --}}
         <div x-data="{ show:false }">
           <label class="mb-1 block text-sm font-semibold text-emerald-200">
-            Contraseña <small class="font-normal text-gray-400">(dejar vacío para no cambiar)</small>
+            {{ __('Password') }}
+            <small class="font-normal text-gray-400">({{ __('leave blank to keep current') }})</small>
           </label>
           <div class="relative">
             <input
@@ -82,10 +83,11 @@
           @enderror
         </div>
 
-        {{-- Confirmar Contraseña --}}
+        {{-- Confirm Password --}}
         <div x-data="{ show:false }">
           <label class="mb-1 block text-sm font-semibold text-emerald-200">
-            Repetir contraseña <small class="font-normal text-gray-400">(si ingresaste una nueva)</small>
+            {{ __('Repeat password') }}
+            <small class="font-normal text-gray-400">({{ __('if you entered a new one') }})</small>
           </label>
           <div class="relative">
             <input
@@ -104,15 +106,15 @@
           @enderror
         </div>
 
-        {{-- Botones --}}
+        {{-- Buttons --}}
         <div class="flex gap-3 pt-4">
           <a href="{{ route('admin.usuarios.index') }}"
             class="inline-flex items-center gap-1.5 rounded-md border border-white/10 bg-gray-800/60 px-4 py-2 text-gray-200 hover:bg-gray-700/60 focus:ring-2 focus:ring-gray-500 transition">
-            <i class="bi bi-arrow-left-circle"></i> Volver
+            <i class="bi bi-arrow-left-circle"></i> {{ __('Back') }}
           </a>
           <button
             class="inline-flex items-center gap-1.5 rounded-md bg-blue-600 hover:bg-blue-700 px-4 py-2 text-white font-medium shadow focus:ring-2 focus:ring-blue-500 transition">
-            <i class="bi bi-save"></i> Actualizar
+            <i class="bi bi-save"></i> {{ __('Update') }}
           </button>
         </div>
       </form>

@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
-    /** ---LOGIN ---  */
+    /** --- LOGIN --- */
 
     /** Muestra el login si no está autenticado; si lo está, redirige según rol. */
     public function show(Request $request)
@@ -28,48 +28,47 @@ class AuthController extends Controller
     /** Procesa el login con nickname + contraseña. */
     public function login(Request $request)
     {
-        //  Validación coherente con los campos del form
         $cred = $request->validate(
             [
                 'nickname'   => ['required', 'string'],
                 'contrasena' => ['required', 'string'],
             ],
             [
-                'nickname.required'   => 'El campo usuario es obligatorio.',
-                'nickname.string'     => 'El usuario debe ser un texto válido.',
-                'contrasena.required' => 'La contraseña es obligatoria.',
-                'contrasena.string'   => 'La contraseña debe ser un texto válido.',
+                'nickname.required'   => __('The username field is required.'),
+                'nickname.string'     => __('The username must be a valid text.'),
+                'contrasena.required' => __('The password is required.'),
+                'contrasena.string'   => __('The password must be a valid text.'),
             ]
         );
 
-        // 1️ Buscar usuario por nickname
+        // 1️⃣ Buscar usuario por nickname
         $usuario = Usuario::where('nickname', $cred['nickname'])->first();
 
         if (!$usuario) {
             return back()
-                ->withErrors(['nickname' => 'Usuario o contraseña incorrectos.'])
+                ->withErrors(['nickname' => __('Incorrect username or password.')])
                 ->onlyInput('nickname');
         }
 
-        // 2 Verificar si está desactivado
+        // 2️⃣ Verificar si está desactivado
         if (!is_null($usuario->deleted_at)) {
             return back()
-                ->withErrors(['nickname' => 'Este usuario ha sido desactivado.'])
+                ->withErrors(['nickname' => __('This user has been deactivated.')])
                 ->onlyInput('nickname');
         }
 
-        // 3  Verificar contraseña con Hash::check
+        // 3️⃣ Verificar contraseña
         if (!Hash::check($cred['contrasena'], $usuario->contrasena)) {
             return back()
-                ->withErrors(['contrasena' => 'Usuario o contraseña incorrectos.'])
+                ->withErrors(['contrasena' => __('Incorrect username or password.')])
                 ->onlyInput('nickname');
         }
 
-        // 4  Autenticar manualmente (sin Auth::attempt)
+        // 4️⃣ Autenticar
         Auth::login($usuario);
         $request->session()->regenerate();
 
-        // 5️ Redirecciones según contexto
+        // 5️⃣ Redirecciones según contexto
         if ($request->filled('next') && Str::startsWith($request->next, '/')) {
             return redirect($request->next);
         }
@@ -91,7 +90,7 @@ class AuthController extends Controller
         return redirect()->route('home');
     }
 
-    /** ---REGISTER ---- */
+    /** --- REGISTER --- */
 
     /** Muestra el formulario de registro si no está autenticado. */
     public function showRegister(Request $request)
@@ -121,8 +120,8 @@ class AuthController extends Controller
                 'contrasena' => ['required', 'string', 'min:8', 'confirmed'],
             ],
             [
-                'contrasena.confirmed' => 'La confirmación de contraseña no coincide.',
-                'contrasena.min'       => 'La contraseña debe tener al menos :min caracteres.',
+                'contrasena.confirmed' => __('Password confirmation does not match.'),
+                'contrasena.min'       => __('The password must be at least :min characters.'),
             ]
         );
 
@@ -134,6 +133,6 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        return redirect()->route('home')->with('ok', '¡Cuenta creada con éxito!');
+        return redirect()->route('home')->with('ok', __('Account created successfully!'));
     }
 }

@@ -30,12 +30,12 @@ class PerfilController extends Controller
             ->orderByDesc('id')
             ->get();
 
-        //   Stats básicas
+        //  Stats básicas
         $stats = [
             'jugadas' => $partidasJugadas->count(),
             'creadas' => $partidasCreadas->count(),
             'puntos_totales' => $partidasJugadas->sum('puntos_totales'),
-            'ganadas' => null, // <-- prepará para futuro cálculo
+            'ganadas' => null, // <-- preparado para futuro cálculo
         ];
 
         return view('perfil.index', compact('user', 'partidasCreadas', 'partidasJugadas', 'stats'));
@@ -63,9 +63,9 @@ class PerfilController extends Controller
             'nickname' => 'required|string|max:100|unique:usuarios,nickname,' . $user->id,
             'contrasena' => 'nullable|min:8|confirmed',
         ], [
-            'nombre.required' => 'El nombre es obligatorio.',
-            'nickname.unique' => 'Ese nombre de usuario ya está en uso.',
-            'contrasena.confirmed' => 'Las contraseñas no coinciden.',
+            'nombre.required' => __('The name is required.'),
+            'nickname.unique' => __('That username is already in use.'),
+            'contrasena.confirmed' => __('The passwords do not match.'),
         ]);
 
         $user->nombre = $request->nombre;
@@ -77,6 +77,6 @@ class PerfilController extends Controller
 
         $user->save();
 
-        return redirect()->route('perfil.show')->with('success', 'Perfil actualizado correctamente ✅');
+        return redirect()->route('perfil.show')->with('success', __('Profile updated successfully ✅'));
     }
 }

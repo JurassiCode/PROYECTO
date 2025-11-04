@@ -3,7 +3,7 @@
   
   <div class="flex items-center justify-between mb-4 relative z-10">
     <h2 class="text-sm font-semibold text-emerald-200 tracking-wide flex items-center gap-2">
-      👥 Jugadores activos
+      👥 {{ __('Active players') }}
     </h2>
     <span class="text-xs text-emerald-400/70">{{ count($datos['jugadores']) }} / 6</span>
   </div>
@@ -36,15 +36,15 @@
 
         <div class="grid grid-cols-3 gap-3 text-center">
           <div class="rounded-lg bg-emerald-950/30 border border-emerald-800/50 p-2">
-            <dt class="text-[10px] text-emerald-400/80">En mano</dt>
+            <dt class="text-[10px] text-emerald-400/80">{{ __('In hand') }}</dt>
             <dd class="text-sm font-semibold text-emerald-100">{{ $stats['hand'] }}</dd>
           </div>
           <div class="rounded-lg bg-emerald-950/30 border border-emerald-800/50 p-2">
-            <dt class="text-[10px] text-emerald-400/80">Colocados</dt>
+            <dt class="text-[10px] text-emerald-400/80">{{ __('Placed') }}</dt>
             <dd class="text-sm font-semibold text-emerald-100">{{ $stats['placed'] }}</dd>
           </div>
           <div class="rounded-lg bg-emerald-950/30 border border-emerald-800/50 p-2">
-            <dt class="text-[10px] text-emerald-400/80">Puntos</dt>
+            <dt class="text-[10px] text-emerald-400/80">{{ __('Points') }}</dt>
             <dd class="text-lg font-extrabold text-emerald-300 drop-shadow-md animate-[pulse_2s_infinite]">{{ $p['score'] }}</dd>
           </div>
         </div>

@@ -1,6 +1,6 @@
 @extends('layouts.publicLayout')
 
-@section('title', 'Ranking de Jugadores')
+@section('title', __('Player Ranking'))
 
 @section('content')
 <section class="relative overflow-hidden bg-gradient-to-br from-emerald-700 via-emerald-800 to-gray-900 text-white py-20">
@@ -9,11 +9,11 @@
 
   <div class="relative mx-auto max-w-6xl px-6 lg:px-8 text-center mb-12">
     <h1 class="text-5xl font-extrabold mb-4 drop-shadow-md">
-      🏆 Ranking de Jugadores 🏆
+      🏆 {{ __('Player Ranking') }} 🏆
     </h1>
     <p class="text-emerald-100 text-lg max-w-2xl mx-auto">
-      Los mejores aventureros del JurassiDraft.  
-      Competí, sumá puntos y ganá tu lugar entre los dinosaurios legendarios.
+      {{ __('The best adventurers of JurassiDraft.') }}  
+      {{ __('Compete, earn points, and secure your place among the legendary dinosaurs.') }}
     </p>
   </div>
 
@@ -23,9 +23,9 @@
       <table class="w-full border-collapse">
         <thead class="bg-emerald-900/60 text-emerald-100 uppercase tracking-wide text-sm">
           <tr>
-            <th class="py-4 px-6 text-left">Posición</th>
-            <th class="py-4 px-6 text-left">Jugador</th>
-            <th class="py-4 px-6 text-right">Puntos Totales</th>
+            <th class="py-4 px-6 text-left">{{ __('Position') }}</th>
+            <th class="py-4 px-6 text-left">{{ __('Player') }}</th>
+            <th class="py-4 px-6 text-right">{{ __('Total Points') }}</th>
           </tr>
         </thead>
         <tbody>
@@ -53,7 +53,7 @@
                 @endif
               </td>
               <td class="py-4 px-6 text-lg font-semibold text-gray-100">
-                {{ $item->usuario->nickname ?? 'Anónimo' }}
+                {{ $item->usuario->nickname ?? __('Anonymous') }}
               </td>
               <td class="py-4 px-6 text-lg font-bold text-right text-amber-300">
                 {{ number_format($item->puntos_acumulados, 0, ',', '.') }}
@@ -61,7 +61,9 @@
             </tr>
           @empty
             <tr>
-              <td colspan="3" class="text-center py-10 text-gray-300">Aún no hay jugadores registrados en el ranking.</td>
+              <td colspan="3" class="text-center py-10 text-gray-300">
+                {{ __('There are no registered players in the ranking yet.') }}
+              </td>
             </tr>
           @endforelse
         </tbody>
@@ -72,7 +74,7 @@
   <!--  Frase final -->
   <div class="relative text-center mt-12 text-emerald-100 px-6">
     <p class="text-lg italic">
-      “Solo los más hábiles conquistan el tablero de <span class="text-amber-300 font-semibold">JurassiDraft</span>.”
+      “{{ __('Only the most skilled conquer the board of') }} <span class="text-amber-300 font-semibold">JurassiDraft</span>.”
     </p>
   </div>
 </section>
