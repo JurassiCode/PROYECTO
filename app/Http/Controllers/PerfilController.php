@@ -30,12 +30,27 @@ class PerfilController extends Controller
             ->orderByDesc('id')
             ->get();
 
+        // Calcular partidas ganadas
+        $partidasCerradasIds = Partida::where('estado', 'cerrada')
+            ->pluck('id');
+
+        $ganadas = PartidaJugador::whereIn('partida_id', $partidasCerradasIds)
+            ->get()
+            ->groupBy('partida_id')
+            ->filter(function ($jugadores) use ($user) {
+                $maxPuntos = $jugadores->max('puntos_totales');
+                $ganador = $jugadores->firstWhere('puntos_totales', $maxPuntos);
+                return $ganador && $ganador->usuario_id === $user->id;
+            })
+            ->count();
+
+
         //  Stats básicas
         $stats = [
             'jugadas' => $partidasJugadas->count(),
             'creadas' => $partidasCreadas->count(),
             'puntos_totales' => $partidasJugadas->sum('puntos_totales'),
-            'ganadas' => null, // <-- preparado para futuro cálculo
+            'ganadas' => $ganadas,
         ];
 
         return view('perfil.index', compact('user', 'partidasCreadas', 'partidasJugadas', 'stats'));

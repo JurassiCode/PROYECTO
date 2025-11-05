@@ -18,50 +18,51 @@
         </p>
       </div>
 
-      <div class="flex flex-wrap gap-3">
+      <div class="flex flex-wrap gap-3 mt-8 sm:justify-start justify-center w-full">
         <a href="{{ route('ranking.index') }}"
-          class="flex items-center gap-2 rounded-md border border-amber-400 text-amber-400 hover:bg-amber-500/10 px-6 py-3 font-semibold transition">
+          class="flex items-center gap-2 rounded-md border border-amber-400 text-amber-400 hover:bg-amber-500/10 px-6 py-3 font-semibold transition w-full sm:w-auto text-center sm:text-left justify-center sm:justify-start">
           <i class="bi bi-trophy"></i> {{ __('View Ranking') }}
         </a>
 
         @auth
-          @if (auth()->user()->rol === 'admin')
-          <a href="{{ route('admin.usuarios.index') }}"
-            class="flex items-center gap-2 rounded-md bg-amber-500 hover:bg-amber-600 px-6 py-3 font-semibold shadow-md transition">
-            <i class="bi bi-speedometer2"></i> {{ __('Admin Panel') }}
-          </a>
-          @endif
+        @if (auth()->user()->rol === 'admin')
+        <a href="{{ route('admin.usuarios.index') }}"
+          class="flex items-center gap-2 rounded-md bg-amber-500 hover:bg-amber-600 px-6 py-3 font-semibold shadow-md transition w-full sm:w-auto text-center sm:text-left justify-center sm:justify-start">
+          <i class="bi bi-speedometer2"></i> {{ __('Admin Panel') }}
+        </a>
+        @endif
 
-          <a href="{{ route('lobby') }}"
-            class="flex items-center gap-2 rounded-md bg-emerald-500 hover:bg-emerald-600 px-6 py-3 font-semibold shadow-md transition">
-            <i class="bi bi-play-fill"></i> {{ __('Start Game') }}
-          </a>
+        <a href="{{ route('lobby') }}"
+          class="flex items-center gap-2 rounded-md bg-emerald-500 hover:bg-emerald-600 px-6 py-3 font-semibold shadow-md transition w-full sm:w-auto text-center sm:text-left justify-center sm:justify-start">
+          <i class="bi bi-play-fill"></i> {{ __('Start Game') }}
+        </a>
 
-          <form method="POST" action="{{ route('logout') }}">
-            @csrf
-            <button
-              class="flex items-center gap-2 rounded-md border border-red-400 text-red-400 hover:bg-red-600/10 px-6 py-3 font-semibold transition">
-              <i class="bi bi-box-arrow-right"></i> {{ __('Logout') }}
-            </button>
-          </form>
+        <form method="POST" action="{{ route('logout') }}" class="w-full sm:w-auto">
+          @csrf
+          <button
+            class="flex items-center gap-2 rounded-md border border-red-400 text-red-400 hover:bg-red-600/10 px-6 py-3 font-semibold transition w-full sm:w-auto text-center sm:text-left justify-center sm:justify-start">
+            <i class="bi bi-box-arrow-right"></i> {{ __('Logout') }}
+          </button>
+        </form>
 
-          <p class="w-full mt-4 text-sm text-emerald-200">
-            👋 {{ __('Hello') }}, <span class="font-semibold">{{ auth()->user()->nombre ?? auth()->user()->usuario }}</span> · ID {{ auth()->user()->id }}
-          </p>
+        <p class="w-full mt-4 text-sm text-emerald-200 text-center sm:text-left">
+          👋 {{ __('Hello') }}, <span class="font-semibold">{{ auth()->user()->nombre ?? auth()->user()->usuario }}</span> · ID {{ auth()->user()->id }}
+        </p>
         @endauth
 
         @guest
-          <a href="{{ route('login') }}"
-            class="flex items-center gap-2 rounded-md bg-emerald-600 hover:bg-emerald-700 px-6 py-3 font-semibold shadow-md transition">
-            <i class="bi bi-box-arrow-in-right"></i> {{ __('Login') }}
-          </a>
+        <a href="{{ route('login') }}"
+          class="flex items-center gap-2 rounded-md bg-emerald-600 hover:bg-emerald-700 px-6 py-3 font-semibold shadow-md transition w-full sm:w-auto text-center sm:text-left justify-center sm:justify-start">
+          <i class="bi bi-box-arrow-in-right"></i> {{ __('Login') }}
+        </a>
 
-          <a href="{{ route('register') }}"
-            class="flex items-center gap-2 rounded-md border border-emerald-400 text-emerald-400 hover:bg-emerald-500/10 px-6 py-3 font-semibold transition">
-            <i class="bi bi-person-plus"></i> {{ __('Register') }}
-          </a>
+        <a href="{{ route('register') }}"
+          class="flex items-center gap-2 rounded-md border border-emerald-400 text-emerald-400 hover:bg-emerald-500/10 px-6 py-3 font-semibold transition w-full sm:w-auto text-center sm:text-left justify-center sm:justify-start">
+          <i class="bi bi-person-plus"></i> {{ __('Register') }}
+        </a>
         @endguest
       </div>
+
     </div>
 
     <div class="relative">

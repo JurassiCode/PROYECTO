@@ -56,14 +56,11 @@
         <p class="text-4xl font-extrabold text-emerald-200">{{ $stats['puntos_totales'] }}</p>
         <p class="text-sm text-gray-300 tracking-wide mt-1">{{ __('Total points') }}</p>
       </div>
-      <div class="bg-gray-800/40 hover:bg-gray-700/60 p-5 rounded-xl shadow-sm transition relative">
-        <p class="text-4xl font-extrabold text-gray-400">
+      <div class="bg-emerald-800/30 hover:bg-emerald-800/50 p-5 rounded-xl shadow-sm transition">
+        <p class="text-4xl font-extrabold text-emerald-200">
           {{ $stats['ganadas'] ?? '—' }}
         </p>
         <p class="text-sm text-gray-300 tracking-wide mt-1">{{ __('Games won') }}</p>
-        <span class="absolute top-2 right-2 text-[10px] bg-emerald-600/60 px-2 py-0.5 rounded-full text-white font-semibold">
-          {{ __('Coming Soon') }}
-        </span>
       </div>
     </div>
 
