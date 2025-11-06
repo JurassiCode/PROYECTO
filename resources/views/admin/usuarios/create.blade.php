@@ -1,105 +1,122 @@
-@extends('admin.layout')
+@extends('layouts.adminLayout')
 
-@section('title','Nuevo usuario')
+@section('title', __('New user'))
 
 @section('content')
-<div class="card shadow-sm border-0">
-  <div class="card-body">
-    <h1 class="h5 mb-4">
-      <i class="bi bi-person-plus-fill me-2 text-success"></i>
-      Nuevo usuario
-    </h1>
+<div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 py-10">
+  <div class="rounded-xl border border-white/10 bg-gray-900/70 backdrop-blur-md shadow-xl overflow-hidden">
+    <div class="px-6 py-5 border-b border-white/10">
+      <h1 class="flex items-center gap-2 text-xl font-bold text-white">
+        <i class="bi bi-person-plus-fill text-emerald-400"></i>
+        <span>{{ __('New user') }}</span>
+      </h1>
+      <p class="text-sm text-emerald-200/80 mt-1">
+        {{ __('Create a new user with their role and access credentials.') }}
+      </p>
+    </div>
 
-    <form method="POST" action="{{ route('admin.usuarios.store') }}">
-      @csrf
+    <div class="p-6 text-gray-100">
+      <form method="POST" action="{{ route('admin.usuarios.store') }}" class="space-y-5">
+        @csrf
 
-      <div class="mb-3">
-        <label class="form-label fw-semibold">Nombre</label>
-        <input type="text" name="nombre" class="form-control" 
-               value="{{ old('nombre') }}" required>
-        @error('nombre')
-          <div class="text-danger small mt-1">{{ $message }}</div>
-        @enderror
-      </div>
+        {{-- Full name --}}
+        <div>
+          <label class="mb-1 block text-sm font-semibold text-emerald-200">{{ __('Full name') }}</label>
+          <input
+            type="text"
+            name="nombre"
+            required
+            value="{{ old('nombre') }}"
+            class="block w-full rounded-md border border-white/10 bg-gray-800/70 px-3 py-2 text-white placeholder:text-gray-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 outline-none transition" />
+          @error('nombre')
+          <div class="mt-1 text-sm text-red-400">{{ $message }}</div>
+          @enderror
+        </div>
 
-      <div class="mb-3">
-        <label class="form-label fw-semibold">Usuario (login)</label>
-        <input type="text" name="usuario" class="form-control" 
-               value="{{ old('usuario') }}" required>
-        @error('usuario')
-          <div class="text-danger small mt-1">{{ $message }}</div>
-        @enderror
-      </div>
+        {{-- Username --}}
+        <div>
+          <label class="mb-1 block text-sm font-semibold text-emerald-200">{{ __('Username (login name)') }}</label>
+          <input
+            type="text"
+            name="nickname"
+            required
+            value="{{ old('nickname') }}"
+            class="block w-full rounded-md border border-white/10 bg-gray-800/70 px-3 py-2 text-white placeholder:text-gray-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 outline-none transition" />
+          @error('nickname')
+          <div class="mt-1 text-sm text-red-400">{{ $message }}</div>
+          @enderror
+        </div>
 
-      <div class="mb-3">
-        <label class="form-label fw-semibold">Rol</label>
-        <select name="rol" class="form-select" required>
-          <option value="jugador" @selected(old('rol')==='jugador')>Jugador</option>
-          <option value="admin" @selected(old('rol')==='admin')>Admin</option>
-        </select>
-        @error('rol')
-          <div class="text-danger small mt-1">{{ $message }}</div>
-        @enderror
-      </div>
+        {{-- Role --}}
+        <div>
+          <label class="mb-1 block text-sm font-semibold text-emerald-200">{{ __('Role') }}</label>
+          <select
+            name="rol"
+            required
+            class="block w-full rounded-md border border-white/10 bg-gray-800/70 px-3 py-2 text-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 outline-none transition">
+            <option value="jugador" @selected(old('rol')==='jugador' )>{{ __('Player') }}</option>
+            <option value="admin" @selected(old('rol')==='admin' )>{{ __('Administrator') }}</option>
+          </select>
+          @error('rol')
+          <div class="mt-1 text-sm text-red-400">{{ $message }}</div>
+          @enderror
+        </div>
 
-      {{-- Contraseña --}}
-      <div class="mb-3 position-relative">
-        <label class="form-label fw-semibold">Contraseña</label>
-        <div class="input-group">
-          <input type="password" name="contrasena" id="contrasena" class="form-control" required>
-          <button type="button" class="btn btn-outline-secondary toggle-password" data-target="contrasena">
-            <i class="bi bi-eye"></i>
+        {{-- Password --}}
+        <div x-data="{ show:false }">
+          <label class="mb-1 block text-sm font-semibold text-emerald-200">{{ __('Password') }}</label>
+          <div class="relative">
+            <input
+              :type="show ? 'text' : 'password'"
+              name="contrasena"
+              id="contrasena"
+              required
+              class="block w-full rounded-md border border-white/10 bg-gray-800/70 px-3 py-2 pr-10 text-white placeholder:text-gray-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 outline-none transition" />
+            <button type="button"
+              @click="show = !show"
+              class="absolute inset-y-0 right-0 my-auto mr-2 inline-flex h-8 w-8 items-center justify-center rounded-md text-gray-400 hover:bg-gray-700/50 focus:ring-2 focus:ring-emerald-500 transition">
+              <i class="bi" :class="show ? 'bi-eye-slash' : 'bi-eye'"></i>
+            </button>
+          </div>
+          @error('contrasena')
+          <div class="mt-1 text-sm text-red-400">{{ $message }}</div>
+          @enderror
+        </div>
+
+        {{-- Repeat password --}}
+        <div x-data="{ show:false }">
+          <label class="mb-1 block text-sm font-semibold text-emerald-200">{{ __('Repeat password') }}</label>
+          <div class="relative">
+            <input
+              :type="show ? 'text' : 'password'"
+              name="contrasena_confirmation"
+              id="contrasena_confirmation"
+              required
+              class="block w-full rounded-md border border-white/10 bg-gray-800/70 px-3 py-2 pr-10 text-white placeholder:text-gray-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 outline-none transition" />
+            <button type="button"
+              @click="show = !show"
+              class="absolute inset-y-0 right-0 my-auto mr-2 inline-flex h-8 w-8 items-center justify-center rounded-md text-gray-400 hover:bg-gray-700/50 focus:ring-2 focus:ring-emerald-500 transition">
+              <i class="bi" :class="show ? 'bi-eye-slash' : 'bi-eye'"></i>
+            </button>
+          </div>
+          @error('contrasena_confirmation')
+          <div class="mt-1 text-sm text-red-400">{{ $message }}</div>
+          @enderror
+        </div>
+
+        {{-- Buttons --}}
+        <div class="flex gap-3 pt-4">
+          <a href="{{ route('admin.usuarios.index') }}"
+            class="inline-flex items-center gap-1.5 rounded-md border border-white/10 bg-gray-800/60 px-4 py-2 text-gray-200 hover:bg-gray-700/60 focus:ring-2 focus:ring-gray-500 transition">
+            <i class="bi bi-x-circle"></i> {{ __('Cancel') }}
+          </a>
+          <button
+            class="inline-flex items-center gap-1.5 rounded-md bg-emerald-600 hover:bg-emerald-700 px-4 py-2 text-white font-medium shadow focus:ring-2 focus:ring-emerald-500 transition">
+            <i class="bi bi-check-lg"></i> {{ __('Save') }}
           </button>
         </div>
-        @error('contrasena')
-          <div class="text-danger small mt-1">{{ $message }}</div>
-        @enderror
-      </div>
-
-      {{-- Repetir contraseña --}}
-      <div class="mb-4 position-relative">
-        <label class="form-label fw-semibold">Repetir contraseña</label>
-        <div class="input-group">
-          <input type="password" name="contrasena_confirmation" id="contrasena_confirmation" class="form-control" required>
-          <button type="button" class="btn btn-outline-secondary toggle-password" data-target="contrasena_confirmation">
-            <i class="bi bi-eye"></i>
-          </button>
-        </div>
-        @error('contrasena_confirmation')
-          <div class="text-danger small mt-1">{{ $message }}</div>
-        @enderror
-      </div>
-
-      <div class="d-flex gap-2">
-        <a href="{{ route('admin.usuarios.index') }}" 
-           class="btn btn-outline-secondary">
-          <i class="bi bi-x-circle me-1"></i> Cancelar
-        </a>
-        <button class="btn btn-success">
-          <i class="bi bi-check-lg me-1"></i> Guardar
-        </button>
-      </div>
-    </form>
+      </form>
+    </div>
   </div>
 </div>
-
-{{-- Bootstrap Icons --}}
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-
-{{-- Script para mostrar/ocultar contraseña --}}
-<script>
-  document.querySelectorAll('.toggle-password').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const target = document.getElementById(btn.dataset.target);
-      const icon = btn.querySelector('i');
-      if (target.type === 'password') {
-        target.type = 'text';
-        icon.classList.replace('bi-eye', 'bi-eye-slash');
-      } else {
-        target.type = 'password';
-        icon.classList.replace('bi-eye-slash', 'bi-eye');
-      }
-    });
-  });
-</script>
 @endsection

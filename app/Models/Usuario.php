@@ -9,34 +9,49 @@ class Usuario extends Authenticatable
 {
     use Notifiable;
 
+    /** Tabla y clave primaria */
     protected $table = 'usuarios';
-    protected $primaryKey = 'id_usuario';
+    protected $primaryKey = 'id';
+    public $incrementing = true;
+    protected $keyType = 'int';
     public $timestamps = false;
 
-    protected $fillable = ['nombre', 'usuario', 'contrasena', 'rol', 'creado_en'];
-    protected $hidden = ['contrasena'];
+    protected $rememberTokenName = null;
 
-    // Laravel valida el login leyendo este valor
+    /** Campos asignables */
+    protected $fillable = [
+        'nombre',
+        'nickname',
+        'contrasena',
+        'rol',
+        'creado_en',
+        'deleted_at',
+    ];
+
+    /** Ocultamos la contraseña al serializar */
+    protected $hidden = [
+        'contrasena',
+    ];
+
+    /** 🕒 Casts automáticos de fecha */
+    protected $casts = [
+        'creado_en' => 'datetime',
+        'deleted_at' => 'datetime',
+    ];
+
+    /**
+     * Le dice a Laravel que el campo de autenticación de contraseña es "contrasena"
+     */
     public function getAuthPassword()
     {
         return $this->contrasena;
     }
 
     /**
-     * Si algún código del framework intenta setear/leer "password",
-     * lo mapeamos a la columna real "contrasena".
+     * Le dice a Laravel que el identificador de usuario (username) es "nickname"
      */
-    public function setPasswordAttribute($value): void
+    public function getAuthIdentifierName()
     {
-        // NO hash acá para evitar doble hash; ya hasheamos en el controlador.
-        $this->attributes['contrasena'] = $value;
+        return 'nickname';
     }
-
-    public function getPasswordAttribute(): ?string
-    {
-        return $this->contrasena;
-    }
-
-    // IMPORTANTE: Si copiaste algo como "casts() => ['password' => 'hashed']", borrarlo.
-    // Usamos el hash explícito en el controlador (bcrypt) para tener control.
 }
