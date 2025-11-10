@@ -201,7 +201,17 @@
   "This user has been deactivated.": "Este usuario ha sido desactivado.",
   "Password confirmation does not match.": "La confirmación de contraseña no coincide.",
   "The password must be at least :min characters.": "La contraseña debe tener al menos :min caracteres.",
-  "Account created successfully!": "¡Cuenta creada con éxito!"
+  "Account created successfully!": "¡Cuenta creada con éxito!",
+  "Enclosure": "Recinto",
+  "The dinosaurs must be placed in any Forest area enclosure.": "El dinosaurio debe ser colocado en cualquier recinto de Bosque.",
+  "The dinosaurs must be placed in an empty enclosure.": "El dinosaurio debe ser colocado en un recinto vacío.",
+  "The dinosaurs must be placed in any Plain area enclosure.": "El dinosaurio debe ser colocado en cualquier recinto de Llanura.",
+  "The dinosaurs must be placed only in enclosures on the right side of the River.": "El dinosaurio debe ser colocado solo en recintos del lado derecho del Río.",
+  "The dinosaurs must be placed only in enclosures on the left side of the River.": "El dinosaurio debe ser colocado solo en recintos del lado izquierdo del Río.",
+  "The dinosaurs must be placed in an enclosure that does not already contain a T-Rex.": "El dinosaurio debe ser colocado en un recinto que no contenga ya un T-Rex.",
+  "In hand": "En mano",
+  "Placed": "Colocados",
+  "Active players": "Jugadores activos"
 
 }
 

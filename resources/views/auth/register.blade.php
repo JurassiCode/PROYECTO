@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 </head>
 
-<body class="min-h-screen bg-gradient-to-br from-emerald-700 via-emerald-800 to-gray-900 flex items-center justify-center px-4 py-4">
+<body class="min-h-screen bg-gradient-to-br from-emerald-700 via-emerald-800 to-gray-900 flex items-center justify-center px-4 py-4 bg-emerald-900">
 
   <div class="w-full max-w-sm space-y-4">
     <!-- Logo -->

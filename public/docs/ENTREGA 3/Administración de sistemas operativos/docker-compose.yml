@@ -1,0 +1,44 @@
+services:
+  db:
+    image: mysql
+    container_name: jurassidraft-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: JurassiCode
+      MYSQL_DATABASE: jurassidraft
+      MYSQL_USER: jurassiuser
+      MYSQL_PASSWORD: jurassicode
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./mysql/init:/docker-entrypoint-initdb.d:ro,Z
+    networks:
+      - jurassinet
+
+  app:
+    image: bitnami/laravel
+    container_name: jurassidraft-laravel
+    user: root
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - "8000:80"
+    environment:
+      LARAVEL_DATABASE_TYPE: mysql
+      LARAVEL_DATABASE_HOST: db
+      LARAVEL_DATABASE_PORT_NUMBER: 3306
+      LARAVEL_DATABASE_NAME: jurassidraft
+      LARAVEL_DATABASE_USER: jurassiuser
+      LARAVEL_DATABASE_PASSWORD: jurassicode
+    command: [ "bash", "-c", "chmod -R 777 /app && php artisan serve --host=0.0.0.0 --port=80" ]
+    volumes:
+      - ./web:/app:Z
+    networks:
+      - jurassinet
+
+volumes:
+  db_data:
+
+networks:
+  jurassinet:
+    driver: bridge

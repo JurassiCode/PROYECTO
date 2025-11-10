@@ -18,8 +18,11 @@
   </div>
 
   <!--  Tabla ranking -->
-  <div class="relative mx-auto max-w-5xl px-6 lg:px-8">
-    <div class="backdrop-blur-md bg-white/10 border border-white/20 rounded-3xl shadow-xl overflow-hidden">
+<div class="relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+  <div class="backdrop-blur-md bg-white/10 border border-white/20 rounded-3xl shadow-xl overflow-hidden">
+
+    <!-- Versión de tabla para pantallas grandes -->
+    <div class="hidden sm:block overflow-x-auto">
       <table class="w-full border-collapse">
         <thead class="bg-emerald-900/60 text-emerald-100 uppercase tracking-wide text-sm">
           <tr>
@@ -69,7 +72,44 @@
         </tbody>
       </table>
     </div>
+
+    <!-- Versión móvil tipo tarjetas -->
+    <div class="sm:hidden divide-y divide-white/10">
+      @forelse ($ranking as $index => $item)
+        @php
+          $rank = $index + 1;
+          $medalla = match($rank) {
+            1 => '🥇',
+            2 => '🥈',
+            3 => '🥉',
+            default => null,
+          };
+        @endphp
+        <div class="p-4 flex flex-col gap-2 bg-white/5 rounded-2xl m-3 border border-white/10 shadow-md">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="text-lg font-bold text-emerald-200">{{ $rank }}</span>
+              @if($medalla)
+                <span class="text-xl">{{ $medalla }}</span>
+              @endif
+            </div>
+            <span class="text-amber-300 font-bold text-lg">
+              {{ number_format($item->puntos_acumulados, 0, ',', '.') }}
+            </span>
+          </div>
+          <div class="text-gray-100 font-semibold text-base truncate">
+            {{ $item->usuario->nickname ?? __('Anonymous') }}
+          </div>
+        </div>
+      @empty
+        <div class="text-center py-10 text-gray-300">
+          {{ __('There are no registered players in the ranking yet.') }}
+        </div>
+      @endforelse
+    </div>
+
   </div>
+</div>
 
   <!--  Frase final -->
   <div class="relative text-center mt-12 text-emerald-100 px-6">
